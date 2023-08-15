@@ -6,5 +6,5 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Response;
 use App\Exceptions\Types\InputValidationException;
 
-class Client extends BaseController {
+class BaseClient extends BaseController {
 }
