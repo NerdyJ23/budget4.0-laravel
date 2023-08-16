@@ -1,10 +1,14 @@
 <?php
 namespace App\Clients;
 
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Response;
-use App\Exceptions\Types\InputValidationException;
+use App\Clients\Security\EncryptionClient;
 
 class BaseClient extends BaseController {
+	static function encrypt(mixed $value) {
+		return EncryptionClient::encrypt($value);
+	}
+
+	static function decrypt(mixed $value) {
+		return EncryptionClient::decrypt($value);
+	}
 }
