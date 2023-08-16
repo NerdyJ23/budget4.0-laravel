@@ -6,17 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+	const TABLE = 'ItemsCategories';
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-		Schema::create('ItemsCategories', function (Blueprint $table) {
-			$table->id('ID');
-			$table->foreignId('User_ID')->constrained();
-			$table->string('Name', 255);
-			$table->tinyInt('Archived')->default(0);
-		});
+		if (!Schema::hasTable(self::TABLE)) {
+			Schema::create(self::TABLE, function (Blueprint $table) {
+				$table->id('ID');
+				$table->unsignedBigInteger('User_ID');
+				$table->string('Name', 255);
+				$table->tinyInteger('Archived')->default(0);
+			});
+		}
+
+		if (Schema::hasTable('Users')) {
+			Schema::table(self::TABLE, function (Blueprint $table) {
+				$table->foreign('User_ID')->references('id')->on('Users');
+			});
+		}
     }
 
     /**
