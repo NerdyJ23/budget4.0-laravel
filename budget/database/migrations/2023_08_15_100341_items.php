@@ -6,21 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+	const TABLE = 'Items';
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-		//Deprecated
-		return;
-		Schema::create('Items', function (Blueprint $table) {
-			$table->id('ID');
-			$table->foreignId('Receipt')->constrained();
-			$table->string('Name', 255);
-			$table->double('Count');
-			$table->double('Cost')->default(0);
-			$table->foreignId('Category')->constrained();
-		});
+		if (!Schema::hasTable(self::TABLE)) {
+			Schema::create(self::TABLE, function (Blueprint $table) {
+				$table->id('ID');
+				$table->unsignedBigInteger('Receipt');
+				$table->string('Name', 255);
+				$table->double('Count');
+				$table->double('Cost')->default(0);
+				$table->unsignedBigInteger('Category');
+			});
+		}
+
+		if (Schema::hasTable('Receipts')) {
+			Schema::table(self::TABLE, function (Blueprint $table) {
+				$table->foreign('Receipt')->references('ID')->on('Receipts');
+			});
+		}
+
+		if (Schema::hasTable('ItemsCategories')) {
+			Schema::table(self::TABLE, function (Blueprint $table) {
+				$table->foreign('Category')->references('ID')->on('ItemsCategories');
+			});
+		}
         //
     }
 

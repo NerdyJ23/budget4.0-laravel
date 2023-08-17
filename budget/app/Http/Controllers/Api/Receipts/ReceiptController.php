@@ -7,9 +7,9 @@ use App\Clients\Receipts\ReceiptItemClient;
 
 use Illuminate\Http\Request;
 
-class ReceiptController extends ApiController {
+class ReceiptController extends BaseApiController {
 
-	public function list() {
+	static function list() {
 		$items = ReceiptItemClient::list(1);
 		print_r($items);
 	}

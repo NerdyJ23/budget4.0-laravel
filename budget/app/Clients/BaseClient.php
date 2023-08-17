@@ -3,7 +3,7 @@ namespace App\Clients;
 
 use App\Clients\Security\EncryptionClient;
 
-class BaseClient extends BaseController {
+class BaseClient {
 	static function encrypt(mixed $value) {
 		return EncryptionClient::encrypt($value);
 	}
