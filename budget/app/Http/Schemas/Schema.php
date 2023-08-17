@@ -4,7 +4,8 @@ namespace App\Http\Schemas;
 class Schema
 {
 	static $schemas = [
-		'Receipt' => 'App\Http\Schemas\Receipts\ReceiptSchema'
+		'Receipt' => 'App\Http\Schemas\Receipts\ReceiptSchema',
+		'User' => 'App\Http\Schemas\Users\UserSchema',
 	];
 
 	static function schema(mixed $item, string $schema): mixed {

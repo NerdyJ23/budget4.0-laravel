@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Receipts\ReceiptController;
+use App\Http\Controllers\Api\Users\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,5 +24,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('receipt')->group(function () {
 	Route::get('/', function () {
 		return ReceiptController::list();
+	});
+});
+
+Route::prefix('user')->group(function () {
+	Route::post('/', function (Request $request) {
+		return UserController::create(request: $request);
+	});
+	Route::post('/login', function (Request $request) {
+		return UserController::login(request: $request);
 	});
 });
