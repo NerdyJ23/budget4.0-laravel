@@ -5,27 +5,21 @@ namespace App\Models\Receipts;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ReceiptItem extends Model
+class ReceiptItemCategory extends Model
 {
     use HasFactory;
 
-	protected $table = 'Items';
+	protected $table = 'ItemsCategories';
 	protected $primaryKey = 'ID';
-	public $timestamps = false;
 
+	public $timestamps = false;
 	protected $fillable = [
-		'Receipt',
+		'User_ID',
 		'Name',
-		'Count',
-		'Cost',
-		'Category'
+		'Archived'
 	];
 
 	protected $casts = [
-		'Cost' => 'double'
+		'Archived' => 'boolean'
 	];
-
-	public function getReceipt(int $receiptId) {
-		return;
-	}
 }
