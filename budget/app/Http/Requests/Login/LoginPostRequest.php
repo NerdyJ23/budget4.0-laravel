@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Users;
+namespace App\Http\Requests\Login;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserPostRequest extends FormRequest
+class LoginPostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,6 @@ class UserPostRequest extends FormRequest
         return [
 			'username' => 'required|min:5|max:50',
 			'password' => 'required|min:5|max:200',
-			'first_name' => 'required|min:1|max:50',
-			'last_name' => 'nullable|max:100'
-		];
+        ];
     }
 }
