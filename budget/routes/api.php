@@ -2,11 +2,13 @@
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Users\UserPostRequest;
+use App\Http\Requests\Login\LoginPostRequest;
 
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Receipts\ReceiptController;
 use App\Http\Controllers\Api\Users\UserController;
+use App\Http\Controllers\Api\Login\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +35,8 @@ Route::prefix('user')->group(function () {
 	Route::post('/', function (UserPostRequest $request) {
 		return UserController::create(request: $request);
 	});
-	Route::post('/login', function (Request $request) {
-		return UserController::login(request: $request);
+
+	Route::post('/login', function (LoginPostRequest $request) {
+		return LoginController::login(request: $request);
 	});
 });
