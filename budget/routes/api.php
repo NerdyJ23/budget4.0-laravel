@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Requests\Users\UserPostRequest;
+
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Receipts\ReceiptController;
@@ -28,7 +30,7 @@ Route::prefix('receipt')->group(function () {
 });
 
 Route::prefix('user')->group(function () {
-	Route::post('/', function (Request $request) {
+	Route::post('/', function (UserPostRequest $request) {
 		return UserController::create(request: $request);
 	});
 	Route::post('/login', function (Request $request) {

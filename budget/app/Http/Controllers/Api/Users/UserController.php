@@ -6,11 +6,12 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Clients\Users\UserClient;
 use App\Http\Schemas\Schema;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Users\UserPostRequest;
 
 class UserController extends BaseApiController {
 
-	static function create(Request $request) {
+	static function create(UserPostRequest $request) {
+
 		$user = UserClient::create(
 			username: $request->input('username'),
 			password: $request->input('password'),
@@ -18,7 +19,7 @@ class UserController extends BaseApiController {
 			last_name: $request->input('last_name')
 		);
 
-		return parent::sendResponse($user == null ? 500 : 201);
+		return parent::sendResponse(code: $user == null ? 500 : 201);
 		// return parent::sendResponse(Schema::schema($items, 'Receipt'));
 	}
 }
