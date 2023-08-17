@@ -37,6 +37,9 @@ class UserClient extends BaseClient {
 
 	static function getByCredentials(string $username, string $password): mixed {
 		$user = User::where(['username' => $username])->first();
-		return Hash::check($password, $user->password) ? $user : null;
+		if ($user != null) {
+			return Hash::check($password, $user->password) ? $user : null;
+		}
+		return null;
 	}
 }
