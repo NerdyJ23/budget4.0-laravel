@@ -1,9 +1,13 @@
 <?php
 namespace App\Clients\Receipts;
 
-class ReceiptClient extends Client {
+use App\Models\Receipts\Receipt;
+use App\Clients\BaseClient;
 
-	static function get(): mixed {
+class ReceiptClient extends BaseClient {
 
+	static function list(): mixed {
+		return Receipt::where('User', 2)
+		->get()->all();
 	}
 }

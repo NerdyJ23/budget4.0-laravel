@@ -8,7 +8,7 @@ class ReceiptItemClient extends BaseClient {
 
 	static function list(int $receipt_id) {
 		//auth check
-		return ReceiptItem::where('Receipt', parent::decrypt($receipt_id))
-		->get();
+		return ReceiptItem::where('Receipt', $receipt_id)
+		->first();
 	}
 }
