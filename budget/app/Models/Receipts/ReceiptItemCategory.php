@@ -4,7 +4,8 @@ namespace App\Models\Receipts;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Users\User;
 class ReceiptItemCategory extends Model
@@ -25,11 +26,11 @@ class ReceiptItemCategory extends Model
 		'Archived' => 'boolean'
 	];
 
-	public function user(): HasOne {
-		return $this->hasOne(User::class);
+	public function user(): BelongsTo {
+		return $this->belongsTo(User::class);
 	}
 
-	public function receiptItem(): HasMany {
-		return $this->hasMany(ReceiptItem::class, 'ID', 'Category');
+	public function receiptItem(): BelongsTo {
+		return $this->belongsTo(ReceiptItem::class, 'ID', 'Category');
 	}
 }

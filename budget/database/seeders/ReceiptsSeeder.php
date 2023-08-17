@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 
 use App\Models\Receipts\Receipt;
 use App\Models\Receipts\ReceiptItem;
+use App\Models\Receipts\ReceiptItemCategory;
+
 use App\Models\Users\User;
 
 class ReceiptsSeeder extends Seeder
@@ -18,12 +20,12 @@ class ReceiptsSeeder extends Seeder
     {
 		// $user = User::factory()->create();
 
-		// $receipt = Receipt::factory()
-		// ->create();
+		$receipt = Receipt::factory()->create();
+		$user = User::factory()->create();
 
 		ReceiptItem::factory()->count(5)
-		->has(Receipt::factory(), 'Receipt')
-		->recycle(User::factory())
+		->recycle($user)
+		->for($receipt)
 		->create();
 
     }

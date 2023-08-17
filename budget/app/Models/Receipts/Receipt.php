@@ -4,6 +4,8 @@ namespace App\Models\Receipts;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Receipts\ReceiptItem;
 use App\Models\Users\User;
@@ -40,7 +42,7 @@ class Receipt extends Model
 		return $this->hasMany(ReceiptItem::class, 'Receipt', 'ID');
 	}
 
-	public function user(): HasOne {
-		return $this->hasOne(User::class, 'User', 'id');
+	public function user(): BelongsTo {
+		return $this->belongsTo(User::class);
 	}
 }
