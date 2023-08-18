@@ -5,6 +5,7 @@ use App\Http\Requests\Users\UserPostRequest;
 use App\Http\Requests\Login\LoginPostRequest;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
 use App\Http\Requests\Receipts\ReceiptCategoryPostRequest;
+use App\Http\Requests\Receipts\ReceiptCategoryPatchRequest;
 
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +43,7 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 			return ReceiptCategoryController::create(request: $request);
 		});
 
-		Route::patch('/{name}', function (ReceiptCategoryPostRequest $request, string $categoryName) {
+		Route::patch('/{name}', function (ReceiptCategoryPatchRequest $request, string $categoryName) {
 			return ReceiptCategoryController::update(request: $request, category: $categoryName);
 		});
 

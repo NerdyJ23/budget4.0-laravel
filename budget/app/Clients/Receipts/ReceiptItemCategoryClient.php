@@ -26,12 +26,11 @@ class ReceiptItemCategoryClient extends BaseClient {
 	static function get(
 		User $user,
 		string $category
-		// ?string $categoryId
 	): ReceiptItemCategory|null {
 
 		$categoryModel = ReceiptItemCategory::where([
 			'User_ID' => $user->id,
-			'Name' => $category
+			'Name' => strtoupper($category)
 		])->first();
 
 		if ($categoryModel == null) {
@@ -59,6 +58,29 @@ class ReceiptItemCategoryClient extends BaseClient {
 			'User_ID' => $user->id
 		])->refresh();
 		//Create methods need to refresh afterwards, the model only knows what we put in, not what happened in the db
+	}
+
+	static function update(
+		User $user,
+		string $category,
+		?string $name,
+		?string $archived
+	): ReceiptItemCategory {
+		$categoryModel = self::get(user: $user, category: $category);
+
+		if (!is_null($name)) {
+			$categoryModel->Name = trim(strtoupper($name));
+		}
+
+		if (!is_null($archived)) {
+			$categoryModel->Archived = $archived;
+		}
+
+		if ($categoryModel->isDirty()) {
+			$categoryModel->save();
+		}
+
+		return $categoryModel->refresh();
 	}
 
 	static function archive(User $user, string $category): bool {

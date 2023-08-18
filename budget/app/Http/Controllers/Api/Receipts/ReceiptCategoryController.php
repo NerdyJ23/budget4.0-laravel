@@ -10,6 +10,8 @@ use App\Http\Schemas\Schema;
 use App\Filters\Receipts\ReceiptCategoryFilter;
 
 use App\Http\Requests\Receipts\ReceiptCategoryPostRequest;
+use App\Http\Requests\Receipts\ReceiptCategoryPatchRequest;
+
 use Illuminate\Http\Request;
 
 
@@ -38,6 +40,18 @@ class ReceiptCategoryController extends Controller
 		return parent::sendResponse(body: Schema::schema($category, 'ReceiptItemCategory'));
 	}
 
+	static function update(ReceiptCategoryPatchRequest $request, string $category) {
+		$user = UserClient::getByToken($request->cookie('token'));
+		dump($request->input('name'));
+		$categoryModel = CategoryClient::update(
+			user: $user,
+			category: $category,
+			name: $request->input('name'),
+			archived: $request->input('archived')
+		);
+
+		return parent::sendResponse(body: Schema::schema($categoryModel, 'ReceiptItemCategory'));
+	}
 	static function archive(Request $request, string $category) {
 		$user = UserClient::getByToken($request->cookie('token'));
 
