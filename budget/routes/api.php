@@ -35,7 +35,7 @@ Route::prefix('receipt')->group(function () {
 		return Receiptcontroller::create(request: $request);
 	})->can('create', Receipt::class);
 
-	Route::get('/{uuid}', function (ReceiptGetRequest $request, string $receiptId) {
+	Route::get('/{uuid}', function (Request $request, string $receiptId) {
 		return ReceiptController::get(request: $request, id: $receiptId);
 	})->can('view');
 });

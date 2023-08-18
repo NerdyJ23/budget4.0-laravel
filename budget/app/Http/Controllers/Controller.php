@@ -11,7 +11,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-	static function sendResponse(mixed $body = null, int $code = 200, $headers = []) {
+	static function sendResponse(mixed $body = null, int $code = 200, $headers = [], $errors = []) {
 		$result = [];
 		if (!is_null($body)) {
 			if (is_array($body)) {
@@ -23,6 +23,8 @@ class Controller extends BaseController
 				$result = $body;
 			}
 		}
+		$result += ['errors' => $errors];
+
 		return new Response(content: is_null($body) ? null : $result, status: $code, headers: $headers);
 	}
 

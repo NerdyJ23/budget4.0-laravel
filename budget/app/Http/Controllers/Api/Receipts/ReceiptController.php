@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Receipts;
 
 use App\Http\Controllers\Api\BaseApiController;
 use App\Clients\Receipts\ReceiptClient;
+use App\Clients\Receipts\ReceiptItemClient;
 use App\Clients\Users\UserClient;
 
 use App\Http\Schemas\Schema;
@@ -13,6 +14,7 @@ use App\Http\Requests\Receipts\ReceiptListRequest;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
 
 use App\Exceptions\Http\UnauthorizedException;
+use App\Exceptions\InputValidationException;
 
 class ReceiptController extends BaseApiController {
 
@@ -22,18 +24,40 @@ class ReceiptController extends BaseApiController {
 	}
 
 	static function create(ReceiptPostRequest $request) {
+		$user = UserClient::getByToken($request->cookie('token'));
 		$receipt = ReceiptClient::create(
 			name: $request->input('name'),
 			location: $request->input('location'),
 			reference: $request->input('reference'),
 			date: $request->input('date'),
-			user: UserClient::getByToken($request->cookie('token'))
+			user: $user
 		);
+
+		//Add Items
 		$items = json_decode($request->input('items'));
+		$errors = [];
 		foreach ($items as $item) {
-			dump($item);
+			try {
+				$item = ReceiptItemClient::create(
+					receipt: $receipt,
+					name: $item->name,
+					count: $item->count,
+					cost: $item->cost,
+					category: $item->category,
+					user: $user
+				);
+			} catch (InputValidationException $e) {
+				$errors += [$item->name . ': ' . $e->getMessage()];
+			}
 		}
-		return parent::sendResponse(Schema::schema($receipt, 'Receipt'));
+
+		//Update Receipt Cost and Total
+		$receipt = ReceiptClient::generateCostAndCategory(receipt: $receipt->refresh());
+
+		return parent::sendResponse(
+			body: Schema::schema($receipt, 'Receipt'),
+			errors: $errors
+		);
 	}
 
 	static function get(Request $request, string $id): mixed {
