@@ -10,7 +10,7 @@ class ReceiptPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function list(): bool
+    public function list(User $user): bool
     {
 		return true;
     }
@@ -20,7 +20,7 @@ class ReceiptPolicy
      */
     public function view(User $user, Receipt $receipt): bool
     {
-		return $user->ID === $receipt->User;
+		return $user->id === $receipt->User;
         //
     }
 
@@ -38,7 +38,7 @@ class ReceiptPolicy
      */
     public function update(User $user, Receipt $receipt): bool
     {
-		return $user->ID === $receipt->User;
+		return $user->id === $receipt->User;
         //
     }
 
@@ -47,7 +47,7 @@ class ReceiptPolicy
      */
     public function delete(User $user, Receipt $receipt): bool
     {
-		return $user->ID === $receipt->User;
+		return $user->id === $receipt->User;
         //
     }
 
@@ -56,7 +56,7 @@ class ReceiptPolicy
      */
     public function restore(User $user, Receipt $receipt): bool
     {
-		return $user->ID === $receipt->User;
+		return $user->id === $receipt->User;
         //
     }
 
@@ -65,7 +65,7 @@ class ReceiptPolicy
      */
     public function forceDelete(User $user, Receipt $receipt): bool
     {
-		return $user->ID === $receipt->User;
+		return $user->id === $receipt->User;
         //
     }
 }

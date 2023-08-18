@@ -3,12 +3,13 @@
 namespace App\Models\Users;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Tokens\UserToken;
 
-class User extends Model
+class User extends Authenticatable
 {
     use HasFactory;
 	protected $table = 'Users';
