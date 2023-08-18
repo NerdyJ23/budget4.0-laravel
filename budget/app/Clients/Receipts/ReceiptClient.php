@@ -1,6 +1,9 @@
 <?php
 namespace App\Clients\Receipts;
 
+//AccessCheck
+use Illuminate\Support\Facades\Gate;
+
 //Models
 use App\Models\Receipts\Receipt;
 use App\Models\Users\User;
@@ -10,6 +13,7 @@ use App\Clients\BaseClient;
 
 //Exceptions
 use App\Exceptions\Http\UnauthorizedException;
+use App\Exceptions\Http\NotFoundException;
 
 class ReceiptClient extends BaseClient {
 
@@ -33,16 +37,16 @@ class ReceiptClient extends BaseClient {
 		]);
 	}
 
-	static function get(string $token, string $receiptId): mixed {
-		$receiptModel = Receipt::where('ID', parent::decrypt($receipt))->first();
-		$userModel = UserClient::getByToken(token: $token);
+	static function get(User $user, string $id): mixed {
+		$receipt = Receipt::where([
+			'ID' => parent::decrypt($id),
+			'User' => $user->id
+			])->first();
 
-		if ($receiptModel == null) {
-			// throw new UnauthorizedException;
-		}
-
-		return Receipt::where('User', 3)
-		->get()->all();
+			if ($user->can('view', $receipt)) {
+				return $receipt;
+			}
+			throw new NotFoundException;
 	}
 
 	static function update(

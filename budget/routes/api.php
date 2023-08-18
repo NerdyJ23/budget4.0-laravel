@@ -26,18 +26,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('receipt')->group(function () {
+Route::prefix('receipt')->middleware('logged_in')->group(function () {
 	Route::get('/', function (Request $request) {
 		return ReceiptController::list(request: $request);
-	})->can('list', Receipt::class);
+	});
 
 	Route::post('/', function (ReceiptPostRequest $request) {
 		return Receiptcontroller::create(request: $request);
-	})->can('create', Receipt::class);
+	});
 
 	Route::get('/{uuid}', function (Request $request, string $receiptId) {
 		return ReceiptController::get(request: $request, id: $receiptId);
-	})->can('view');
+	});
 });
 
 Route::prefix('user')->group(function () {

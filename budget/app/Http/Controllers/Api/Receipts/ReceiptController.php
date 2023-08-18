@@ -60,7 +60,12 @@ class ReceiptController extends BaseApiController {
 		);
 	}
 
-	static function get(Request $request, string $id): mixed {
+	static function get(Request $request, string $id) {
+		$user = UserClient::getByToken(token: $request->cookie('token'));
+
+		return parent::sendResponse(
+			body: Schema::schema(ReceiptClient::get(id: $id, user: $user), 'Receipt')
+		);
 		return null;
 	}
 }
