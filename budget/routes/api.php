@@ -30,8 +30,24 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('receipt')->middleware('logged_in')->group(function () {
 	Route::prefix('category')->group(function () {
+		Route::get('/', function (Request $request) {
+			return ReceiptCategoryController::list(request: $request);
+		});
+
+		Route::get('/{name}', function (Request $request, string $categoryName) {
+			return ReceiptCategoryController::get(request: $request, category: $categoryName);
+		});
+
 		Route::post('/', function (ReceiptCategoryPostRequest $request) {
 			return ReceiptCategoryController::create(request: $request);
+		});
+
+		Route::patch('/{name}', function (ReceiptCategoryPostRequest $request, string $categoryName) {
+			return ReceiptCategoryController::update(request: $request, category: $categoryName);
+		});
+
+		Route::delete('/{name}', function (Request $request, string $categoryName) {
+			return ReceiptCategoryController::archive(request: $request, category: $categoryName);
 		});
 	});
 

@@ -10,12 +10,17 @@ use App\Clients\BaseClient;
 
 use App\Exceptions\InputValidationException;
 use App\Exceptions\Http\ConflictException;
+use App\Exceptions\Http\NotFoundException;
 
+use App\Filters\Receipts\ReceiptCategoryFilter;
 class ReceiptItemCategoryClient extends BaseClient {
 
-	static function list(User $user): array {
-		//auth check
-		return ReceiptItemCategories::where(['User' => $user->id])->get()->all();
+	static function list(User $user, ReceiptCategoryFilter $filter): array {
+		$categories = ReceiptItemCategory::where(['User_ID' => $user->id])->get();
+
+		return $categories->filter(function (ReceiptItemCategory $category) use ($filter) {
+			return $filter->filter($category);
+		})->all();
 	}
 
 	static function get(
@@ -24,11 +29,18 @@ class ReceiptItemCategoryClient extends BaseClient {
 		// ?string $categoryId
 	): ReceiptItemCategory|null {
 
-		return ReceiptItemCategory::where([
+		$categoryModel = ReceiptItemCategory::where([
 			'User_ID' => $user->id,
 			'Name' => $category
 		])->first();
+
+		if ($categoryModel == null) {
+			throw new NotFoundException;
+		}
+
+		return $categoryModel;
 	}
+
 	static function create(
 		string $name,
 		User $user
@@ -47,5 +59,11 @@ class ReceiptItemCategoryClient extends BaseClient {
 			'User_ID' => $user->id
 		])->refresh();
 		//Create methods need to refresh afterwards, the model only knows what we put in, not what happened in the db
+	}
+
+	static function archive(User $user, string $category): bool {
+		$category = self::get(user: $user, category: $category);
+		$category->Archived = true;
+		return $category->save();
 	}
 }
