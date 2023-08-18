@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Requests\Users\UserPostRequest;
 use App\Http\Requests\Login\LoginPostRequest;
+use App\Http\Requests\Receipts\ReceiptPostRequest;
 
 use Illuminate\Support\Facades\Route;
 
@@ -28,11 +29,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('receipt')->group(function () {
 	Route::get('/', function (Request $request) {
 		return ReceiptController::list(request: $request);
-	});
+	})->can('list', Receipt::class);
 
-	Route::get('/{uuid}', function (Request $request, string $receiptId) {
+	Route::post('/', function (ReceiptPostRequest $request) {
+		return Receiptcontroller::create(request: $request);
+	})->can('create', Receipt::class);
+
+	Route::get('/{uuid}', function (ReceiptGetRequest $request, string $receiptId) {
 		return ReceiptController::get(request: $request, id: $receiptId);
-	});
+	})->can('view');
 });
 
 Route::prefix('user')->group(function () {

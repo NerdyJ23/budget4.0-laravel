@@ -4,17 +4,15 @@ namespace App\Policies\Receipts;
 
 use App\Models\Receipts\Receipt;
 use App\Models\Users\User;
-use Illuminate\Auth\Access\Response;
 
 class ReceiptPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function list(): bool
     {
-		return $user->ID === $receipt->User;
-        //
+		return true;
     }
 
     /**
