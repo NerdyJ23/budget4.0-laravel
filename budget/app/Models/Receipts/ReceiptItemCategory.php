@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Users\User;
+use App\Models\Receipts\ReceiptItem;
+
 class ReceiptItemCategory extends Model
 {
     use HasFactory;

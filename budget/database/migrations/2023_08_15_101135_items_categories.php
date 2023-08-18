@@ -17,7 +17,7 @@ return new class extends Migration
 				$table->id('ID');
 				$table->unsignedBigInteger('User_ID');
 				$table->string('Name', 255);
-				$table->tinyInteger('Archived')->default(0);
+				$table->boolean('Archived')->default(false);
 			});
 		}
 

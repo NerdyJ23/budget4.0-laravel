@@ -56,7 +56,8 @@ class ReceiptController extends BaseApiController {
 
 		return parent::sendResponse(
 			body: Schema::schema($receipt, 'Receipt'),
-			errors: $errors
+			errors: $errors,
+			code: 201
 		);
 	}
 

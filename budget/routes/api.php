@@ -4,10 +4,12 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Users\UserPostRequest;
 use App\Http\Requests\Login\LoginPostRequest;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
+use App\Http\Requests\Receipts\ReceiptCategoryPostRequest;
 
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Receipts\ReceiptController;
+use App\Http\Controllers\Api\Receipts\ReceiptCategoryController;
 use App\Http\Controllers\Api\Users\UserController;
 use App\Http\Controllers\Api\Login\LoginController;
 
@@ -27,6 +29,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('receipt')->middleware('logged_in')->group(function () {
+	Route::prefix('category')->group(function () {
+		Route::post('/', function (ReceiptCategoryPostRequest $request) {
+			return ReceiptCategoryController::create(request: $request);
+		});
+	});
+
 	Route::get('/', function (Request $request) {
 		return ReceiptController::list(request: $request);
 	});

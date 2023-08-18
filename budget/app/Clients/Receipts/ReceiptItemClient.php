@@ -38,6 +38,6 @@ class ReceiptItemClient extends BaseClient {
 			'Count' => $count,
 			'Cost' => $cost,
 			'Category' => $categoryModel->ID
-		]);
+		])->refresh();
 	}
 }

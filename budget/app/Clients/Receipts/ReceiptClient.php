@@ -34,7 +34,7 @@ class ReceiptClient extends BaseClient {
 			'ReceiptNumber' => $reference,
 			'Date' => $date,
 			'User' => $user->id
-		]);
+		])->refresh();
 	}
 
 	static function get(User $user, string $id): mixed {

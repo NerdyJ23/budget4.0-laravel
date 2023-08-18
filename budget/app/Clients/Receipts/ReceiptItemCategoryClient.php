@@ -9,6 +9,7 @@ use App\Models\Users\User;
 use App\Clients\BaseClient;
 
 use App\Exceptions\InputValidationException;
+use App\Exceptions\Http\ConflictException;
 
 class ReceiptItemCategoryClient extends BaseClient {
 
@@ -32,12 +33,19 @@ class ReceiptItemCategoryClient extends BaseClient {
 		string $name,
 		User $user
 	): ReceiptItemCategory {
+		$name = trim(strtoupper($name));
 		if ($name == '' || $name == null) {
 			throw new InputValidationException('Category name cannot be empty');
 		}
+
+		if (self::get(user: $user, category: $name) != null) {
+			throw new ConflictException("Category '$name' already exists");
+		}
+
 		return ReceiptItemCategory::create([
 			'Name' => $name,
 			'User_ID' => $user->id
-		]);
+		])->refresh();
+		//Create methods need to refresh afterwards, the model only knows what we put in, not what happened in the db
 	}
 }
