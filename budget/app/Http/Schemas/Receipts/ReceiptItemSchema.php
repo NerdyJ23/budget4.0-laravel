@@ -9,6 +9,8 @@ use App\Clients\Security\EncryptionClient;
 
 class ReceiptItemSchema extends Schema implements SchemaInterface {
 	static function toExtendedSchema($receiptItem): mixed {
+		dump($receiptItem instanceof ReceiptItem);
+		dump($receiptItem::class);
 		$result = null;
 		if ($receiptItem instanceof ReceiptItem) {
 			$result = self::toSummarizedSchema($receiptItem);
@@ -24,7 +26,7 @@ class ReceiptItemSchema extends Schema implements SchemaInterface {
 				'name' => $receiptItem->Name,
 				'count' => $receiptItem->Count,
 				'cost' => $receiptItem->Cost,
-				'category' => Schema::schema($receiptItem->receiptItemCategory, 'ReceiptItemCategory')
+				'category' => Schema::schema($receiptItem->receiptItemCategory, 'ReceiptItemCategory', true)
 			];
 		}
 		return $result;

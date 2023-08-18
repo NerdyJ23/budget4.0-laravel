@@ -11,7 +11,12 @@ class Schema
 		'User' => 'App\Http\Schemas\Users\UserSchema',
 	];
 
-	static function schema(mixed $item, string $schema): mixed {
+	//@subschema: If the schema is called within another schema and needs to return a singleton non-array schema item
+	static function schema(mixed $item, string $schema, bool $subschema = false): mixed {
+		if (is_null($item)) {
+			return null;
+		}
+
 		if (is_array($item)) {
 			$result = [];
 			foreach ($item as $i) {
@@ -19,7 +24,8 @@ class Schema
 			}
 			return $result;
 		}
+		$result = Schema::$schemas[$schema]::toExtendedSchema($item);
 		//As per JSONAPI specs even a single item must be returned as an array https://jsonapi.org/format/ 7.1
-		return is_null($item) ? null : [Schema::$schemas[$schema]::toExtendedSchema($item)];
+		return $subschema ? $result : [$result];
 	}
 }

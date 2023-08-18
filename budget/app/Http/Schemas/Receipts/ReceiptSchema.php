@@ -15,7 +15,7 @@ class ReceiptSchema extends Schema implements SchemaInterface {
 
 			//Add receipt items
 			$result += [
-				'items' => Schema::schema($receipt->receiptItems, 'ReceiptItem')
+				'items' => Schema::schema($receipt->receiptItem->all(), 'ReceiptItem')
 			];
 		}
 		return $result;
