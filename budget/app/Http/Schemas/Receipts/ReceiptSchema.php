@@ -8,28 +8,31 @@ use App\Models\Receipts\Receipt;
 use App\Clients\Security\EncryptionClient;
 
 class ReceiptSchema extends Schema implements SchemaInterface {
-	static function toExtendedSchema($item): mixed {
+	static function toExtendedSchema($receipt): mixed {
 		$result = null;
-		if ($item instanceof Receipt) {
-			$result = self::toSummarizedSchema($item);
+		if ($receipt instanceof Receipt) {
+			$result = self::toSummarizedSchema($receipt);
 
 			//Add receipt items
+			$result += [
+				'items' => Schema::schema($receipt->receiptItems, 'ReceiptItem')
+			];
 		}
 		return $result;
 	}
 
-	static function toSummarizedSchema($item): mixed {
+	static function toSummarizedSchema($receipt): mixed {
 		$result = null;
-		if ($item instanceof Receipt) {
+		if ($receipt instanceof Receipt) {
 			return [
-				'id' => EncryptionClient::encrypt($item->ID),
-				'store' => $item->Name,
-				'location' => $item->Location,
-				'reference' => $item->ReceiptNumber,
-				'cost' => $item->Cost,
-				'category' => $item->Category,
-				'createdUtc' => $item->CreatedUTC,
-				'editedUtc' => $item->EditedUTC
+				'id' => EncryptionClient::encrypt($receipt->ID),
+				'store' => $receipt->Name,
+				'location' => $receipt->Location,
+				'reference' => $receipt->ReceiptNumber,
+				'cost' => $receipt->Cost,
+				'category' => $receipt->Category,
+				'createdUtc' => $receipt->CreatedUTC,
+				'editedUtc' => $receipt->EditedUTC
 			];
 		}
 		return $result;
