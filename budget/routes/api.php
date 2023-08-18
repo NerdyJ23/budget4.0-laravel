@@ -35,20 +35,20 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 			return ReceiptCategoryController::list(request: $request);
 		});
 
-		Route::get('/{name}', function (Request $request, string $categoryName) {
-			return ReceiptCategoryController::get(request: $request, category: $categoryName);
+		Route::get('/{uuid}', function (Request $request, string $categoryId) {
+			return ReceiptCategoryController::get(request: $request, id: $categoryId);
 		});
 
 		Route::post('/', function (ReceiptCategoryPostRequest $request) {
 			return ReceiptCategoryController::create(request: $request);
 		});
 
-		Route::patch('/{name}', function (ReceiptCategoryPatchRequest $request, string $categoryName) {
-			return ReceiptCategoryController::update(request: $request, category: $categoryName);
+		Route::patch('/{uuid}', function (ReceiptCategoryPatchRequest $request, string $categoryId) {
+			return ReceiptCategoryController::update(request: $request, id: $categoryId);
 		});
 
-		Route::delete('/{name}', function (Request $request, string $categoryName) {
-			return ReceiptCategoryController::archive(request: $request, category: $categoryName);
+		Route::delete('/{uuid}', function (Request $request, string $categoryId) {
+			return ReceiptCategoryController::archive(request: $request, id: $categoryId);
 		});
 	});
 
@@ -62,6 +62,10 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 
 	Route::get('/{uuid}', function (Request $request, string $receiptId) {
 		return ReceiptController::get(request: $request, id: $receiptId);
+	});
+
+	Route::patch('/{uuid}', function(ReceiptPatchRequest $request, string $receiptId) {
+		return ReceiptController::patch(request: $request, id: $receiptId);
 	});
 });
 

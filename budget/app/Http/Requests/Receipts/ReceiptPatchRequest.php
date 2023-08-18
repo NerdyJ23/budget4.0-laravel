@@ -4,7 +4,7 @@ namespace App\Http\Requests\Receipts;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Clients\Users\UserClient;
-class ReceiptCategoryPatchRequest extends FormRequest
+class ReceiptPatchRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,11 @@ class ReceiptCategoryPatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'name' => 'min:1|max:255'
+			'name' => 'nullable|max:100',
+			'location' => 'nullable|max:30',
+			'reference' => 'nullable|max:60',
+			'date' => 'nullable|date',
+			'items' => 'nullable|json'
         ];
     }
 }

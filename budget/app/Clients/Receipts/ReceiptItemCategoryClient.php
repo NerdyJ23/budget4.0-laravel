@@ -17,7 +17,7 @@ class ReceiptItemCategoryClient extends BaseClient {
 
 	static function list(User $user, ReceiptCategoryFilter $filter): array {
 		$categories = ReceiptItemCategory::where(['User_ID' => $user->id])->get();
-
+		//need to add filter by name
 		return $categories->filter(function (ReceiptItemCategory $category) use ($filter) {
 			return $filter->filter($category);
 		})->all();
@@ -25,12 +25,13 @@ class ReceiptItemCategoryClient extends BaseClient {
 
 	static function get(
 		User $user,
-		string $category
+		string $id
 	): ReceiptItemCategory|null {
 
 		$categoryModel = ReceiptItemCategory::where([
 			'User_ID' => $user->id,
-			'Name' => strtoupper($category)
+			'ID' => parent::decrypt($id)
+			// 'Name' => strtoupper($category)
 		])->first();
 
 		if ($categoryModel == null) {
@@ -62,29 +63,21 @@ class ReceiptItemCategoryClient extends BaseClient {
 
 	static function update(
 		User $user,
-		string $category,
+		ReceiptItemCategory $category,
 		?string $name,
 		?string $archived
 	): ReceiptItemCategory {
-		$categoryModel = self::get(user: $user, category: $category);
 
-		if (!is_null($name)) {
-			$categoryModel->Name = trim(strtoupper($name));
-		}
+		$category->Name = $name ?? $category->Name;
+		$category->Archived = is_null($archived) ? $category->Archived : (bool) $archived;
 
-		if (!is_null($archived)) {
-			$categoryModel->Archived = $archived;
-		}
-
-		if ($categoryModel->isDirty()) {
-			$categoryModel->save();
-		}
-
-		return $categoryModel->refresh();
+		$category->Name = trim(strtoupper($category->Name));
+		$category->save();
+		return $category->refresh();
 	}
 
-	static function archive(User $user, string $category): bool {
-		$category = self::get(user: $user, category: $category);
+	static function archive(User $user, string $id): bool {
+		$category = self::get(user: $user, id: $id);
 		$category->Archived = true;
 		return $category->save();
 	}

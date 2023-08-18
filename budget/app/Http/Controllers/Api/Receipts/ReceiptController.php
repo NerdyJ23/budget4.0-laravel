@@ -10,8 +10,9 @@ use App\Clients\Users\UserClient;
 use App\Http\Schemas\Schema;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\Receipts\ReceiptListRequest;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
+use App\Http\Requests\Receipts\ReceiptPatchRequest;
+
 
 use App\Exceptions\Http\UnauthorizedException;
 use App\Exceptions\InputValidationException;
@@ -67,6 +68,19 @@ class ReceiptController extends BaseApiController {
 		return parent::sendResponse(
 			body: Schema::schema(ReceiptClient::get(id: $id, user: $user), 'Receipt')
 		);
-		return null;
+	}
+
+	static function update(ReceiptPatchRequest $request, string $id) {
+		$user = UserClient::getByToken(token: $request->cookie('token'));
+		$receipt = ReceiptClient::update(
+			receipt: ReceiptClient::get(user: $user, id: $id),
+			name: $request->input('name'),
+			location: $request->input('location'),
+			reference: $request->input('reference'),
+			date: $request->input('date'),
+		);
+		return parent::sendResponse(
+			body: Schema::schema($receipt, 'Receipt')
+		);
 	}
 }

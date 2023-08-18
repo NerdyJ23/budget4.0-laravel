@@ -34,28 +34,28 @@ class ReceiptCategoryController extends Controller
 		);
 	}
 
-	static function get(Request $request, string $category) {
+	static function get(Request $request, string $id) {
 		$user = UserClient::getByToken($request->cookie('token'));
-		$category = CategoryClient::get(user: $user, category: $category);
+		$category = CategoryClient::get(user: $user, id: $id);
 		return parent::sendResponse(body: Schema::schema($category, 'ReceiptItemCategory'));
 	}
 
-	static function update(ReceiptCategoryPatchRequest $request, string $category) {
+	static function update(ReceiptCategoryPatchRequest $request, string $id) {
 		$user = UserClient::getByToken($request->cookie('token'));
-		dump($request->input('name'));
+
 		$categoryModel = CategoryClient::update(
+			category: CategoryClient::get(user: $user, id: $id),
 			user: $user,
-			category: $category,
 			name: $request->input('name'),
 			archived: $request->input('archived')
 		);
 
 		return parent::sendResponse(body: Schema::schema($categoryModel, 'ReceiptItemCategory'));
 	}
-	static function archive(Request $request, string $category) {
+	static function archive(Request $request, string $id) {
 		$user = UserClient::getByToken($request->cookie('token'));
 
-		$success = CategoryClient::archive(user: $user, category: $category);
+		$success = CategoryClient::archive(user: $user, id: $id);
 		return parent::sendResponse(
 			code: $success ? 204 : 500
 		);

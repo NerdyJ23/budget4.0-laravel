@@ -20,7 +20,7 @@ class ReceiptItemCategorySchema extends Schema implements SchemaInterface {
 		$result = null;
 		if ($category instanceof ReceiptItemCategory) {
 			return [
-				// 'id' => EncryptionClient::encrypt($category->ID),
+				'id' => EncryptionClient::encrypt($category->ID),
 				'name' => $category->Name,
 				'archived' => $category->Archived
 			];
