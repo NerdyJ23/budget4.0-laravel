@@ -32,7 +32,7 @@ class UserClient extends BaseClient {
 	}
 
 	static function getByToken(string $token): User|null {
-		return UserToken::where(['token' => $token])->first()->user;
+		return UserToken::where(['token' => $token])->first()?->user;
 	}
 
 	static function getByCredentials(string $username, string $password): User|null {

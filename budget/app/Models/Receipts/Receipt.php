@@ -24,6 +24,7 @@ class Receipt extends Model
 		'Name',
 		'Location',
 		'ReceiptNumber',
+		'Date',
 		'Cost',
 		'Category',
 		'User',

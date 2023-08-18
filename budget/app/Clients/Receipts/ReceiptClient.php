@@ -3,23 +3,34 @@ namespace App\Clients\Receipts;
 
 //Models
 use App\Models\Receipts\Receipt;
+use App\Models\Users\User;
 
 //Clients
 use App\Clients\BaseClient;
-use App\Clients\Users\UserClient;
 
 //Exceptions
 use App\Exceptions\Http\UnauthorizedException;
 
 class ReceiptClient extends BaseClient {
 
-	static function list(string $token): array {
-		$userModel = UserClient::getByToken(token: $token);
-		if ($userModel == null) {
-			throw new UnauthorizedException('User not logged in');
-		}
+	static function list(User $user): array {
+		return Receipt::where('User', $user->id)->get()->all();
+	}
 
-		return Receipt::where('User', $userModel->id)->get()->all();
+	static function create(
+		?string $name,
+		?string $location,
+		?string $reference,
+		string $date,
+		User $user
+	): Receipt {
+		return Receipt::create([
+			'Name' => $name,
+			'Location' => $location,
+			'ReceiptNumber' => $reference,
+			'Date' => $date,
+			'User' => $user->id
+		]);
 	}
 
 	static function get(string $token, string $receiptId): mixed {

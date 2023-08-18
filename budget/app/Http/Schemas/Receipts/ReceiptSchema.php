@@ -12,11 +12,10 @@ class ReceiptSchema extends Schema implements SchemaInterface {
 		$result = null;
 		if ($item instanceof Receipt) {
 			$result = self::toSummarizedSchema($item);
-			// $result += [
 
-			// ];
+			//Add receipt items
 		}
-		return $receipt;
+		return $result;
 	}
 
 	static function toSummarizedSchema($item): mixed {
@@ -25,9 +24,14 @@ class ReceiptSchema extends Schema implements SchemaInterface {
 			return [
 				'id' => EncryptionClient::encrypt($item->ID),
 				'store' => $item->Name,
-				'location' => $item->Location
+				'location' => $item->Location,
+				'reference' => $item->ReceiptNumber,
+				'cost' => $item->Cost,
+				'category' => $item->Category,
+				'createdUtc' => $item->CreatedUTC,
+				'editedUtc' => $item->EditedUTC
 			];
 		}
-		return $receipt;
+		return $result;
 	}
 }
