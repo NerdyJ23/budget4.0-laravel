@@ -26,8 +26,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('receipt')->group(function () {
-	Route::get('/', function () {
-		return ReceiptController::list();
+	Route::get('/', function (Request $request) {
+		return ReceiptController::list(request: $request);
+	});
+
+	Route::get('/{uuid}', function (Request $request, string $receiptId) {
+		return ReceiptController::get(request: $request, id: $receiptId);
 	});
 });
 

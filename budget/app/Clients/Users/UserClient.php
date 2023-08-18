@@ -31,11 +31,11 @@ class UserClient extends BaseClient {
 		]);
 	}
 
-	static function getByToken(string $token): mixed {
-		return UserToken::where(['token' => $token])->first()?->user();
+	static function getByToken(string $token): User|null {
+		return UserToken::where(['token' => $token])->first()->user;
 	}
 
-	static function getByCredentials(string $username, string $password): mixed {
+	static function getByCredentials(string $username, string $password): User|null {
 		$user = User::where(['username' => $username])->first();
 		if ($user != null) {
 			return Hash::check($password, $user->password) ? $user : null;

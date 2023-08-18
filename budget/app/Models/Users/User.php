@@ -3,9 +3,12 @@
 namespace App\Models\Users;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+use App\Models\Tokens\UserToken;
+
+class User extends Model
 {
     use HasFactory;
 	protected $table = 'Users';
@@ -30,4 +33,8 @@ class User extends Authenticatable
 		'last_logged_in' => 'datetime',
         'password' => 'hashed',
     ];
+
+	public function token(): HasOne {
+		return $this->hasOne(UserToken::class);
+	}
 }
