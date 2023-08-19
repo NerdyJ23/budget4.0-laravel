@@ -72,7 +72,6 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 		return ReceiptController::update(request: $request, id: $receiptId);
 	});
 
-	//@TODO: Implement this
 	Route::delete('/{uuid}/items', function (Request $request, string $receiptId) {
 		return ReceiptItemController::bulkDelete(request: $request, receiptId: $receiptId);
 	});
