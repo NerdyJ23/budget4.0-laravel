@@ -18,6 +18,7 @@ return new class extends Migration
 				$table->unsignedBigInteger('User_ID');
 				$table->unsignedBigInteger('Receipt_ID');
 				$table->string('Name', 50);
+				$table->string('UUID', 50);
 			});
 		}
 

@@ -13,7 +13,8 @@ class ReceiptDocuments extends Model
 
 	protected $fillable = [
 		'Receipt_ID',
-		'Name',
+		'Name', //User visible name of file
+		'UUID', //UUID file name on server
 		'User_ID',
 	];
 }
