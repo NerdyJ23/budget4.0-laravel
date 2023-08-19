@@ -35,7 +35,6 @@ class ReceiptItemClient extends BaseClient {
 
 		$categoryModel = sizeOf($categoryList) == 0 ? ReceiptItemCategoryClient::create(name: $category, user: $user) : reset($categoryList);
 
-
 		return ReceiptItem::create([
 			'Receipt' => $receipt->ID,
 			'Name' => $name,
@@ -71,5 +70,15 @@ class ReceiptItemClient extends BaseClient {
 
 		$item->save();
 		return $item->refresh();
+	}
+
+	static function delete(
+		ReceiptItem $item,
+		User $user,
+		Receipt $receipt
+	) {
+		//check permissions
+		$item->delete();
+		ReceiptClient::generateCostAndCategory($receipt);
 	}
 }

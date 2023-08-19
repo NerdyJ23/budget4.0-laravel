@@ -94,8 +94,13 @@ class ReceiptController extends BaseApiController {
 
 				$categoryList = ReceiptItemCategoryClient::list(user: $user, filter: $filter);
 				$categoryModel = sizeOf($categoryList) == 0 ? ReceiptItemCategoryClient::create(name: $item->category, user: $user) : reset($categoryList);
-				if ($item->id) {
+				$receiptItem = null;
+
+				if (property_exists($item, 'id')) {
 					$receiptItem = ReceiptItemClient::get(id: $item->id, receipt: $receipt, user: $user);
+				}
+
+				if ($receiptItem != null) {
 					$receiptItem = ReceiptItemClient::update(
 						item: $receiptItem,
 						name: $item->name,
@@ -110,7 +115,8 @@ class ReceiptController extends BaseApiController {
 						name: $item->name,
 						count: $item->count,
 						cost: $item->cost,
-						user: $user
+						user: $user,
+						category: $categoryModel->Name
 					);
 				}
 			} catch (InputValidationException $e) {

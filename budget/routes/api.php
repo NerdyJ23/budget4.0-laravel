@@ -1,17 +1,19 @@
 <?php
 
+//Requests
 use Illuminate\Http\Request;
 use App\Http\Requests\Users\UserPostRequest;
 use App\Http\Requests\Login\LoginPostRequest;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
 use App\Http\Requests\Receipts\ReceiptPatchRequest;
-
 use App\Http\Requests\Receipts\ReceiptCategoryPostRequest;
 use App\Http\Requests\Receipts\ReceiptCategoryPatchRequest;
 
 use Illuminate\Support\Facades\Route;
 
+//Controllers
 use App\Http\Controllers\Api\Receipts\ReceiptController;
+use App\Http\Controllers\Api\Receipts\ReceiptItemController;
 use App\Http\Controllers\Api\Receipts\ReceiptCategoryController;
 use App\Http\Controllers\Api\Users\UserController;
 use App\Http\Controllers\Api\Login\LoginController;
@@ -72,7 +74,7 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 
 	//@TODO: Implement this
 	Route::delete('/{uuid}/items', function (Request $request, string $receiptId) {
-		return ReceiptItemController::bulkDelete(request: $request, id: $receiptId);
+		return ReceiptItemController::bulkDelete(request: $request, receiptId: $receiptId);
 	});
 });
 
