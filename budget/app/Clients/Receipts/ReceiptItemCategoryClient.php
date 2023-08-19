@@ -50,7 +50,11 @@ class ReceiptItemCategoryClient extends BaseClient {
 			throw new InputValidationException('Category name cannot be empty');
 		}
 
-		if (self::get(user: $user, category: $name) != null) {
+		$filter = new ReceiptCategoryFilter();
+		$filter->setNameFilter($name);
+		$categoryList = self::list(user: $user, filter: $filter);
+		$categoryExists = sizeOf($categoryList) != 0;
+		if ($categoryExists) {
 			throw new ConflictException("Category '$name' already exists");
 		}
 

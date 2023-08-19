@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Receipts\ReceiptItemCategory;
 use App\Enums\Filters\StringFilterType;
 
+use App\Exceptions\InputValidationException;
+
 class ReceiptCategoryFilter extends BaseFilter {
 
 	private ?bool $archived = null;
@@ -13,25 +15,37 @@ class ReceiptCategoryFilter extends BaseFilter {
 	private ?string $name = null;
 	private ?StringFilterType $nameFilterType = null;
 
-	function __construct(Request $request) {
+	function __construct(Request $request = null) {
+		if ($request == null) {
+			return $this;
+		}
+
 		if ($request->query('archived') != null) {
 			$this->archived = $request->query('archived');
 		}
 
 		if ($request->query('name') != null) {
-			$this->name = strtoupper($request->query('name'));
+			$this->setNameFilter(name: $request->query('name'));
 		} else if ($request->query('name_like') != null) {
-			$this->name = strtoupper($request->query('name_like'));
-			$this->nameFilterType = StringFilterType::MATCH_PARTIAL;
+			$this->setNameFilter(
+				name: $request->query('name_like'),
+				filtertype: StringtypeFilter::MATCH_PARTIAL
+			);
 		} else if ($request->query('name_endswith') != null) {
-			$this->name = strtoupper($request->query('name_endswith'));
-			$this->nameFilterType = StringFilterType::MATCH_BEFORE;
+			$this->setNameFilter(
+				name: $request->query('name_endswith'),
+				filterType: StringFilterType::MATCH_BEFORE
+			);
 		} else if ($request->query('name_beginswith') != null) {
-			$this->name = strtoupper($request->query('name_beginswith'));
-			$this->nameFilterType = StringFilterType::MATCH_AFTER;
+			$this->setNameFilter(
+				name: $request->query('name_beginswith'),
+				filterType: StringFilterType::MATCH_AFTER
+			);
 		} else if ($request->query('name_exact') != null) {
-			$this->name = strtoupper($request->query('name_exact'));
-			$this->nameFilterType = StringFilterType::MATCH_EXACT;
+			$this->setNameFilter(
+				name: $request->query('name_exact'),
+				filterType: StringFilterType::MATCH_EXACT
+			);
 		}
 	}
 
@@ -39,8 +53,12 @@ class ReceiptCategoryFilter extends BaseFilter {
 		$this->archived = $archived;
 	}
 
-	public function setNameFilter(string $name, ?StringFilterType $filterType) {
-		$this->name = $name;
+	public function setNameFilter(string $name, ?StringFilterType $filterType = null) {
+		if (trim($name) == '') {
+			throw new InputValidationException('Receipt Category Name cannot be empty');
+		}
+
+		$this->name = trim(strtoupper($name));
 		$this->nameFilterType = $filterType;
 	}
 

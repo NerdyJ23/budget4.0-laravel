@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Users\UserPostRequest;
 use App\Http\Requests\Login\LoginPostRequest;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
+use App\Http\Requests\Receipts\ReceiptPatchRequest;
+
 use App\Http\Requests\Receipts\ReceiptCategoryPostRequest;
 use App\Http\Requests\Receipts\ReceiptCategoryPatchRequest;
 
@@ -64,8 +66,13 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 		return ReceiptController::get(request: $request, id: $receiptId);
 	});
 
-	Route::patch('/{uuid}', function(ReceiptPatchRequest $request, string $receiptId) {
-		return ReceiptController::patch(request: $request, id: $receiptId);
+	Route::patch('/{uuid}', function (ReceiptPatchRequest $request, string $receiptId) {
+		return ReceiptController::update(request: $request, id: $receiptId);
+	});
+
+	//@TODO: Implement this
+	Route::delete('/{uuid}/items', function (Request $request, string $receiptId) {
+		return ReceiptItemController::bulkDelete(request: $request, id: $receiptId);
 	});
 });
 

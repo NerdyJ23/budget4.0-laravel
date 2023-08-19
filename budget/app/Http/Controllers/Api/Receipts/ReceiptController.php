@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Receipts;
 use App\Http\Controllers\Api\BaseApiController;
 use App\Clients\Receipts\ReceiptClient;
 use App\Clients\Receipts\ReceiptItemClient;
+use App\Clients\Receipts\ReceiptItemCategoryClient;
 use App\Clients\Users\UserClient;
 
 use App\Http\Schemas\Schema;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
 use App\Http\Requests\Receipts\ReceiptPatchRequest;
 
+use App\Filters\Receipts\ReceiptCategoryFilter;
 
 use App\Exceptions\Http\UnauthorizedException;
 use App\Exceptions\InputValidationException;
@@ -78,9 +80,46 @@ class ReceiptController extends BaseApiController {
 			location: $request->input('location'),
 			reference: $request->input('reference'),
 			date: $request->input('date'),
+			user: $user
 		);
-		return parent::sendResponse(
-			body: Schema::schema($receipt, 'Receipt')
-		);
+
+
+		//Update receipt items too
+		$items = json_decode($request->input('items'));
+		$errors = [];
+		foreach ($items as $item) {
+			try {
+				$filter = new ReceiptCategoryFilter();
+				$filter->setNameFilter($item->category);
+
+				$categoryList = ReceiptItemCategoryClient::list(user: $user, filter: $filter);
+				$categoryModel = sizeOf($categoryList) == 0 ? ReceiptItemCategoryClient::create(name: $item->category, user: $user) : reset($categoryList);
+				if ($item->id) {
+					$receiptItem = ReceiptItemClient::get(id: $item->id, receipt: $receipt, user: $user);
+					$receiptItem = ReceiptItemClient::update(
+						item: $receiptItem,
+						name: $item->name,
+						count: $item->count,
+						cost: $item->cost,
+						category: $categoryModel,
+						user: $user
+					);
+				} else {
+					$receiptItem = ReceiptItemClient::create(
+						receipt: $receipt,
+						name: $item->name,
+						count: $item->count,
+						cost: $item->cost,
+						user: $user
+					);
+				}
+			} catch (InputValidationException $e) {
+				$errors += [$item->name . ': ' . $e->getMessage()];
+			}
+		}
+
+		//Update Receipt Cost and Total
+		$receipt = ReceiptClient::generateCostAndCategory(receipt: $receipt->refresh());
+		return parent::sendResponse(body: Schema::schema($receipt, 'Receipt'));
 	}
 }

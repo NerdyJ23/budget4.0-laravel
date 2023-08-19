@@ -62,6 +62,7 @@ class ReceiptClient extends BaseClient {
 		$receipt->ReceiptNumber = $reference ?? $receipt->ReceiptNumber;
 		$receipt->Date = $date ?? $receipt->Date;
 		$receipt->save();
+		return $receipt->refresh();
 	}
 
 	static function generateCostAndCategory(Receipt $receipt): Receipt {
