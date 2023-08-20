@@ -3,11 +3,14 @@
 namespace App\Clients\Documents;
 
 use App\Clients\Documents\DocumentClient;
-
 use Illuminate\Http\UploadedFile;
 use App\Models\Receipts\Receipt;
 use App\Models\Users\User;
 use App\Models\Receipts\ReceiptDocument;
+
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Exceptions\Http\NotFoundException;
+
 class ReceiptDocumentClient extends DocumentClient {
 
 	static function getFilePath(User $user, Receipt $receipt): string {
@@ -35,13 +38,17 @@ class ReceiptDocumentClient extends DocumentClient {
 		]);
 	}
 
-	static function getFile(string $id, Receipt $receipt, User $user) {
-		$file = ReceiptDocument::where([
+	static function getFile(string $id, Receipt $receipt, User $user): StreamedResponse {
+		$fileModel = ReceiptDocument::where([
 			'ID' => parent::decrypt($id),
 			'Receipt_ID' => $receipt->ID,
 			'User_ID' => $user->id
-		]);
+		])->first();
+		if ($fileModel == null) {
+			throw new NotFoundException;
+		}
+		$path = self::getFilePath(user: $user, receipt: $receipt) . '/' . $fileModel->UUID;
 		$client = new DocumentClient;
-		return $client->get(getFilePath(user: $user, receipt: $receipt) . '/' . $file->UUID);
+		return $client->get($path);
 	}
 }

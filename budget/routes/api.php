@@ -84,6 +84,10 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 	Route::post('/{uuid}/documents', function (Request $request, string $receiptId) {
 		return ReceiptDocumentController::upload(request: $request, receiptId: $receiptId);
 	});
+
+	Route::get('/{uuid}/documents/{doc}', function (Request $request, string $receiptId, string $docId) {
+		return ReceiptDocumentController::get(request: $request, receiptId: $receiptId, id: $docId);
+	});
 });
 
 Route::prefix('user')->group(function () {
