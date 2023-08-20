@@ -10,6 +10,7 @@ class ReceiptDocument extends Model
     use HasFactory;
 
 	protected $table = 'ReceiptDocuments';
+	protected $primaryKey = 'ID';
 
 	protected $fillable = [
 		'Receipt_ID',

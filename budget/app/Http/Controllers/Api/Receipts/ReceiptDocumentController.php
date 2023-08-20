@@ -26,11 +26,20 @@ class ReceiptDocumentController extends BaseApiController {
 		$receipt = ReceiptClient::get(user: $user, id: $receiptId);
 		$file = $request->file('file');
 		ReceiptDocumentClient::upload(user: $user, receipt: $receipt, file: $file);
+		return parent::sendResponse(code: 201);
 	}
 
 	static function get(Request $request, string $receiptId, string $id) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$receipt = ReceiptClient::get(user: $user, id: $receiptId);
 		return ReceiptDocumentClient::getFile(id: $id, receipt: $receipt, user: $user);
+	}
+
+	static function delete(Request $request, string $receiptId, string $id) {
+		$user = UserClient::getByToken($request->cookie('token'));
+		$receipt = ReceiptClient::get(user: $user, id: $receiptId);
+
+		ReceiptDocumentClient::deleteFile(id: $id, receipt: $receipt, user: $user);
+		return parent::sendResponse(code: 204);
 	}
 }

@@ -38,17 +38,36 @@ class ReceiptDocumentClient extends DocumentClient {
 		]);
 	}
 
-	static function getFile(string $id, Receipt $receipt, User $user): StreamedResponse {
-		$fileModel = ReceiptDocument::where([
+	static function getModel(string $id, Receipt $receipt, User $user) {
+		return ReceiptDocument::where([
 			'ID' => parent::decrypt($id),
 			'Receipt_ID' => $receipt->ID,
 			'User_ID' => $user->id
 		])->first();
+	}
+	static function getFile(string $id, Receipt $receipt, User $user): StreamedResponse {
+		$fileModel = self::getModel(id: $id, receipt: $receipt, user: $user);
 		if ($fileModel == null) {
 			throw new NotFoundException;
 		}
+
 		$path = self::getFilePath(user: $user, receipt: $receipt) . '/' . $fileModel->UUID;
 		$client = new DocumentClient;
 		return $client->get($path);
+	}
+
+	static function deleteFile(string $id, Receipt $receipt, User $user) {
+		$fileModel = self::getModel(id: $id, receipt: $receipt, user: $user);
+		if ($fileModel == null) {
+			throw new NotFoundException;
+		}
+
+		$client = new DocumentClient;
+		$path = self::getFilePath(user: $user, receipt: $receipt) . '/' . $fileModel->UUID;
+
+		if ($client->delete($path)) {
+			ReceiptDocument::destroy($fileModel->ID);
+		}
+		return;
 	}
 }

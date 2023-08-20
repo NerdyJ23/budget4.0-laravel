@@ -20,6 +20,6 @@ class DocumentClient extends BaseClient {
 	}
 
 	protected function delete(string $fullpath) {
-		Storage::disk($this->disk)->delete($fullpath);
+		return Storage::disk($this->disk)->delete($fullpath);
 	}
 }

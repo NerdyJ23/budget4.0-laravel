@@ -73,12 +73,13 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 		return ReceiptController::update(request: $request, id: $receiptId);
 	});
 
-	Route::get('/{uuid}/documents', function (Request $request, string $receiptId) {
-		return ReceiptDocumentController::list(request: $request, receiptId: $receiptId);
-	});
-
 	Route::delete('/{uuid}/items', function (Request $request, string $receiptId) {
 		return ReceiptItemController::bulkDelete(request: $request, receiptId: $receiptId);
+	});
+
+	//Receipt Documents
+	Route::get('/{uuid}/documents', function (Request $request, string $receiptId) {
+		return ReceiptDocumentController::list(request: $request, receiptId: $receiptId);
 	});
 
 	Route::post('/{uuid}/documents', function (Request $request, string $receiptId) {
@@ -87,6 +88,10 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 
 	Route::get('/{uuid}/documents/{doc}', function (Request $request, string $receiptId, string $docId) {
 		return ReceiptDocumentController::get(request: $request, receiptId: $receiptId, id: $docId);
+	});
+
+	Route::delete('/{uuid}/documents/{doc}', function (Request $request, string $receiptId, string $docId) {
+		return ReceiptDocumentController::delete(request: $request, receiptId: $receiptId, id: $docId);
 	});
 });
 
