@@ -19,6 +19,7 @@ return new class extends Migration
 				$table->unsignedBigInteger('Receipt_ID');
 				$table->string('Name', 50);
 				$table->string('UUID', 50);
+				$table->timestamps();
 			});
 		}
 

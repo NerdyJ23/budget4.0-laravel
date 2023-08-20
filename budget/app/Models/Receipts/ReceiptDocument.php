@@ -5,7 +5,7 @@ namespace App\Models\Receipts;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ReceiptDocuments extends Model
+class ReceiptDocument extends Model
 {
     use HasFactory;
 

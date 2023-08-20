@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 //Controllers
 use App\Http\Controllers\Api\Receipts\ReceiptController;
+use App\Http\Controllers\Api\Receipts\ReceiptDocumentController;
 use App\Http\Controllers\Api\Receipts\ReceiptItemController;
 use App\Http\Controllers\Api\Receipts\ReceiptCategoryController;
 use App\Http\Controllers\Api\Users\UserController;
@@ -74,6 +75,10 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 
 	Route::delete('/{uuid}/items', function (Request $request, string $receiptId) {
 		return ReceiptItemController::bulkDelete(request: $request, receiptId: $receiptId);
+	});
+
+	Route::post('/{uuid}/documents', function (Request $request, string $receiptId) {
+		return ReceiptDocumentController::upload(request: $request, receiptId: $receiptId);
 	});
 });
 
