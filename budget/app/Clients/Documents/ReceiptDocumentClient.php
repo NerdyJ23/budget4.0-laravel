@@ -14,6 +14,13 @@ class ReceiptDocumentClient extends DocumentClient {
 		return $user->id . '/' . $receipt->ID;
 	}
 
+	static function listFiles(User $user, Receipt $receipt) {
+		return ReceiptDocument::where([
+			'Receipt_ID' => $receipt->ID,
+			'User_ID' => $user->id
+		])->get()->all();
+	}
+
 	static function upload(User $user, Receipt $receipt, UploadedFile $file) {
 		$client = new DocumentClient;
 		$filename = $client->create(
@@ -28,7 +35,13 @@ class ReceiptDocumentClient extends DocumentClient {
 		]);
 	}
 
-	static function getFile(string $receiptDocument, Receipt $receipt, User $user) {
+	static function getFile(string $id, Receipt $receipt, User $user) {
+		$file = ReceiptDocument::where([
+			'ID' => parent::decrypt($id),
+			'Receipt_ID' => $receipt->ID,
+			'User_ID' => $user->id
+		]);
 		$client = new DocumentClient;
+		return $client->get(getFilePath(user: $user, receipt: $receipt) . '/' . $file->UUID);
 	}
 }

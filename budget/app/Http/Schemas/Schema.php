@@ -6,6 +6,7 @@ class Schema
 	static $schemas = [
 		'Receipt' => 'App\Http\Schemas\Receipts\ReceiptSchema',
 		'ReceiptItem' => 'App\Http\Schemas\Receipts\ReceiptItemSchema',
+		'ReceiptDocument' => 'App\Http\Schemas\Receipts\ReceiptDocumentSchema',
 		'ReceiptItemCategory' => 'App\Http\Schemas\Receipts\ReceiptItemCategorySchema',
 
 		'User' => 'App\Http\Schemas\Users\UserSchema',

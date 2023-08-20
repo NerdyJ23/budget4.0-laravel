@@ -73,6 +73,10 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 		return ReceiptController::update(request: $request, id: $receiptId);
 	});
 
+	Route::get('/{uuid}/documents', function (Request $request, string $receiptId) {
+		return ReceiptDocumentController::list(request: $request, receiptId: $receiptId);
+	});
+
 	Route::delete('/{uuid}/items', function (Request $request, string $receiptId) {
 		return ReceiptItemController::bulkDelete(request: $request, receiptId: $receiptId);
 	});
