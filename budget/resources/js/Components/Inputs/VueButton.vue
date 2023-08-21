@@ -2,8 +2,9 @@
 import { defineComponent } from 'vue';
 
 defineProps<{
-	text: string,
-	link?: string
+	label: string,
+	link?: string,
+	classes?: string
 }>();
 </script>
 
@@ -16,7 +17,14 @@ export default defineComponent({
 <template>
 	<input
 		type="button"
-		:value="text"
-		:class="['bg-stone-300 hover:bg-stone-400 hover:cursor-pointer text-lg']"
+		:value="label"
+		:class="`
+			bg-stone-300
+			hover:bg-stone-400
+			hover:cursor-pointer
+			px-2 rounded-sm
+			text-lg
+			${classes}
+		`"
 	/>
 </template>
