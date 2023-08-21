@@ -10,9 +10,33 @@ defineExpose({ dialog })
 
 </script>
 <script lang="ts">
+import loginApi from '@/services/Login/loginApi';
+
 export default defineComponent({
     name: 'LoginDialog',
+	data() {
+		return {
+			username: '',
+			password: '',
+			is: {
+				loading: false
+			}
+		}
+	},
     methods: {
+		async login() {
+			this.is.loading = true;
+			const response = await loginApi.login(this.username, this.password);
+
+			if (response.status === 200) {
+				console.log('logged in');
+			} else {
+				console.error('uh oh');
+			}
+		},
+		text(t: any) {
+			console.log(t);
+		}
     },
     components: { ConfirmButton, BasicDialog, VueTextField }
 })
@@ -21,12 +45,12 @@ export default defineComponent({
 <template>
 	<BasicDialog ref="dialog">
 		<div class="grid grid-cols-1">
-			<VueTextField label="Username:" />
-			<VueTextField label="Password:" type="password" />
+			<VueTextField @update:text="(n) => username = n" label="Username:" :disabled="is.loading"/>
+			<VueTextField @update:text="(n) => password = n" label="Password:" type="password" :disabled="is.loading"/>
 		</div>
 
 		<div class="flex flex-row mt-auto">
-			<ConfirmButton label="Login" />
+			<ConfirmButton @click="login" label="Login" />
 			<CancelButton label="Cancel" />
 		</div>
 	</BasicDialog>
