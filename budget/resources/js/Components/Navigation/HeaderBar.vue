@@ -18,8 +18,8 @@ export default defineComponent({
 })
 </script>
 <template>
-	<div class="flex flex-row w-full">
-		<div id="logo">LOGO HERE</div>
+	<div class="flex flex-row align-center w-full bg-orange-400">
+		<div id="logo" class="pl-2 self-center text-xl cursor-pointer" @click="route('home')">Budgeting</div>
 		<div class="flex-grow ml-auto"></div>
 		<VueButton @click="openDialog" class="px-3 m-2 rounded-sm" label="Login"></VueButton>
 	</div>

@@ -43,7 +43,7 @@ export default defineComponent({
 </script>
 
 <template>
-	<BasicDialog ref="dialog">
+	<BasicDialog ref="dialog" class="isolate sticky">
 		<div class="grid grid-cols-1">
 			<VueTextField @update:text="(n) => username = n" label="Username:" :disabled="is.loading"/>
 			<VueTextField @update:text="(n) => password = n" label="Password:" type="password" :disabled="is.loading"/>
@@ -51,7 +51,7 @@ export default defineComponent({
 
 		<div class="flex flex-row mt-auto">
 			<ConfirmButton @click="login" label="Login" />
-			<CancelButton label="Cancel" />
+			<CancelButton @click="dialog?.hide" label="Cancel" />
 		</div>
 	</BasicDialog>
 </template>

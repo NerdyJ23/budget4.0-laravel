@@ -4,7 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
+use App\Http\Controllers\Web\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,8 +17,12 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function() {
-	return Inertia::render('Home');
+Route::get('/', function(Request $request) {
+	return HomeController::get(request: $request);
+})->name('home');
+
+Route::get('/receipts', function () {
+	return Intertia::render('ReceiptList');
 });
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
