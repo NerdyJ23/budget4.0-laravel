@@ -22,13 +22,14 @@ export default defineComponent({
 </script>
 
 <template>
-	<dialog
-		:open="is.open"
-		:class="[
-			{'backdrop:bg-gray-500': is.open},
-			'sticky center shadow-md px-5 py-3'
-		]"
-	>
-	<slot></slot>
-	</dialog>
+	<div v-if="is.open" class="w-full bg-neutral-600/60 absolute object-center inset-0" @click.self="is.open = false">
+		<dialog
+			:open="is.open"
+			:class="[
+				'object-center shadow-md px-5 py-3 inset-0 rounded-md'
+			]"
+		>
+		<slot></slot>
+		</dialog>
+	</div>
 </template>

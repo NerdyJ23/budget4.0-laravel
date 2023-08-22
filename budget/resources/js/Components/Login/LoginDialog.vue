@@ -57,14 +57,15 @@ export default defineComponent({
 </script>
 
 <template>
-	<BasicDialog ref="dialog" class="isolate sticky">
+	<BasicDialog ref="dialog">
+		<span class="text-xl">Login</span>
 		<VForm ref="form" v-slot="{ meta }">
 			<div class="grid grid-cols-1">
 				<VueTextField :rules="validateUsername" name="username" @update:text="(n) => username = n" label="Username:" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
 				<VueTextField :rules="validatePassword" name="password" @update:text="(n) => password = n" label="Password:" type="password" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
 			</div>
 
-			<div class="flex flex-row mt-auto">
+			<div class="flex flex-row mt-auto pt-4">
 				<ConfirmButton @click="login" label="Login" />
 				<CancelButton @click="dialog?.hide" label="Cancel" />
 			</div>

@@ -1,7 +1,7 @@
 <template>
 	<div class="mt-2 grid grid-cols-2">
 		<label :for="id" class="self-center">{{ label }}</label>
-		<VField :type="type" :name="name" :rules="rules" v-slot="{ field, meta }">
+		<VField :type="type" :name="name" :rules="rules" v-slot="{ field, meta }" validate-on-blur :validate-on-model-update="false">
 			<input
 				@input="$emit('update:text', text)"
 				v-model="text"
