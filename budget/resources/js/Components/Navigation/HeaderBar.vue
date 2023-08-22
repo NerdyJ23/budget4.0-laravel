@@ -20,7 +20,7 @@ export default defineComponent({
 			const response = await loginApi.logout();
 
 			if (response.status == 200) {
-				window.location = route('home');
+				window.location.href = route('home');
 			}
 		}
 	},
