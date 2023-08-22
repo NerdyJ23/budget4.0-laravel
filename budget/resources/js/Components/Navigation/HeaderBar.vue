@@ -36,8 +36,10 @@ export default defineComponent({
 		<div id="logo" class="pl-2 self-center text-xl cursor-pointer" @click="route('home')">Budgeting</div>
 		<div class="flex-grow ml-auto"></div>
 		<template v-if="$page.props.auth.user">
-			Hello {{ $page.props.auth.user[0].firstName }}
-			<VueButton label="Logout" @click="logout"></VueButton>
+			<span class="self-center">
+				Hello {{ $page.props.auth.user[0].firstName }}
+			</span>
+			<VueButton label="Logout" @click="logout" class="px-3 m-2 rounded-sm"></VueButton>
 		</template>
 		<VueButton v-else @click="openDialog" class="px-3 m-2 rounded-sm" label="Login"></VueButton>
 	</div>

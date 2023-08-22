@@ -29,13 +29,12 @@ export default defineComponent({
 			const response = await loginApi.login(this.username, this.password);
 
 			if (response.status === 200) {
+				window.location.href = route('dashboard');
 				console.log('logged in');
 			} else {
 				console.error('uh oh');
 			}
-		},
-		text(t: any) {
-			console.log(t);
+			this.is.loading = false;
 		}
     },
     components: { ConfirmButton, BasicDialog, VueTextField }
@@ -45,8 +44,8 @@ export default defineComponent({
 <template>
 	<BasicDialog ref="dialog" class="isolate sticky">
 		<div class="grid grid-cols-1">
-			<VueTextField @update:text="(n) => username = n" label="Username:" :disabled="is.loading"/>
-			<VueTextField @update:text="(n) => password = n" label="Password:" type="password" :disabled="is.loading"/>
+			<VueTextField @update:text="(n) => username = n" label="Username:" :disabled="is.loading" v-on:keyup.enter="login"/>
+			<VueTextField @update:text="(n) => password = n" label="Password:" type="password" :disabled="is.loading" v-on:keyup.enter="login"/>
 		</div>
 
 		<div class="flex flex-row mt-auto">

@@ -21,6 +21,7 @@
         "vue-tsc": "^1.2.0"
     },
     "dependencies": {
+        "vee-validate": "^4.11.2",
         "vuex": "^4.1.0"
     }
 }
