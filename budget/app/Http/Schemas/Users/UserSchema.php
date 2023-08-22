@@ -16,7 +16,7 @@ class UserSchema extends Schema implements SchemaInterface {
 
 			// ];
 		}
-		return $item;
+		return $result;
 	}
 
 	static function toSummarizedSchema($item): mixed {

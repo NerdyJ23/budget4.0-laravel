@@ -14,6 +14,11 @@ export default defineComponent({
 		openDialog(): void {
 			(this.$refs.dialog as any).dialog.show();
 		}
+	},
+	computed: {
+		loggedIn(): boolean {
+			return this.$page.props.auth.user != null;
+		}
 	}
 })
 </script>
@@ -21,7 +26,12 @@ export default defineComponent({
 	<div class="flex flex-row align-center w-full bg-orange-400">
 		<div id="logo" class="pl-2 self-center text-xl cursor-pointer" @click="route('home')">Budgeting</div>
 		<div class="flex-grow ml-auto"></div>
-		<VueButton @click="openDialog" class="px-3 m-2 rounded-sm" label="Login"></VueButton>
+		{{ loggedIn }}
+		{{ $page.props }}
+		<template v-if="$page.props.auth.user">
+			Hello {{ $page.props.auth.user[0].firstName }}
+		</template>
+		<VueButton v-else @click="openDialog" class="px-3 m-2 rounded-sm" label="Login"></VueButton>
 	</div>
 	<LoginDialog ref="dialog" />
 </template>

@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\Receipts\ReceiptController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,8 +20,18 @@ use App\Http\Controllers\Web\HomeController;
 |
 */
 Route::get('/', function(Request $request) {
-	return HomeController::get(request: $request);
+	return HomeController::home(request: $request);
 })->name('home');
+
+Route::prefix('dashboard')->group(function () {
+	Route::get('/', function(Request $request) {
+		return HomeController::dashboard(request: $request);
+	})->name('dashboard');
+})->middleware('auth');
+
+// Route::get('/', function(Request $request) {
+// 	return ReceiptController::list(request: $request);
+// });
 
 Route::get('/receipts', function () {
 	return Intertia::render('ReceiptList');

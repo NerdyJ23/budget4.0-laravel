@@ -11,7 +11,7 @@ use App\Client\Users\User;
 
 class HomeController extends BaseController {
 
-	static function get(Request $request) {
+	static function home(Request $request) {
 		if ($request->cookie('token') == null) {
 			return Inertia::render('Home');
 		}
@@ -19,6 +19,10 @@ class HomeController extends BaseController {
 		if ($user == null) {
 			return redirect()->route('home');
 		}
-		return Inertia::render('Receipts');
+		return redirect()->route('dashboard');
+	}
+
+	static function dashboard(Request $request) {
+		return Inertia::render('Dashboard');
 	}
 }
