@@ -1,11 +1,9 @@
 <template>
 	<div class="mt-2 grid grid-cols-2">
 		<label :for="id" class="self-center">{{ label }}</label>
-		<VField :type="type" :name="name" :rules="rules" v-slot="{ field, meta }" validate-on-blur :validate-on-model-update="false">
+		<VField ref="input" :type="type" v-bind="$attrs" :name="name" :rules="rules" v-slot="{ field, meta }" validate-on-blur :validate-on-model-update="false">
 			<input
-				ref="input"
-				v-model="value"
-				v-bind="$attrs"
+				v-bind="field"
 				:disabled="disabled"
 				:type="type"
 				:id="id"
@@ -34,9 +32,8 @@ withDefaults(defineProps<{
 	type: 'textfield',
 	disbled: false
 });
-const value = ref(null);
-const input = ref<HTMLInputElement | null>(null);
-defineExpose({value, input});
+const input = ref<InstanceType<typeof Field> | null>(null);
+defineExpose({input});
 
 </script>
 <script lang="ts">
@@ -46,10 +43,5 @@ export default defineComponent({
 		VField: Field,
 		ErrorMessage
 	},
-	computed: {
-		id() {
-			return ;
-		}
-	}
 })
 </script>
