@@ -7,12 +7,21 @@ import LoginDialog from '@/Components/Login/LoginDialog.vue';
 </script>
 
 <script lang="ts">
+import loginApi from '@/services/Login/loginApi';
+
 export default defineComponent({
 	name: 'HeaderBar',
 	components: { VueButton, LoginDialog },
 	methods: {
 		openDialog(): void {
 			(this.$refs.dialog as any).dialog.show();
+		},
+		async logout(): Promise<void> {
+			const response = await loginApi.logout();
+
+			if (response.status == 200) {
+				window.location = route('home');
+			}
 		}
 	},
 	computed: {
@@ -26,10 +35,9 @@ export default defineComponent({
 	<div class="flex flex-row align-center w-full bg-orange-400">
 		<div id="logo" class="pl-2 self-center text-xl cursor-pointer" @click="route('home')">Budgeting</div>
 		<div class="flex-grow ml-auto"></div>
-		{{ loggedIn }}
-		{{ $page.props }}
 		<template v-if="$page.props.auth.user">
 			Hello {{ $page.props.auth.user[0].firstName }}
+			<VueButton label="Logout" @click="logout"></VueButton>
 		</template>
 		<VueButton v-else @click="openDialog" class="px-3 m-2 rounded-sm" label="Login"></VueButton>
 	</div>

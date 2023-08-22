@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Login;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Login\LoginPostRequest;
+use Illuminate\Http\Request;
 use App\Exceptions\Http\UnauthorizedException;
 use Illuminate\Http\Response;
 use DateTime;
@@ -27,6 +28,11 @@ class LoginController extends Controller
 		$user->save();
 		$response = new Response(content: null, status: 200);
 		return $response->withCookie(cookie('token', $token, (new DateTime('+ 7 days'))->getTimestamp()));
+	}
+
+	static function logout(Request $request) {
+		$response = new Response(content: null, status: 200);
+		return $response->withoutCookie('token');
 	}
     //
 }

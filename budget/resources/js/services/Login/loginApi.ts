@@ -11,5 +11,11 @@ export default {
 			return error.response;
 		});
 		return response;
+	},
+	logout() {
+		const response = api().get('/user/logout').catch((error) => {
+			return error.response;
+		});
+		return response;
 	}
 }

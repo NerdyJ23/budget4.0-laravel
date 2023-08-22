@@ -103,4 +103,8 @@ Route::prefix('user')->group(function () {
 	Route::post('/login', function (LoginPostRequest $request) {
 		return LoginController::login(request: $request);
 	});
+
+	Route::get('/logout', function (Request $request) {
+		return LoginController::logout(request: $request);
+	});
 });
