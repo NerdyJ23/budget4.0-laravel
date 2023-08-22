@@ -15,6 +15,31 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+			keyframes: {
+				"shake-horizontal": {
+					'0%, 100%': {
+						transform: 'translate(0px, 0px)'
+					},
+					'10%, 90%': {
+						transform: 'translate(1px, 0px)'
+					},
+					'20%, 80%': {
+						transform: 'translate(-1px, 0px)'
+					},
+					'30%, 70%': {
+						transform: 'translate(2px, 0px)'
+					},
+					'40%, 60%': {
+						transform: 'translate(-2px, 0px)'
+					},
+					'50%': {
+						transform: 'translate(0px, 0px)'
+					}
+				},
+			},
+			animation: {
+				"shake-horizontal": "shake-horizontal 1s 1",
+			}
         },
     },
 

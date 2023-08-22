@@ -13,7 +13,8 @@ export default defineComponent({
     data() {
         return {
             is: {
-                open: false
+                open: false,
+				shake: false
             }
         };
     },
@@ -25,8 +26,12 @@ export default defineComponent({
             this.is.open = false;
         },
 		hideSelf() {
+			this.is.shake = false;
 			if (!this.persistent) {
 				this.hide();
+			} else {
+				this.is.shake = true;
+				setTimeout(() => this.is.shake = false, 1000);
 			}
 		}
     },
@@ -38,10 +43,16 @@ export default defineComponent({
 		<dialog
 			:open="is.open"
 			:class="[
-				'object-center shadow-md px-5 py-3 inset-0 rounded-md'
+				{'animate-shake-horizontal shadow-red-600': is.shake},
+				'object-center shadow-md  px-5 py-3 inset-0 rounded-md'
 			]"
 		>
 		<slot></slot>
 		</dialog>
 	</div>
 </template>
+<style lang="css">
+dialog {
+	transition: box-shadow 0.5s ease-in;
+}
+</style>
