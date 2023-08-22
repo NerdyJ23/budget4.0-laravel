@@ -7,7 +7,9 @@ import VueTextField from '../Inputs/VueTextField.vue';
 import { Form } from 'vee-validate';
 
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
-defineExpose({ dialog })
+const usernameField = ref<InstanceType<typeof VueTextField> | null>(null);
+const passwordField = ref<InstanceType<typeof VueTextField> | null>(null);
+defineExpose({ dialog, usernameField, passwordField })
 
 </script>
 <script lang="ts">
@@ -43,8 +45,10 @@ export default defineComponent({
 			} else {
 				this.error.active = true;
 				this.error.message = response.data.message;
+				this.is.loading = false;
+				setTimeout(() => (this.$refs.usernameField as typeof VueTextField).input.focus(), 50);
+				(this.$refs.passwordField as typeof VueTextField).value = "";
 			}
-			this.is.loading = false;
 		},
 		validateUsername(value: string) {
 			return value?.length < 5 ? 'Username must be 5 characters long' : true;
@@ -61,8 +65,8 @@ export default defineComponent({
 		<span class="text-xl">Login</span>
 		<VForm ref="form" v-slot="{ meta }">
 			<div class="grid grid-cols-1">
-				<VueTextField :rules="validateUsername" name="username" @update:text="(n) => username = n" label="Username:" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
-				<VueTextField :rules="validatePassword" name="password" @update:text="(n) => password = n" label="Password:" type="password" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
+				<VueTextField :rules="validateUsername" name="username" ref="usernameField" v-model="username" label="Username:" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
+				<VueTextField :rules="validatePassword" name="password" ref="passwordField" v-model="password" label="Password:" type="password" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
 			</div>
 
 			<div class="flex flex-row mt-auto pt-4">

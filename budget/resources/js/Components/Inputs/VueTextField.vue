@@ -3,9 +3,9 @@
 		<label :for="id" class="self-center">{{ label }}</label>
 		<VField :type="type" :name="name" :rules="rules" v-slot="{ field, meta }" validate-on-blur :validate-on-model-update="false">
 			<input
-				@input="$emit('update:text', text)"
-				v-model="text"
-				v-bind="field"
+				ref="input"
+				v-model="value"
+				v-bind="$attrs"
 				:disabled="disabled"
 				:type="type"
 				:id="id"
@@ -20,9 +20,10 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { Field, ErrorMessage } from 'vee-validate';
 
+const id = computed(() => `${crypto.randomUUID()}--textfield`);
 withDefaults(defineProps<{
 	label: string,
 	name: string,
@@ -33,6 +34,10 @@ withDefaults(defineProps<{
 	type: 'textfield',
 	disbled: false
 });
+const value = ref(null);
+const input = ref<HTMLInputElement | null>(null);
+defineExpose({value, input});
+
 </script>
 <script lang="ts">
 export default defineComponent({
@@ -43,12 +48,7 @@ export default defineComponent({
 	},
 	computed: {
 		id() {
-			return `${crypto.randomUUID()}--textfield`;
-		}
-	},
-	data() {
-		return {
-			text: ''
+			return ;
 		}
 	}
 })
