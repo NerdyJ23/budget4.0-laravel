@@ -21,6 +21,7 @@
         "vue-tsc": "^1.2.0"
     },
     "dependencies": {
+        "plotly.js": "^2.25.2",
         "vee-validate": "^4.11.2",
         "vuex": "^4.1.0"
     }
