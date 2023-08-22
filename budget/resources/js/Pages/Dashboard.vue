@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import BarGraph from '@/Components/Graphs/BarGraph.vue';
+import { defineComponent } from 'vue';
 </script>
-
+<script lang="ts">
+export default defineComponent({
+	name: "Dashboard",
+	components: { BarGraph }
+})
+</script>
 <template>
     <Head title="Dashboard" />
     <AuthenticatedLayout>
@@ -14,5 +21,10 @@ import { Head } from '@inertiajs/vue3';
                 </div>
             </div>
         </div>
+
+		<div>
+			Graph test:
+
+		</div>
     </AuthenticatedLayout>
 </template>
