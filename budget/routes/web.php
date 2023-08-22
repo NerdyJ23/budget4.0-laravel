@@ -23,11 +23,11 @@ Route::get('/', function(Request $request) {
 	return HomeController::home(request: $request);
 })->name('home');
 
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->middleware('logged_in')->group(function () {
 	Route::get('/', function(Request $request) {
 		return HomeController::dashboard(request: $request);
 	})->name('dashboard');
-})->middleware('auth');
+});
 
 // Route::get('/', function(Request $request) {
 // 	return ReceiptController::list(request: $request);

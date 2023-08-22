@@ -31,7 +31,10 @@ class UserClient extends BaseClient {
 		]);
 	}
 
-	static function getByToken(string $token): User|null {
+	static function getByToken(?string $token): User|null {
+		if ($token == null) {
+			return null;
+		}
 		return UserToken::where(['token' => $token])->first()?->user;
 	}
 

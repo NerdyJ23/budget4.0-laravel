@@ -23,7 +23,8 @@ class LoginController extends Controller
 			throw new UnauthorizedException('Login details incorrect');
 		}
 		$token = UserTokenClient::createToken(user: $user);
-
+		$user->last_logged_in = now();
+		$user->save();
 		$response = new Response(content: null, status: 200);
 		return $response->withCookie(cookie('token', $token, (new DateTime('+ 7 days'))->getTimestamp()));
 	}

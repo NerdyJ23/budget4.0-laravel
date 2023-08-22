@@ -18,8 +18,11 @@ class AuthenticatedMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-		if ($request->cookie('token') == null || UserClient::getByToken(token: $request->cookie('token') == null)) {
-			throw new UnauthorizedException('User not logged in');
+		if ($request->cookie('token') == null || UserClient::getByToken(token: $request->cookie('token')) == null) {
+			if ($request->is('api/*')) {
+				throw new UnauthorizedException('User not logged in');
+			}
+			return redirect()->route('home');
 		}
         return $next($request);
     }
