@@ -3,6 +3,13 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: 'BasicDialog',
+	props: {
+		persistent: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
     data() {
         return {
             is: {
@@ -16,13 +23,18 @@ export default defineComponent({
         },
         hide(): void {
             this.is.open = false;
-        }
+        },
+		hideSelf() {
+			if (!this.persistent) {
+				this.hide();
+			}
+		}
     },
 })
 </script>
 
 <template>
-	<div v-if="is.open" class="w-full bg-neutral-600/60 absolute object-center inset-0" @click.self="is.open = false">
+	<div v-if="is.open" class="w-full bg-neutral-600/60 absolute object-center inset-0" @click.self="hideSelf">
 		<dialog
 			:open="is.open"
 			:class="[

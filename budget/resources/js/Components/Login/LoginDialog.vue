@@ -57,7 +57,7 @@ export default defineComponent({
 </script>
 
 <template>
-	<BasicDialog ref="dialog">
+	<BasicDialog ref="dialog" persistent>
 		<span class="text-xl">Login</span>
 		<VForm ref="form" v-slot="{ meta }">
 			<div class="grid grid-cols-1">
