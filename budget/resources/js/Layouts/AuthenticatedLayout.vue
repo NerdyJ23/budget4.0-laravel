@@ -19,7 +19,7 @@ export default defineComponent({
 			<div class="basis-1/6">
 				<slot name="sidebar">
 					<SideBar class="border border-solid border-slate-800">
-						<PlainButtonLink text="Receipts" :route="route('receipts')"></PlainButtonLink>
+						<PlainButtonLink text="Receipts" :link="route('receipts')"></PlainButtonLink>
 					</SideBar>
 				</slot>
 			</div>
