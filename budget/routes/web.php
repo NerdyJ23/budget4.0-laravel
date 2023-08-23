@@ -33,8 +33,8 @@ Route::prefix('dashboard')->middleware('logged_in')->group(function () {
 // 	return ReceiptController::list(request: $request);
 // });
 
-Route::get('/receipts', function () {
-	return Intertia::render('ReceiptList');
+Route::get('/receipts', function (Request $request) {
+	return ReceiptController::list($request);
 });
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
