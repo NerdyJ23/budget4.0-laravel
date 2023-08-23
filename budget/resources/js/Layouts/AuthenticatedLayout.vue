@@ -10,14 +10,16 @@ export default defineComponent({
 })
 </script>
 <template>
-	<header-bar></header-bar>
-	<div class="flex flex-column">
-		<div class="basis-1/6">
-			<slot name="sidebar"></slot>
+	<div class="h-screen flex flex-col">
+		<header-bar></header-bar>
+		<div class="inline-flex flex-row h-full">
+			<div class="basis-1/6">
+				<slot name="sidebar"></slot>
 
-		</div>
-		<div class="flex flex-column">
-			<slot></slot>
+			</div>
+			<div class="flex flex-column">
+				<slot></slot>
+			</div>
 		</div>
 	</div>
 </template>
