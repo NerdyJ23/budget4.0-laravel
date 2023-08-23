@@ -19,41 +19,44 @@ class ReceiptCategoryFilter extends BaseFilter {
 		if ($request == null) {
 			return $this;
 		}
+		parent::setupFilter([
+			'archived' => 'boolean',
+			'name' => 'string'
+		], $this, $request);
+		// if ($request->query('archived') != null) {
+		// 	$this->archived = $request->query('archived');
+		// }
 
-		if ($request->query('archived') != null) {
-			$this->archived = $request->query('archived');
-		}
-
-		if ($request->query('name') != null) {
-			$this->setNameFilter(name: $request->query('name'));
-		} else if ($request->query('name_like') != null) {
-			$this->setNameFilter(
-				name: $request->query('name_like'),
-				filtertype: StringtypeFilter::MATCH_PARTIAL
-			);
-		} else if ($request->query('name_endswith') != null) {
-			$this->setNameFilter(
-				name: $request->query('name_endswith'),
-				filterType: StringFilterType::MATCH_BEFORE
-			);
-		} else if ($request->query('name_beginswith') != null) {
-			$this->setNameFilter(
-				name: $request->query('name_beginswith'),
-				filterType: StringFilterType::MATCH_AFTER
-			);
-		} else if ($request->query('name_exact') != null) {
-			$this->setNameFilter(
-				name: $request->query('name_exact'),
-				filterType: StringFilterType::MATCH_EXACT
-			);
-		}
+		// if ($request->query('name') != null) {
+		// 	$this->setNameFilter(name: $request->query('name'));
+		// } else if ($request->query('name_like') != null) {
+		// 	$this->setNameFilter(
+		// 		name: $request->query('name_like'),
+		// 		filtertype: StringtypeFilter::MATCH_PARTIAL
+		// 	);
+		// } else if ($request->query('name_endswith') != null) {
+		// 	$this->setNameFilter(
+		// 		name: $request->query('name_endswith'),
+		// 		filterType: StringFilterType::MATCH_BEFORE
+		// 	);
+		// } else if ($request->query('name_beginswith') != null) {
+		// 	$this->setNameFilter(
+		// 		name: $request->query('name_beginswith'),
+		// 		filterType: StringFilterType::MATCH_AFTER
+		// 	);
+		// } else if ($request->query('name_exact') != null) {
+		// 	$this->setNameFilter(
+		// 		name: $request->query('name_exact'),
+		// 		filterType: StringFilterType::MATCH_EXACT
+		// 	);
+		// }
 	}
 
 	public function setArchived(bool $archived) {
 		$this->archived = $archived;
 	}
 
-	public function setNameFilter(string $name, ?StringFilterType $filterType = null) {
+	public function setName(string $name, ?StringFilterType $filterType = null) {
 		if (trim($name) == '') {
 			throw new InputValidationException('Receipt Category Name cannot be empty');
 		}

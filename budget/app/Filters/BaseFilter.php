@@ -2,7 +2,29 @@
 namespace App\Filters;
 
 use App\Enums\Filters\StringFilterType;
+use Illuminate\Http\Request;
+
 class BaseFilter {
+	protected function setupFilter(array $keys, BaseFilter $filter, Request $request) {
+		foreach ($keys as $key => $type) {
+			$func = 'set' . $key;
+			if ($request->query($key) != null) {
+				$filter->$func($request->query($key));
+			}
+
+			if ($type == 'string') {
+				if ($request->query($key . '_like') != null) {
+					$filter->$func($request->query ($key . '_like'), StringFilterType::MATCH_PARTIAL);
+				} else if ($request->query($key . '_endswith') != null) {
+					$filter->$func($request->query($key . '_endswith'), StringFilterType::MATCH_BEFORE);
+				} else if ($request->query($key . '_beginswith') != null) {
+					$filter->$func($request->query($key . '_beginswith'), StringFilterType::MATCH_AFTER);
+				} else if ($request->query($key . '_exact') != null) {
+					$filter->$func($request->query($key . '_exact'), StringFilter::MATCH_EXACT);
+				}
+			}
+		}
+	}
 
 	protected function matchString(?StringFilterType $type, string $toFind, string $value): bool {
 		switch ($type) {
