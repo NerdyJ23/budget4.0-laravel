@@ -7,7 +7,9 @@ import VueTextField from '../Inputs/VueTextField.vue';
 import { Form } from 'vee-validate';
 
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
-defineExpose({ dialog })
+const usernameField = ref<InstanceType<typeof VueTextField> | null>(null);
+const passwordField = ref<InstanceType<typeof VueTextField> | null>(null);
+defineExpose({ dialog, usernameField, passwordField })
 
 </script>
 <script lang="ts">
@@ -63,8 +65,8 @@ export default defineComponent({
 		<span class="text-xl">Login</span>
 		<VForm ref="form" v-slot="{ meta }">
 			<div class="grid grid-cols-1">
-				<VueTextField :rules="validateUsername" v-model="username" name="username" label="Username:" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
-				<VueTextField :rules="validatePassword" v-model="password" name="password" label="Password:" type="password" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
+				<VueTextField :rules="validateUsername" ref="usernameField" v-model="username" name="username" label="Username:" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)" autofocus/>
+				<VueTextField :rules="validatePassword" ref="passwordField" v-model="password" name="password" label="Password:" type="password" :disabled="is.loading" v-on:keyup.enter="login(meta.dirty && meta.valid)"/>
 			</div>
 
 			<div class="flex flex-row mt-auto pt-4">

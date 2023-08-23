@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { newPlot, Data } from 'plotly.js-dist-min';
 
 defineProps<{
 	info?: Array<number>,
 	keys?: Array<string>
 }>();
-
+const graph = ref<HTMLElement | null>(null);
 const id = `${crypto.randomUUID()}-barchart`;
-defineExpose({id});
+defineExpose({id, graph});
 </script>
 <script lang="ts">
 
@@ -16,20 +16,22 @@ export default defineComponent({
 	name: 'BarGraph',
 	mounted() {
 		const plot: Data[] = [{
-			x: this.info ?? [],
-			y: this.keys ?? [],
+			x: this.keys ?? [],
+			y: this.info ?? [],
 			type: 'bar'
 		}];
 
 		const layout = {
-			title: 'test'
+			title: 'test',
+			xaxis: {
+				tickangle: -45
+			}
 		};
-
-		newPlot(this.id, plot, layout);
+		newPlot(this.$refs.graph, plot, layout);
 	}
 })
 </script>
 <template>
-	<div :id="id">
+	<div ref="graph" class="w-full min-h-[400px]" :id="id">
 	</div>
 </template>
