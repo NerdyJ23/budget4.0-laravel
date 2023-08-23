@@ -4,10 +4,14 @@ import HeaderBar from '@/Components/Navigation/HeaderBar.vue';
 import SideBar from '@/Components/SideBar.vue';
 import Breadcrumb from '@/Components/Navigation/Breadcrumb.vue';
 import PlainButtonLink from '@/Components/Navigation/PlainButtonLink.vue';
+
+const currentPage = (name: string):boolean =>{
+	return route(name) == window.location.origin + window.location.pathname;
+}
 </script>
 <script lang="ts">
 export default defineComponent({
-	name: 'BasicLayout',
+	name: 'AuthenticatedLayout',
 	components: {
 	}
 })
@@ -19,7 +23,7 @@ export default defineComponent({
 			<div class="basis-1/6">
 				<slot name="sidebar">
 					<SideBar class="border border-solid border-slate-800">
-						<PlainButtonLink text="Receipts" :link="route('receipts')"></PlainButtonLink>
+						<PlainButtonLink text="Receipts" :link="route('receipts')" :current="currentPage('receipts')"></PlainButtonLink>
 					</SideBar>
 				</slot>
 			</div>
