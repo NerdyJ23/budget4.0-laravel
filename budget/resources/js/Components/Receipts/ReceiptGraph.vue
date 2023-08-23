@@ -4,10 +4,6 @@ import { Receipt } from '@/types/Receipts/receipt';
 import { defineComponent, ref, onMounted, reactive } from 'vue';
 import BarGraph from '@/Components/Graphs/BarGraph.vue';
 
-const today = new Date();
-
-const month: number = ref(today.getMonth());
-const year: number = ref(today.getFullYear());
 const receipts: Receipt[] = [];
 
 const is = reactive({
@@ -38,24 +34,24 @@ const loadReceipts = async () => {
 	console.log(response);
 }
 
-const generateGraph = () => {
-	for(const receipt of receipts) {
-		for(const item of receipt.items) {
-			if (!graphValues[item.category.name]) {
-				graphValues[item.category.name] = 0;
-			}
-			graphValues[item.category.name] += item.cost * item.count;
-		}
-	}
-}
+// const generateGraph = () => {
+// 	for(const receipt of receipts) {
+// 		for(const item of receipt.items) {
+// 			if (!graphValues[item.category.name]) {
+// 				graphValues[item.category.name] = 0;
+// 			}
+// 			graphValues[item.category.name] += item.cost * item.count;
+// 		}
+// 	}
+// }
 
 onMounted(async () => {
 	await loadReceipts();
-	generateGraph();
+	// generateGraph();
 	is.show = true;
 })
 defineExpose({
-	receipts, month, year, is
+	receipts, is
 })
 </script>
 

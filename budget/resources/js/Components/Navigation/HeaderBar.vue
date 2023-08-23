@@ -20,8 +20,11 @@ export default defineComponent({
 			const response = await loginApi.logout();
 
 			if (response.status == 200) {
-				window.location.href = route('home');
+				this.home();
 			}
+		},
+		home() {
+			window.location.href = route('home');
 		}
 	},
 	computed: {
@@ -33,7 +36,7 @@ export default defineComponent({
 </script>
 <template>
 	<div class="flex flex-row align-center w-full bg-orange-400">
-		<div id="logo" class="pl-2 self-center text-xl cursor-pointer" @click="route('home')">Budgeting</div>
+		<div id="logo" class="pl-2 self-center text-xl cursor-pointer" @click="home">Budgeting</div>
 		<div class="flex-grow ml-auto"></div>
 		<template v-if="$page.props.auth.user">
 			<span class="self-center">
