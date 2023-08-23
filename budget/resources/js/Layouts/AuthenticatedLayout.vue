@@ -28,7 +28,7 @@ export default defineComponent({
 				</slot>
 			</div>
 			<div class="basis-5/6">
-				<Breadcrumb />
+				<Breadcrumb v-if="false"/>
 				<slot></slot>
 			</div>
 		</div>

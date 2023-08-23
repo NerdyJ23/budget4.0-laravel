@@ -21,7 +21,7 @@
 	&-header {
 		@apply grid grid-cols-5 font-semibold text-center bg-amber-500/80;
 		&-text {
-			@apply cursor-pointer hover:bg-amber-500 py-2 rounded-t-md;
+			@apply cursor-pointer hover:bg-amber-500 py-2 first-of-type:rounded-tl-md last-of-type:rounded-tr-md;
 		}
 	}
 	&-row {
