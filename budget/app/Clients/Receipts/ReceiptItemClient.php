@@ -30,7 +30,7 @@ class ReceiptItemClient extends BaseClient {
 		User $user
 	): ReceiptItem {
 		$filter = new ReceiptCategoryFilter;
-		$filter->setNameFilter(name: $category, filterType: StringFilterType::MATCH_EXACT);
+		$filter->setName(name: $category, filterType: StringFilterType::MATCH_EXACT);
 		$categoryList = ReceiptItemCategoryClient::list(user: $user, filter: $filter);
 
 		$categoryModel = sizeOf($categoryList) == 0 ? ReceiptItemCategoryClient::create(name: $category, user: $user) : reset($categoryList);

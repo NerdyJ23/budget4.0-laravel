@@ -95,7 +95,7 @@ class ReceiptController extends BaseApiController {
 		foreach ($items as $item) {
 			try {
 				$filter = new ReceiptCategoryFilter();
-				$filter->setNameFilter($item->category);
+				$filter->setName($item->category);
 
 				$categoryList = ReceiptItemCategoryClient::list(user: $user, filter: $filter);
 				$categoryModel = sizeOf($categoryList) == 0 ? ReceiptItemCategoryClient::create(name: $item->category, user: $user) : reset($categoryList);

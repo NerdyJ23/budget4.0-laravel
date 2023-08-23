@@ -51,7 +51,7 @@ class ReceiptItemCategoryClient extends BaseClient {
 		}
 
 		$filter = new ReceiptCategoryFilter();
-		$filter->setNameFilter($name);
+		$filter->setName($name);
 		$categoryList = self::list(user: $user, filter: $filter);
 		$categoryExists = sizeOf($categoryList) != 0;
 		if ($categoryExists) {

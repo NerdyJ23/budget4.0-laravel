@@ -15,7 +15,6 @@ class ReceiptSchema extends Schema implements SchemaInterface {
 
 			//Add receipt items
 			$result += [
-				'items' => Schema::schema($receipt->receiptItem->all(), 'ReceiptItem')
 			];
 		}
 		return $result;
@@ -33,7 +32,8 @@ class ReceiptSchema extends Schema implements SchemaInterface {
 				'cost' => $receipt->Cost,
 				'category' => $receipt->Category,
 				'createdUtc' => $receipt->CreatedUTC,
-				'editedUtc' => $receipt->EditedUTC
+				'editedUtc' => $receipt->EditedUTC,
+				'items' => Schema::schema($receipt->receiptItem->all(), 'ReceiptItem')
 			];
 		}
 		return $result;
