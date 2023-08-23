@@ -15,10 +15,16 @@ use App\Clients\BaseClient;
 use App\Exceptions\Http\UnauthorizedException;
 use App\Exceptions\Http\NotFoundException;
 
+//Filters
+use App\Filters\Receipts\ReceiptFilter;
+
 class ReceiptClient extends BaseClient {
 
-	static function list(User $user): array {
-		return Receipt::where('User', $user->id)->get()->all();
+	static function list(User $user, ReceiptFilter $filter): array {
+		$receipts = Receipt::where('User', $user->id)->get();
+		return $receipts->filter(function (Receipt $receipt) use ($filter) {
+			return $filter->filter($receipt);
+		})->all();
 	}
 
 	static function create(

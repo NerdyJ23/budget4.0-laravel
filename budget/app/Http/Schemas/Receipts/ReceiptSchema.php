@@ -26,6 +26,7 @@ class ReceiptSchema extends Schema implements SchemaInterface {
 		if ($receipt instanceof Receipt) {
 			return [
 				'id' => EncryptionClient::encrypt($receipt->ID),
+				'date' => $receipt->Date,
 				'store' => $receipt->Name,
 				'location' => $receipt->Location,
 				'reference' => $receipt->ReceiptNumber,

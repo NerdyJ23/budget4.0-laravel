@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
 use App\Http\Requests\Receipts\ReceiptPatchRequest;
 
+use App\Filters\Receipts\ReceiptFilter;
 use App\Filters\Receipts\ReceiptCategoryFilter;
 
 use App\Exceptions\Http\UnauthorizedException;
@@ -22,7 +23,11 @@ use App\Exceptions\InputValidationException;
 class ReceiptController extends BaseApiController {
 
 	static function list(Request $request) {
-		$items = ReceiptClient::list(user: UserClient::getByToken($request->cookie('token')));
+		$filter = new ReceiptFilter(request: $request);
+		$items = ReceiptClient::list(
+			user: UserClient::getByToken($request->cookie('token')),
+			filter: $filter
+		);
 		return parent::sendResponse(Schema::schema($items, 'Receipt'));
 	}
 
