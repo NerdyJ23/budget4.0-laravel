@@ -35,7 +35,7 @@ Route::prefix('dashboard')->middleware('logged_in')->group(function () {
 
 Route::get('/receipts', function (Request $request) {
 	return ReceiptController::list($request);
-});
+})->name('receipts');
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
 //         'canLogin' => Route::has('login'),

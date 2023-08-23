@@ -1,10 +1,6 @@
 <template>
-	<div class="container mx-auto p-2">
-		<SideBarItem text="test222" link="test">
-			<template #text>
-				text here
-			</template>
-		</SideBarItem>
+	<div class="mx-auto h-full">
+		<slot></slot>
 	</div>
 </template>
 <script lang="ts">

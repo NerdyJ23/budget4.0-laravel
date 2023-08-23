@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.sidebar-item {
+	@apply p-2 hover:bg-stone-200 w-full text-left font-normal text-xl cursor-pointer;
+}
