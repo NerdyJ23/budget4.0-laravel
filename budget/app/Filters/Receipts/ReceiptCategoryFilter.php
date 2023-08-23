@@ -64,7 +64,7 @@ class ReceiptCategoryFilter extends BaseFilter {
 
 	//Filter out items that do not match the categories
 	public function filter(ReceiptItemCategory $category): bool {
-		if (!is_null($this->archived) && $this->archived != (bool) $category->Archived && $result) {
+		if (!is_null($this->archived) && $this->archived != (bool) $category->Archived) {
 			return false;
 		}
 
