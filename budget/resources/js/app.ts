@@ -1,9 +1,10 @@
 import './bootstrap';
-import '../css/app.css';
+import '../css/app.scss';
 
 import { createApp, h, DefineComponent } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { OhVueIcon } from "oh-vue-icons";
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import store from './store'
 
@@ -17,6 +18,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
 			.use(store)
+			.component('VIcon', OhVueIcon)
             .mount(el);
     },
     progress: {

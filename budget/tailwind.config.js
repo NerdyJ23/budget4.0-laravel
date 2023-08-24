@@ -36,9 +36,18 @@ export default {
 						transform: 'translate(0px, 0px)'
 					}
 				},
+				"hop": {
+					'25%': {
+						transform: 'translateY(-2px)'
+					},
+					'100%': {
+						transform: 'translateY(0px)'
+					},
+				},
 			},
 			animation: {
 				"shake-horizontal": "shake-horizontal 1s 1",
+				"hop-once": "hop .25s 1"
 			}
         },
     },

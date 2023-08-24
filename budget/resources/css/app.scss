@@ -5,3 +5,15 @@
 .sidebar-item {
 	@apply p-2 hover:bg-stone-200 w-full text-left font-normal text-xl cursor-pointer;
 }
+
+.header {
+	&-text {
+		@apply text-xl font-bold pb-4;
+	}
+}
+
+.icon {
+	&-button {
+		@apply hover:bg-slate-200 rounded-full h-min justify-items-center;
+	}
+}
