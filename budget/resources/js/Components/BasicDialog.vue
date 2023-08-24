@@ -10,8 +10,8 @@ const is = reactive({
 	shake: false
 });
 
-const show = () => { is.open = true; }
-const hide = () => { is.open = false; }
+const show = () => { is.open = true; toggleOverflow();}
+const hide = () => { is.open = false; toggleOverflow();}
 const hideSelf = () => {
 	is.shake = false;
 	if (!props.persistent) {
@@ -21,6 +21,10 @@ const hideSelf = () => {
 		setTimeout(() => is.shake = false, 1000);
 	}
 }
+const toggleOverflow = () => {
+	document.querySelector('html')?.classList.toggle('overflow-y-hidden');
+};
+
 defineExpose({is, show, hide, hideSelf});
 </script>
 <script lang="ts">
@@ -34,13 +38,13 @@ export default defineComponent({name: 'BasicDialog'})
 			{'backdrop-blur-sm': blur},
 			`w-full bg-neutral-600/60 absolute object-center inset-0`
 		]"
-		@click.self="hideSelf"
+		@mousedown.self="hideSelf"
 	>
 		<dialog
 			v-bind="$attrs"
 			:open="is.open"
 			:class="[
-				{'animate-shake-horizontal shadow-red-600': is.shake},
+				{'animate-shake-horizontal': is.shake},
 				'object-center shadow-md  px-5 py-3 inset-0 rounded-md'
 			]"
 		>
