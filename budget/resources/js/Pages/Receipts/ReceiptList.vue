@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ReceiptTable from '@/Components/Receipts/ReceiptTable.vue';
 import ConfirmButton from '../../Components/Inputs/ConfirmButton.vue';
-import ReceiptDialog from '../../Components/Receipts/ReceiptDialog.vue';
+import ReceiptDialog from '../../Components/Receipts/Dialog/ReceiptDialog.vue';
 
 const matches = route('receipts') == window.location.origin + window.location.pathname;
 const location = window.location.href;
