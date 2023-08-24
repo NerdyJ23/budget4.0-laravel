@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ReceiptItem from '@/types/Receipts/ReceiptItem';
+import { ReceiptItem } from '@/types/Receipts/receiptItem';
 import BasicDialog from '../BasicDialog.vue';
 import { defineComponent, ref } from 'vue';
 import { Form } from 'vee-validate';
@@ -19,7 +19,7 @@ defineComponent({
 <template>
  <BasicDialog ref="dialog" persistent>
 	<VForm>
-		<VueTextField label="test" />
+		<VueTextField label="test" name="test" />
 	</VForm>
  </BasicDialog>
 </template>
