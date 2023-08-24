@@ -11,8 +11,8 @@
 			<span>{{ receipt.reference }}</span>
 			<span>{{ receipt.store }}</span>
 			<span>{{ receipt.location }}</span>
-			<span>${{ receipt.cost }}</span>
-			<span>{{ receipt.category }}</span>
+			<span>${{ receipt.cost.toFixed(2) }}</span>
+			<span>{{ receipt.category}}</span>
 		</div>
 	</div>
 </template>
