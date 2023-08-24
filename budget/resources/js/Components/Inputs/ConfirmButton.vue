@@ -1,7 +1,7 @@
 <template>
 <div
 	v-bind="$attrs"
-	:class="`hover:cursor-pointer px-2 rounded-sm
+	:class="`hover:cursor-pointer px-2 rounded-sm select-none
 	bg-lime-500/80 hover:bg-lime-500
 	`"
 >

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { defineComponent, reactive, ref, computed } from 'vue';
+import { defineComponent, reactive, ref, computed, watch } from 'vue';
 import { addIcons } from "oh-vue-icons";
 import { MdArrowdropdown, MdArrowdropup } from "oh-vue-icons/icons";
 import VueTextField from './VueTextField.vue';
 import { nextTick } from 'vue';
 import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 
-const selected:any = null;
 const filterValue = ref("");
 
 const is = reactive({
@@ -35,6 +34,7 @@ const filteredItems = computed(() => {
 	});
 })
 
+watch(filterValue, () => { emit('model.changed', filterValue.value) });
 // const filter = () => {
 // 	console.log(filterValue);
 // 	console.log(filterValue.value.trim().length);
@@ -44,12 +44,19 @@ const filteredItems = computed(() => {
 // 	}
 // 	return false;
 // };
+
+//Definitions
 const props = withDefaults(defineProps<{
 	items?: ReceiptItemCategory[],
-	id?: string
+	id?: string,
+	rules?: Function
 }>(), {
 	id: `dropdown-${crypto.randomUUID()}`
 });
+
+const emit = defineEmits<{
+	(e: 'model.changed', value: any): void
+}>();
 
 addIcons(MdArrowdropdown, MdArrowdropup);
 </script>
@@ -63,16 +70,18 @@ export default defineComponent({
 		<VueTextField
 			:name="id"
 			v-model="filterValue"
+			v-bind="$attrs"
 			@focused="showOptions"
 			@input.change="showOptions"
+			@blur="hideOptions"
+			:rules="rules"
 			/>
-			<!-- @blur="hideOptions" -->
 		<div v-if="is.show" class="relative" ref="container">
 			<span
 				class="autocomplete-item"
-				v-if="filterValue.trim().length > 2"
+				v-if="filterValue.trim().length >= 2"
 				v-for="item in filteredItems"
-				@mousedown="selected, filterValue = item.name"
+				@mousedown="filterValue = item.name"
 			>{{ item.name }}</span>
 		</div>
 	</div>

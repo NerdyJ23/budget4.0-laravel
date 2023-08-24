@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { defineComponent, ref, reactive } from 'vue';
+import { addIcons } from "oh-vue-icons";
+import { RiLoader5Fill  } from "oh-vue-icons/icons";
+
 const props = defineProps<{
 	persistent?: boolean,
 	blur?: boolean
@@ -17,7 +20,7 @@ const setLoading = (isLoading: boolean) =>{
 	is.loading = isLoading;
 	setTimeout(() => is.loading = false, 10000); //In case of errors stop loading 10s in
 }
-
+addIcons(RiLoader5Fill);
 const hideSelf = () => {
 	is.shake = false;
 	if (!props.persistent) {
@@ -59,7 +62,7 @@ export default defineComponent({name: 'BasicDialog'})
 			<!-- Loading Overlay -->
 			<div v-if="is.loading" class="h-full w-full backdrop-blur-sm absolute top-0 left-0">
 				<div class="grid h-full justify-items-center content-center">
-					<VIcon class="opacity-80" name="ri-loader-3-fill" animation="spin" label="Close" scale="8"></VIcon>
+					<VIcon class="opacity-50" name="ri-loader-5-fill" animation="spin" label="Close" scale="8"></VIcon>
 				</div>
 			</div>
 		</dialog>

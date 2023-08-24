@@ -1,13 +1,13 @@
 import { ReceiptItem } from "./receiptItem";
 
 export interface Receipt {
-	id: string;
+	id?: string;
 	store: string;
-	date: Date;
+	date: string;
 	location: string;
 	reference: string;
-	cost: number;
-	category: string;
+	cost?: number;
+	category?: string;
 	createdUtc?: Date;
 	editedUtc?: Date;
 	items?: ReceiptItem;

@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { defineComponent } from 'vue';
+
+const reload = () => {};
+
+defineExpose({reload});
+</script>
+<script lang="ts">
+export default defineComponent({name: 'ReceiptTable'})
+</script>
 <template>
 	<div class="mx-2">
 		<div class="table-header rounded-t-md">

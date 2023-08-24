@@ -11,6 +11,12 @@ import store from '@/store';
 
 const matches = route('receipts') == window.location.origin + window.location.pathname;
 const location = window.location.href;
+const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
+
+const reload = () => {
+	receiptTable.value?.reload();
+};
+
 onMounted(() => {
 	store.dispatch('loadCategories');
 })
@@ -22,7 +28,8 @@ export default defineComponent({
 	components: {Head, ReceiptTable, ReceiptDialog},
 	methods: {
 		openCreateReceiptDialog() {
-			(this.$refs.dialog as any).dialog.show();
+			(this.$refs.dialog as typeof ReceiptDialog).dialog.show();
+			(this.$refs.dialog as typeof ReceiptDialog).reset();
 		}
 	}
 })
@@ -36,7 +43,7 @@ export default defineComponent({
 				<ConfirmButton class="ml-auto text-sm py-1" @click="openCreateReceiptDialog">Create Receipt</ConfirmButton>
 			</div>
 			<div class="table-container pt-2">
-				<ReceiptTable />
+				<ReceiptTable ref="receiptTable"/>
 			</div>
 		</div>
 		<ReceiptDialog ref="dialog"></ReceiptDialog>
