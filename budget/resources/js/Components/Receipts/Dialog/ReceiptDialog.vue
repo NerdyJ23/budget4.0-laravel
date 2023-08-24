@@ -9,6 +9,7 @@ import ReceiptDialogItem from './ReceiptDialogItem.vue';
 
 import { addIcons } from "oh-vue-icons";
 import { IoCloseOutline } from "oh-vue-icons/icons";
+import ConfirmButton from '@/Components/Inputs/ConfirmButton.vue';
 
 const items: ReceiptItem[] = reactive([]);
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
@@ -82,8 +83,9 @@ export default defineComponent({
 	</div>
 
 	<!-- Receipt Footer -->
-	<div class="pt-4 border-t border-solid border-neutral-500">
-		<input type="button" class="px-2 py-1 mb-1 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem" value="Add Item"/>
+	<div class="pt-4 border-t border-solid border-neutral-500 flex flex-row">
+		<div class="cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
+		<ConfirmButton class="text-md self-center" />
 	</div>
 
  </BasicDialog>
