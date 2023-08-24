@@ -23,6 +23,9 @@ class ReceiptClient extends BaseClient {
 	static function list(User $user, ReceiptFilter $filter): array {
 		$receipts = Receipt::where('User', $user->id)->get();
 		return $receipts->filter(function (Receipt $receipt) use ($filter) {
+			if ($receipt->category == null) {
+				$receipt = ReceiptClient::generateCostAndCategory(receipt: $receipt);
+			}
 			return $filter->filter($receipt);
 		})->all();
 	}
