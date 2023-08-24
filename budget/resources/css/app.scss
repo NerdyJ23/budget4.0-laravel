@@ -17,3 +17,7 @@
 		@apply hover:bg-slate-300/70 rounded-full h-min justify-items-center cursor-pointer;
 	}
 }
+
+.overflow-y-hidden {
+	overflow-y: hidden;
+}
