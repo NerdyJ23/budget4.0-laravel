@@ -7,11 +7,17 @@ const props = defineProps<{
 
 const is = reactive({
 	open: false,
-	shake: false
+	shake: false,
+	loading: false
 });
 
 const show = () => { is.open = true; toggleOverflow();}
 const hide = () => { is.open = false; toggleOverflow();}
+const setLoading = (isLoading: boolean) =>{
+	is.loading = isLoading;
+	setTimeout(() => is.loading = false, 10000); //In case of errors stop loading 10s in
+}
+
 const hideSelf = () => {
 	is.shake = false;
 	if (!props.persistent) {
@@ -25,7 +31,7 @@ const toggleOverflow = () => {
 	document.querySelector('html')?.classList.toggle('overflow-y-hidden');
 };
 
-defineExpose({is, show, hide, hideSelf});
+defineExpose({is, show, hide, setLoading});
 </script>
 <script lang="ts">
 export default defineComponent({name: 'BasicDialog'})
@@ -48,7 +54,14 @@ export default defineComponent({name: 'BasicDialog'})
 				'object-center shadow-md  px-5 py-3 inset-0 rounded-md'
 			]"
 		>
-		<slot></slot>
+			<slot></slot>
+
+			<!-- Loading Overlay -->
+			<div v-if="is.loading" class="h-full w-full backdrop-blur-sm absolute top-0 left-0">
+				<div class="grid h-full justify-items-center content-center">
+					<VIcon class="opacity-80" name="ri-loader-3-fill" animation="spin" label="Close" scale="8"></VIcon>
+				</div>
+			</div>
 		</dialog>
 	</div>
 </template>

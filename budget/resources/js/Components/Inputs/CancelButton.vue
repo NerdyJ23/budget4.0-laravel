@@ -2,7 +2,7 @@
 	<input
 		type="button"
 		:value="label"
-		:class="`hover:cursor-pointer px-2 rounded-sm text-lg ml-2 mt-1
+		:class="`hover:cursor-pointer px-2 rounded-sm
 		border-solid border border-red-500 hover:bg-red-200`"
 	/>
 </template>
