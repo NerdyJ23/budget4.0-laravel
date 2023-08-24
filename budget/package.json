@@ -23,6 +23,7 @@
         "vue-tsc": "^1.2.0"
     },
     "dependencies": {
+        "moment": "^2.29.4",
         "oh-vue-icons": "^1.0.0-rc3",
         "sass": "^1.66.1",
         "vee-validate": "^4.11.2",
