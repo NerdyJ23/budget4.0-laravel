@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { defineComponent, reactive, computed } from 'vue';
 import { ReceiptItem } from '@/types/Receipts/receiptItem';
+import ReceiptStore from '@/store/receiptStore';
+import Tooltip from '@/Components/Tooltip.vue';
 
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
-
+import VueDropdownMenu from '@/Components/Inputs/VueDropdownMenu.vue';
 const props = defineProps<{
 	item: ReceiptItem
 }>();
@@ -27,7 +29,7 @@ defineComponent({
 })
 </script>
 <template>
-	<div class="grid grid-cols-5 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-neutral-400/50">
+	<div class="relative grid grid-cols-5 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-neutral-400/50">
 		<VueTextField v-model="item.name" :rules="validName" class="self-center" placeholder="Item Name" :name="`item_name-${id}`" required/>
 		<VueTextField v-model="item.count" class="self-center mx-auto w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
 		<div class="inline-flex flex-row w-[100px] self-center justify-self-center">
@@ -35,10 +37,14 @@ defineComponent({
 			<VueTextField v-model="item.cost" :name="`item_cost-${id}`" @blur="item.cost = defaultNumber(item.cost)"/>
 		</div>
 		<span class="text-lg self-center align-self-center">$ {{ total }}</span>
-		<div class="self-center">
-			<span>
-				Category List here
-			</span>
+		<div class="self-center inline-flex flex-row">
+			<Tooltip>
+				test me
+				<template #tooltip>
+					testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+				</template>
+			</Tooltip>
+			<VueDropdownMenu :items="ReceiptStore.state.categories"/>
 			<div class="inline-flex flex-row">
 				Delete
 				Edit

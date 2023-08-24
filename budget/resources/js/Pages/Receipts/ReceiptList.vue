@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 
 import { Head } from '@inertiajs/vue3';
 
@@ -7,9 +7,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ReceiptTable from '@/Components/Receipts/ReceiptTable.vue';
 import ConfirmButton from '../../Components/Inputs/ConfirmButton.vue';
 import ReceiptDialog from '../../Components/Receipts/Dialog/ReceiptDialog.vue';
+import store from '@/store';
 
 const matches = route('receipts') == window.location.origin + window.location.pathname;
 const location = window.location.href;
+onMounted(() => {
+	store.dispatch('loadCategories');
+})
 defineExpose({matches, location});
 </script>
 <script lang="ts">
@@ -29,7 +33,7 @@ export default defineComponent({
 	<AuthenticatedLayout>
 		<div class="m-2">
 			<div class="receipt-controls mx-2">
-				<ConfirmButton class="text-sm" @click="openCreateReceiptDialog">Create Receipt</ConfirmButton>
+				<ConfirmButton class="ml-auto text-sm py-1" @click="openCreateReceiptDialog">Create Receipt</ConfirmButton>
 			</div>
 			<div class="table-container pt-2">
 				<ReceiptTable />

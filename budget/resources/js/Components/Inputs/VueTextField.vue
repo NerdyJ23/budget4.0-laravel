@@ -16,8 +16,11 @@
 						v-bind="field"
 						:disabled="disabled"
 						:type="type"
+						:list="list"
 						:placeholder="placeholder"
 						:id="id"
+						@focus="$emit('focused')"
+						@input="$emit('input.change')"
 						:class="[`
 							border-solid border border-zinc-400 rounded-sm p-1 disabled:bg-zinc-300 w-full`,
 							{'border-red-400': meta.dirty && !meta.valid},
@@ -33,7 +36,6 @@
 <script setup lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { Field, ErrorMessage } from 'vee-validate';
-
 const id = computed(() => `${crypto.randomUUID()}--textfield`);
 withDefaults(defineProps<{
 	name: string,
@@ -43,7 +45,8 @@ withDefaults(defineProps<{
 	type?: string,
 	placeholder?: string,
 	required?: boolean,
-	italic?: boolean
+	italic?: boolean,
+	list?: string
 }>(), {
 	type: 'textfield',
 	disabled: false,

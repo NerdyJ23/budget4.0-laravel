@@ -8,17 +8,23 @@ import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import ReceiptDialogItem from './ReceiptDialogItem.vue';
 
 import { addIcons } from "oh-vue-icons";
-import { IoCloseOutline } from "oh-vue-icons/icons";
+import { IoCloseOutline, RiLoader3Fill } from "oh-vue-icons/icons";
 import ConfirmButton from '@/Components/Inputs/ConfirmButton.vue';
+import CancelButton from '@/Components/Inputs/CancelButton.vue';
 
+//Date
 const items: ReceiptItem[] = reactive([]);
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
+
+//Methods
 const validDate = (value: string) => {
 	const newDate: Date = new Date(value);
 	return newDate.getTime() < Date.now() ? true : 'Date cannot be in the future 😎';
-};
+}
+const is = reactive({
+	loading: false
+})
 
-addIcons(IoCloseOutline);
 const addNewReceiptItem = () => {
 	const item: ReceiptItem = {
 		name: '',
@@ -34,6 +40,12 @@ const focusLastItem = () => {
 	(items[items.length-1] as HTMLInputElement).focus();
 	console.log(items);
 }
+const saveReceipt = () => {
+
+}
+
+//Setup
+addIcons(IoCloseOutline, RiLoader3Fill);
 onMounted(() => {addNewReceiptItem(); });
 defineExpose({dialog});
 </script>
@@ -49,7 +61,7 @@ export default defineComponent({
 });
 </script>
 <template>
- <BasicDialog ref="dialog" class="flex flex-col max-h-screen" persistent blur>
+	<BasicDialog ref="dialog" class="flex flex-col max-h-screen" persistent blur>
 	<!-- Header -->
 	<div class="flex flex-row">
 		<span class="header-text mr-auto">Create Receipt</span>
@@ -59,7 +71,7 @@ export default defineComponent({
 	</div>
 
 	<!-- Receipt Items -->
-	<div class="min-h-min">
+	<div>
 		<VForm>
 			<div class="grid grid-cols-4 gap-4">
 				<VueTextField placeholder="Receipt Number" name="receiptnumber" />
@@ -75,7 +87,7 @@ export default defineComponent({
 					<span class="table-head-text">Total</span>
 					<span class="table-head-text">Category</span>
 				</div>
-				<div class="overflow-y-auto max-h-[70vh]">
+				<div class="overflow-y-scroll max-h-[70vh] pb-8 min-h-[40vh]">
 					<ReceiptDialogItem v-for="item in items" :item="item"></ReceiptDialogItem>
 				</div>
 			</div>
@@ -85,8 +97,8 @@ export default defineComponent({
 	<!-- Receipt Footer -->
 	<div class="pt-4 border-t border-solid border-neutral-500 flex flex-row">
 		<div class="cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
-		<ConfirmButton class="text-md self-center" />
+		<ConfirmButton class="text-md self-center ml-auto" @click="($refs.dialog as typeof BasicDialog).setLoading(true)"/>
+		<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="text-md self-center ml-2" />
 	</div>
-
- </BasicDialog>
+	</BasicDialog>
 </template>
