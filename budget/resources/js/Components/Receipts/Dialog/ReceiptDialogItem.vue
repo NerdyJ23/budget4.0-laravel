@@ -28,13 +28,13 @@ defineComponent({
 </script>
 <template>
 	<div class="grid grid-cols-5 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-neutral-400/50">
-		<VueTextField v-model="item.name" :rules="validName" class="self-center" placeholder="Item Name" :name="`item_name-${id}`" />
+		<VueTextField v-model="item.name" :rules="validName" class="self-center" placeholder="Item Name" :name="`item_name-${id}`" required/>
 		<VueTextField v-model="item.count" class="self-center mx-auto w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
 		<div class="inline-flex flex-row w-[100px] self-center justify-self-center">
 			<span class="self-center text-xl">$</span>
 			<VueTextField v-model="item.cost" :name="`item_cost-${id}`" @blur="item.cost = defaultNumber(item.cost)"/>
 		</div>
-		<span class="text-xl self-center align-self-center">$ {{ total }}</span>
+		<span class="text-lg self-center align-self-center">$ {{ total }}</span>
 		<div class="self-center">
 			<span>
 				Category List here

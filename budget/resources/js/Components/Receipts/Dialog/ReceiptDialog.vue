@@ -58,7 +58,7 @@ export default defineComponent({
 	</div>
 
 	<!-- Receipt Items -->
-	<div class="mb-8 min-h-min">
+	<div class="min-h-min">
 		<VForm>
 			<div class="grid grid-cols-4 gap-4">
 				<VueTextField placeholder="Receipt Number" name="receiptnumber" />
@@ -82,7 +82,9 @@ export default defineComponent({
 	</div>
 
 	<!-- Receipt Footer -->
-	<input type="button" class="absolute bottom-0 p-1 px-2 my-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem" value="Add Item"/>
+	<div class="pt-4 border-t border-solid border-neutral-500">
+		<input type="button" class="px-2 py-1 mb-1 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem" value="Add Item"/>
+	</div>
 
  </BasicDialog>
 </template>
