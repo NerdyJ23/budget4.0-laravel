@@ -15,13 +15,25 @@ import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import { addIcons } from "oh-vue-icons";
 import { IoCloseOutline } from "oh-vue-icons/icons";
 
-//Date
+//Props
+const props = withDefaults(defineProps<{
+	editing?: boolean
+}>(), {
+	editing: false
+});
+
+//Data
 const receipt: Receipt = reactive({
 	store: '',
 	date: '',
 	location: '',
 	reference: ''
 });
+
+const is = reactive({
+	loading: false,
+	editing: props.editing
+})
 
 const items: ReceiptItem[] = reactive([]);
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
@@ -43,9 +55,7 @@ const validDate = (value: string) => {
 	// console.log(`date entered: ${newDate.getTime()} < ${now.getTime()} ?= ${newDate.getTime() < now.getTime()}`);
 	return newDate.isBefore(now) ? true : 'Date cannot be in the future';
 }
-const is = reactive({
-	loading: false
-})
+
 
 const reset = () => {
 	receipt.store = '';
@@ -123,7 +133,7 @@ export default defineComponent({
 	<BasicDialog ref="dialog" class="flex flex-col max-h-screen" persistent blur>
 	<!-- Header -->
 	<div class="flex flex-row">
-		<span class="header-text mr-auto">Create Receipt</span>
+		<span class="header-text mr-auto">{{ is.editing ? 'Create' : ''}} Receipt</span>
 		<span class="icon-button hover:animate-hop-once" @click="($refs.dialog as typeof BasicDialog).hide()">
 			<VIcon name="io-close-outline" label="Close" scale="1.3"></VIcon>
 		</span>
@@ -133,10 +143,22 @@ export default defineComponent({
 	<div>
 		<VForm ref="receiptForm">
 			<div class="grid grid-cols-4 gap-4">
-				<VueTextField v-model="receipt.reference" placeholder="Receipt Number" name="receiptnumber" />
-				<VueTextField v-model="receipt.store" placeholder="Store Name" name="store" />
-				<VueTextField v-model="receipt.location" placeholder="Location" name="location" />
-				<VueTextField v-model="receipt.date" :rules="validDate" placeholder="Date" name="date" type="date" required/>
+				<template v-if="editing">
+					<VueTextField v-model="receipt.reference" placeholder="Receipt Number" name="receiptnumber" />
+					<VueTextField v-model="receipt.store" placeholder="Store Name" name="store" />
+					<VueTextField v-model="receipt.location" placeholder="Location" name="location" />
+					<VueTextField v-model="receipt.date" :rules="validDate" placeholder="Date" name="date" type="date" required/>
+				</template>
+				<template v-else>
+					<span class="font-semibold text-md">Receipt Number</span>
+					<span class="font-semibold text-md">Store</span>
+					<span class="font-semibold text-md">Location</span>
+					<span class="font-semibold text-md">Date</span>
+					<span>{{ receipt.reference }}</span>
+					<span>{{ receipt.store }}</span>
+					<span>{{ receipt.location }}</span>
+					<span>{{ receipt.date }}</span>
+				</template>
 			</div>
 			<div class="table mt-4 pt-1 sticky">
 				<div class="table-head grid grid-cols-5 gap-2 mb-2 px-2">
@@ -147,7 +169,7 @@ export default defineComponent({
 					<span class="table-head-text">Category</span>
 				</div>
 				<div class="overflow-y-scroll max-h-[70vh] pb-8 min-h-[40vh]">
-					<ReceiptDialogItem editing v-for="(item, index) in items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
+					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
 				</div>
 			</div>
 		</VForm>

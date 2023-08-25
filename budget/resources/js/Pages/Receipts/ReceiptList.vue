@@ -46,7 +46,7 @@ export default defineComponent({
 				<ReceiptTable ref="receiptTable"/>
 			</div>
 		</div>
-		<ReceiptDialog ref="dialog"></ReceiptDialog>
+		<ReceiptDialog ref="dialog" editing></ReceiptDialog>
 	</AuthenticatedLayout>
 </template>
 <style lang="scss">

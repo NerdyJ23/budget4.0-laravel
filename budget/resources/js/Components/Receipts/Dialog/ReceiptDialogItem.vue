@@ -50,7 +50,7 @@ defineComponent({
 			</div>
 			<span class="text-lg self-center align-self-center">$ {{ total }}</span>
 			<div class="self-center inline-flex flex-row">
-				<VueDropdownMenu :rules="validCategory" :items="ReceiptStore.state.categories" v-model="item.category"/>
+				<VueDropdownMenu :rules="validCategory" :items="ReceiptStore.state.categories" @model.changed="(n: string) => item.category = n"/>
 				<div class="icon-button ml-2 p-1">
 					<VIcon v-if="is.editing" class=" fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
 					<VIcon v-else class=" fill-blue-400" name="hi-solid-pencil-alt" scale="1.5"></VIcon>
