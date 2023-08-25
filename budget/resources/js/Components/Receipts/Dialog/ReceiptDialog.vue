@@ -166,7 +166,7 @@ export default defineComponent({
 	<!-- Receipt Items -->
 	<div>
 		<VForm ref="receiptForm">
-			<div class="grid grid-cols-4 gap-4">
+			<div class="grid grid-cols-4 gap-x-4 gap-y-1">
 				<template v-if="editing">
 					<VueTextField v-model="receipt.reference" placeholder="Receipt Number" name="receiptnumber" />
 					<VueTextField v-model="receipt.store" placeholder="Store Name" name="store" />

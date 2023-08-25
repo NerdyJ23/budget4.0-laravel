@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, ref, reactive, nextTick } from 'vue';
+import { defineComponent, ref, reactive, nextTick, onMounted } from 'vue';
 import { addIcons } from "oh-vue-icons";
 import { RiLoader5Fill  } from "oh-vue-icons/icons";
 
@@ -20,7 +20,6 @@ const setLoading = (isLoading: boolean) =>{
 	is.loading = isLoading;
 	setTimeout(() => is.loading = false, 10000); //In case of errors stop loading 10s in
 }
-addIcons(RiLoader5Fill);
 const hideSelf = () => {
 	is.shake = false;
 	if (!props.persistent) {
@@ -30,6 +29,7 @@ const hideSelf = () => {
 		setTimeout(() => is.shake = false, 1000);
 	}
 }
+
 const toggleOverflow = () => {
 	document.body.scrollTop = document.documentElement.scrollTop = 0;
 	nextTick(() => {
@@ -37,6 +37,15 @@ const toggleOverflow = () => {
 	})
 };
 
+onMounted(() => {
+	document.addEventListener('keydown', event => {
+		if (event.key === 'Escape') {
+			hideSelf();
+		}
+	});
+});
+
+addIcons(RiLoader5Fill);
 defineExpose({is, show, hide, setLoading});
 </script>
 <script lang="ts">

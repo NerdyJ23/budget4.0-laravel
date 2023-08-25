@@ -24,7 +24,7 @@ const is = reactive({
 const item: ReceiptItem = props.item;
 const id: string = item.id ?? crypto.randomUUID();
 
-const total = computed(() => { return ((item.cost * item.count) ?? 0 ).toFixed(2)})
+const total = computed(() => { return ((item.cost * item.count) ?? 0 )})
 
 const validName = (value: string) => { return value.length == 0 ? 'Name is required' : true };
 const validCategory = (value: string) => { return value.length == 0 ? 'Category cannot be blank' : true };
@@ -70,8 +70,8 @@ defineComponent({
 		<template v-else>
 			<span class="w-full text-sm">{{ item.name }}</span>
 			<span class="w-full text-sm text-center">{{ item.count }}</span>
-			<span class="w-full text-sm text-center">{{ item.cost }}</span>
-			<span class="w-full text-sm">{{ total }}</span>
+			<span class="w-full text-sm text-center">${{ item.cost.toFixed(2) }}</span>
+			<span class="w-full text-sm">${{ total.toFixed(2) }}</span>
 			<span class="w-full text-sm">{{ (item.category as ReceiptItemCategory).name }}</span>
 		</template>
 	</div>

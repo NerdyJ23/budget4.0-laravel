@@ -24,6 +24,7 @@
 						:class="[`
 							border-solid border border-zinc-400 rounded-sm p-1 disabled:bg-zinc-300 w-full`,
 							{'border-red-400': meta.dirty && !meta.valid},
+							{'uppercase': uppercase}
 						]"
 					/>
 					<span v-if="required" class="text-red-500">*</span>
@@ -46,7 +47,8 @@ withDefaults(defineProps<{
 	placeholder?: string,
 	required?: boolean,
 	italic?: boolean,
-	list?: string
+	list?: string,
+	uppercase?: boolean
 }>(), {
 	type: 'textfield',
 	disabled: false,

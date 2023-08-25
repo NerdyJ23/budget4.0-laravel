@@ -67,10 +67,11 @@ export default defineComponent({
 			@blur="hideOptions"
 			:rules="rules"
 			:key="`dropdown-${id}`"
+			uppercase
 			/>
 		<div v-if="is.show" class="relative" ref="container">
 			<span
-				class="autocomplete-item"
+				class="autocomplete-item uppercase"
 				v-if="filterValue.trim().length >= 2"
 				v-for="item in filteredItems"
 				@mousedown="filterValue = item.name"
