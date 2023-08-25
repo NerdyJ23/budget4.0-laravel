@@ -34,9 +34,7 @@ const filteredItems = computed(() => {
 	});
 })
 
-watch(filterValue, () => {
-	emit('changed', filterValue.value);
-});
+watch(filterValue, () => { emit('changed', filterValue.value) })
 
 //Definitions
 const props = withDefaults(defineProps<{

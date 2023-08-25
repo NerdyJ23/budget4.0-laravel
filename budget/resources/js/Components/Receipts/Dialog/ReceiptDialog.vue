@@ -108,10 +108,10 @@ const deleteItem = (index: any) => {
 	console.log(index);
 	// const i = items.indexOf(index);
 	// console.log(i);
-	const item = items[index];
+	const item = receipt.items[index];
 	console.log(item);
-	items.splice(index, 1);
-	if (items.length == 0) {
+	receipt.items.splice(index, 1);
+	if (receipt.items.length == 0) {
 		nextTick(() => addNewReceiptItem());
 	}
 }
@@ -122,6 +122,16 @@ const setReceipt = (newReceipt: Receipt) => {
 
 const show = () => {dialog.value?.show();}
 const hide = () => {dialog.value?.hide();}
+const cost = ():number => {
+	if (receipt.cost && receipt.cost > 0) {
+		return receipt.cost;
+	}
+	let total = 0;
+	receipt.items.forEach(item => {
+		total += (item.cost * item.count);
+	});
+	return total;
+}
 
 //Setup
 addIcons(IoCloseOutline);
@@ -194,9 +204,12 @@ export default defineComponent({
 	<!-- Receipt Footer -->
 	<div class="pt-4 border-t border-solid border-neutral-500 flex flex-row">
 		<div v-if="is.editing" class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
+		<span class="ml-auto font-semibold text-lg self-center">Total: ${{ cost().toFixed(2) }}</span>
 		<div class="ml-auto inline-flex flex-row">
-			<ConfirmButton v-if="is.editing" class="py-1 text-md self-center" @click="saveReceipt"/>
-			<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="py-1 text-md self-center ml-2" />
+			<template v-if="is.editing">
+				<ConfirmButton class="py-1 text-md self-center" @click="saveReceipt"/>
+				<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="py-1 text-md self-center ml-2" />
+			</template>
 		</div>
 	</div>
 	</BasicDialog>
