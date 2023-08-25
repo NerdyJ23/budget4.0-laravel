@@ -5,6 +5,10 @@ import ReceiptStore from '@/store/receiptStore';
 
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import VueDropdownMenu from '@/Components/Inputs/VueDropdownMenu.vue';
+
+import { addIcons } from "oh-vue-icons";
+import { MdDeleteforeverOutlined } from "oh-vue-icons/icons";
+
 const props = defineProps<{
 	item: ReceiptItem
 }>();
@@ -19,6 +23,8 @@ const validCategory = (value: string) => { return value.length == 0 ? 'Category 
 const defaultNumber = (item:any, defaultValue: number = 0): number => {
 	return item == '' ? 0 : item as number;
 }
+
+addIcons(MdDeleteforeverOutlined);
 defineExpose({item});
 </script>
 
@@ -38,8 +44,8 @@ defineComponent({
 		<span class="text-lg self-center align-self-center">$ {{ total }}</span>
 		<div class="self-center inline-flex flex-row">
 			<VueDropdownMenu :rules="validCategory" :items="ReceiptStore.state.categories" v-model="item.category"/>
-			<div class="inline-flex flex-row" @model.changed="$emit('delete')">
-				Delete
+			<div class="inline-flex flex-row self-center icon-button">
+				<VIcon class="ml-2" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
 				Edit
 			</div>
 		</div>

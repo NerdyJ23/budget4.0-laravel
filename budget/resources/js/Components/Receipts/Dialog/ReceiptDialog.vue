@@ -58,6 +58,7 @@ const reset = () => {
 }
 const addNewReceiptItem = () => {
 	const item: ReceiptItem = {
+		id: crypto.randomUUID(),
 		name: '',
 		count: 1,
 		cost: 0,
@@ -68,7 +69,7 @@ const addNewReceiptItem = () => {
 }
 const focusLastItem = () => {
 	const items = document.querySelectorAll('[name ^= item_name]');
-	(items[items.length-1] as HTMLInputElement).focus();
+	(items[items.length-1] as HTMLInputElement)?.focus();
 }
 const saveReceipt = () => {
 	const meta = receiptForm.value?.getMeta();
@@ -91,7 +92,12 @@ const saveReceipt = () => {
 	})
 }
 
-const deleteItem = (index: number) => {
+const deleteItem = (index: any) => {
+	console.log(index);
+	// const i = items.indexOf(index);
+	// console.log(i);
+	const item = items[index];
+	console.log(item);
 	items.splice(index, 1);
 	if (items.length == 0) {
 		nextTick(() => addNewReceiptItem());
@@ -141,7 +147,7 @@ export default defineComponent({
 					<span class="table-head-text">Category</span>
 				</div>
 				<div class="overflow-y-scroll max-h-[70vh] pb-8 min-h-[40vh]">
-					<ReceiptDialogItem v-for="(item, index) in items" :item="item" @delete="deleteItem(index)"></ReceiptDialogItem>
+					<ReceiptDialogItem v-for="(item, index) in items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
 				</div>
 			</div>
 		</VForm>
