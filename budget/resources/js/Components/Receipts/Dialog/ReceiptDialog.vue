@@ -147,7 +147,7 @@ export default defineComponent({
 					<span class="table-head-text">Category</span>
 				</div>
 				<div class="overflow-y-scroll max-h-[70vh] pb-8 min-h-[40vh]">
-					<ReceiptDialogItem v-for="(item, index) in items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
+					<ReceiptDialogItem editing v-for="(item, index) in items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
 				</div>
 			</div>
 		</VForm>

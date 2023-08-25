@@ -7,12 +7,18 @@ import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import VueDropdownMenu from '@/Components/Inputs/VueDropdownMenu.vue';
 
 import { addIcons } from "oh-vue-icons";
-import { MdDeleteforeverOutlined } from "oh-vue-icons/icons";
+import { MdDeleteforeverOutlined, HiSolidPencilAlt } from "oh-vue-icons/icons";
 
-const props = defineProps<{
-	item: ReceiptItem
-}>();
+const props = withDefaults(defineProps<{
+	item: ReceiptItem,
+	editing?: boolean
+}>(), {
+	editing: false
+});
 
+const is = reactive({
+	editing: props.editing
+});
 const item: ReceiptItem = props.item;
 const id: string = item.id ?? crypto.randomUUID();
 
@@ -24,7 +30,7 @@ const defaultNumber = (item:any, defaultValue: number = 0): number => {
 	return item == '' ? 0 : item as number;
 }
 
-addIcons(MdDeleteforeverOutlined);
+addIcons(MdDeleteforeverOutlined, HiSolidPencilAlt);
 defineExpose({item});
 </script>
 
@@ -34,21 +40,26 @@ defineComponent({
 })
 </script>
 <template>
-	<div class="relative grid grid-cols-5 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-neutral-400/50">
-		<VueTextField v-model="item.name" :rules="validName" class="self-center" placeholder="Item Name" :name="`item_name-${id}`" />
-		<VueTextField v-model="item.count" class="self-center mx-auto w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
-		<div class="inline-flex flex-row w-[100px] self-center justify-self-center">
-			<span class="self-center text-xl">$</span>
-			<VueTextField v-model="item.cost" :name="`item_cost-${id}`" @blur="item.cost = defaultNumber(item.cost)"/>
-		</div>
-		<span class="text-lg self-center align-self-center">$ {{ total }}</span>
-		<div class="self-center inline-flex flex-row">
-			<VueDropdownMenu :rules="validCategory" :items="ReceiptStore.state.categories" v-model="item.category"/>
-			<div class="inline-flex flex-row self-center icon-button">
-				<VIcon class="ml-2" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
-				Edit
+	<div class="relative grid grid-cols-5 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-amber-400/20">
+		<template v-if="is.editing">
+			<VueTextField v-model="item.name" :rules="validName" class="self-center" placeholder="Item Name" :name="`item_name-${id}`" />
+			<VueTextField v-model="item.count" class="self-center mx-auto w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
+			<div class="inline-flex flex-row w-[100px] self-center justify-self-center">
+				<span class="self-center text-xl">$</span>
+				<VueTextField v-model="item.cost" :name="`item_cost-${id}`" @blur="item.cost = defaultNumber(item.cost)"/>
 			</div>
-		</div>
+			<span class="text-lg self-center align-self-center">$ {{ total }}</span>
+			<div class="self-center inline-flex flex-row">
+				<VueDropdownMenu :rules="validCategory" :items="ReceiptStore.state.categories" v-model="item.category"/>
+				<div class="icon-button ml-2 p-1">
+					<VIcon v-if="is.editing" class=" fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
+					<VIcon v-else class=" fill-blue-400" name="hi-solid-pencil-alt" scale="1.5"></VIcon>
+				</div>
+			</div>
+		</template>
+		<template v-else>
+
+		</template>
 	</div>
 </template>
 <style lang="scss">
