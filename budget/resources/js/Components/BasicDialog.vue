@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, ref, reactive } from 'vue';
+import { defineComponent, ref, reactive, nextTick } from 'vue';
 import { addIcons } from "oh-vue-icons";
 import { RiLoader5Fill  } from "oh-vue-icons/icons";
 
@@ -31,7 +31,10 @@ const hideSelf = () => {
 	}
 }
 const toggleOverflow = () => {
-	document.querySelector('html')?.classList.toggle('overflow-y-hidden');
+	document.body.scrollTop = document.documentElement.scrollTop = 0;
+	nextTick(() => {
+		document.querySelector('html')?.classList.toggle('overflow-y-hidden');
+	})
 };
 
 defineExpose({is, show, hide, setLoading});
@@ -42,6 +45,7 @@ export default defineComponent({name: 'BasicDialog'})
 
 <template>
 	<div
+		ref="backdrop"
 		v-if="is.open"
 		:class="[
 			{'backdrop-blur-sm': blur},

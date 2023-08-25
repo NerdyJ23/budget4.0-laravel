@@ -18,6 +18,20 @@
 	}
 }
 
-.overflow-y-hidden {
-	overflow-y: hidden;
+.overflow {
+	&-y {
+		&-hidden {
+			overflow-y: hidden;
+		}
+	}
+
+	&-x {
+		&-hidden {
+			overflow-x: hidden;
+		}
+	}
+}
+
+.force-front {
+	z-index: 999;
 }

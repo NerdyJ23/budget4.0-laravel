@@ -11,13 +11,13 @@ export default {
 		return response;
 	},
 
-	createReceipt(receipt: Receipt, items: ReceiptItem[]) {
+	createReceipt(receipt: Receipt) {
 		const form = new FormData();
 		form.append('name', receipt.store);
 		form.append('date', receipt.date);
 		form.append('location', receipt.location);
 		form.append('reference', receipt.reference);
-		form.append('items', JSON.stringify(items));
+		form.append('items', JSON.stringify(receipt.items));
 
 		const response = api().post(`/receipt`, form).catch((error) => {
 			return error.response;

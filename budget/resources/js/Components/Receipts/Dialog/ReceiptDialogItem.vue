@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { defineComponent, reactive, computed } from 'vue';
 import { ReceiptItem } from '@/types/Receipts/receiptItem';
+import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 import ReceiptStore from '@/store/receiptStore';
+
 
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import VueDropdownMenu from '@/Components/Inputs/VueDropdownMenu.vue';
@@ -26,8 +28,8 @@ const total = computed(() => { return ((item.cost * item.count) ?? 0 ).toFixed(2
 
 const validName = (value: string) => { return value.length == 0 ? 'Name is required' : true };
 const validCategory = (value: string) => { return value.length == 0 ? 'Category cannot be blank' : true };
-const defaultNumber = (item:any, defaultValue: number = 0): number => {
-	return item == '' ? 0 : item as number;
+const defaultNumber = (item: any, defaultValue: number = 0): number => {
+	return item == '' ? defaultValue : item as number;
 }
 
 addIcons(MdDeleteforeverOutlined, HiSolidPencilAlt);
@@ -50,7 +52,12 @@ defineComponent({
 			</div>
 			<span class="text-lg self-center align-self-center">$ {{ total }}</span>
 			<div class="self-center inline-flex flex-row">
-				<VueDropdownMenu :rules="validCategory" :items="ReceiptStore.state.categories" @model.changed="(n: string) => item.category = n"/>
+				<VueDropdownMenu
+					:rules="validCategory"
+					:items="ReceiptStore.state.categories"
+					@model.changed="(n: string) => item.category = n"
+					:key="`item_category-${id}`"
+				/>
 				<div class="icon-button ml-2 p-1">
 					<VIcon v-if="is.editing" class=" fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
 					<VIcon v-else class=" fill-blue-400" name="hi-solid-pencil-alt" scale="1.5"></VIcon>
@@ -58,7 +65,11 @@ defineComponent({
 			</div>
 		</template>
 		<template v-else>
-
+			<span class="w-full text-sm">{{ item.name }}</span>
+			<span class="w-full text-sm text-center">{{ item.count }}</span>
+			<span class="w-full text-sm text-center">{{ item.cost }}</span>
+			<span class="w-full text-sm">{{ total }}</span>
+			<span class="w-full text-sm">{{ (item.category as ReceiptItemCategory).name }}</span>
 		</template>
 	</div>
 </template>

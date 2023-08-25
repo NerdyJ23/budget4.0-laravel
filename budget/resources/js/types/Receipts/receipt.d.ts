@@ -10,5 +10,5 @@ export interface Receipt {
 	category?: string;
 	createdUtc?: Date;
 	editedUtc?: Date;
-	items?: ReceiptItem;
+	items: ReceiptItem[];
 }

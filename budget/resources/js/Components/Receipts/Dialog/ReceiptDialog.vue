@@ -17,25 +17,27 @@ import { IoCloseOutline } from "oh-vue-icons/icons";
 
 //Props
 const props = withDefaults(defineProps<{
+	receipt?: Receipt
 	editing?: boolean
 }>(), {
-	editing: false
+	editing: false,
+	receipt: Receipt => ({
+		store: '',
+		date: '',
+		location: '',
+		reference: '',
+		items: []
+	})
 });
 
 //Data
-const receipt: Receipt = reactive({
-	store: '',
-	date: '',
-	location: '',
-	reference: ''
-});
+let receipt: Receipt = reactive(props.receipt);
 
 const is = reactive({
 	loading: false,
 	editing: props.editing
 })
 
-const items: ReceiptItem[] = reactive([]);
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
 const receiptForm = ref<InstanceType<typeof Form> | null>(null);
 const error = ref({
@@ -62,7 +64,7 @@ const reset = () => {
 	receipt.date = '';
 	receipt.location = '';
 	receipt.reference = '';
-	items.length = 0;
+	receipt.items.length = 0;
 	addNewReceiptItem();
 	receiptForm.value?.resetForm();
 }
@@ -74,7 +76,7 @@ const addNewReceiptItem = () => {
 		cost: 0,
 		category: ''
 	};
-	items.push(item);
+	receipt.items.push(item);
 	nextTick(() => {focusLastItem()}) ;
 }
 const focusLastItem = () => {
@@ -87,7 +89,7 @@ const saveReceipt = () => {
 	nextTick(async () => {
 		if (meta && meta.dirty && meta.valid) {
 			dialog.value?.setLoading(true);
-			const response = await receiptApi.createReceipt(receipt, items);
+			const response = await receiptApi.createReceipt(receipt);
 			console.log(response);
 			if (response.status === 201) {
 				setTimeout(() => {
@@ -113,10 +115,22 @@ const deleteItem = (index: any) => {
 		nextTick(() => addNewReceiptItem());
 	}
 }
+
+const setReceipt = (newReceipt: Receipt) => {
+	receipt = newReceipt;
+}
+
+const show = () => {dialog.value?.show();}
+const hide = () => {dialog.value?.hide();}
+
 //Setup
 addIcons(IoCloseOutline);
-onMounted(() => {addNewReceiptItem(); });
-defineExpose({dialog, reset});
+onMounted(() => {
+	if (!props.receipt.id) {
+		addNewReceiptItem();
+	}
+});
+defineExpose({dialog, reset, show, hide, setReceipt});
 </script>
 
 <script lang="ts">
@@ -130,7 +144,7 @@ export default defineComponent({
 });
 </script>
 <template>
-	<BasicDialog ref="dialog" class="flex flex-col max-h-screen" persistent blur>
+	<BasicDialog ref="dialog" class="flex flex-col min-w-[50vw]" :persistent="is.editing" blur>
 	<!-- Header -->
 	<div class="flex flex-row">
 		<span class="header-text mr-auto">{{ is.editing ? 'Create' : ''}} Receipt</span>
@@ -160,16 +174,16 @@ export default defineComponent({
 					<span>{{ receipt.date }}</span>
 				</template>
 			</div>
-			<div class="table mt-4 pt-1 sticky">
-				<div class="table-head grid grid-cols-5 gap-2 mb-2 px-2">
-					<span class="table-head-text">Name</span>
-					<span class="table-head-text text-center">Count</span>
-					<span class="table-head-text text-center">Cost</span>
-					<span class="table-head-text">Total</span>
-					<span class="table-head-text">Category</span>
-				</div>
-				<div class="overflow-y-scroll max-h-[70vh] pb-8 min-h-[40vh]">
-					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
+			<div class="table mt-4 pt-1 w-full">
+				<div class="overflow-y-scroll overscroll max-h-[70vh] pb-8 min-h-[40vh]">
+					<div class="table-head grid grid-cols-5 force-front gap-2 mb-2 px-2 sticky top-0">
+						<span class="table-head-text">Name</span>
+						<span class="table-head-text text-center">Count</span>
+						<span class="table-head-text text-center">Cost</span>
+						<span class="table-head-text">Total</span>
+						<span class="table-head-text">Category</span>
+					</div>
+					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in receipt.items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
 				</div>
 			</div>
 		</VForm>
@@ -179,9 +193,16 @@ export default defineComponent({
 	</div>
 	<!-- Receipt Footer -->
 	<div class="pt-4 border-t border-solid border-neutral-500 flex flex-row">
-		<div class=" py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
-		<ConfirmButton class="py-1 text-md self-center ml-auto" @click="saveReceipt"/>
-		<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="py-1 text-md self-center ml-2" />
+		<div v-if="is.editing" class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
+		<div class="ml-auto inline-flex flex-row">
+			<ConfirmButton v-if="is.editing" class="py-1 text-md self-center" @click="saveReceipt"/>
+			<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="py-1 text-md self-center ml-2" />
+		</div>
 	</div>
 	</BasicDialog>
 </template>
+<style lang="scss">
+.overscroll {
+	overscroll-behavior: contain;
+}
+</style>

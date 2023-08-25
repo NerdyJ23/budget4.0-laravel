@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { defineComponent } from 'vue';
+import { Receipt } from '@/types/Receipts/receipt';
+import { defineComponent, ref, nextTick } from 'vue';
+import ReceiptDialog from '@/Components/Receipts/Dialog/ReceiptDialog.vue';
 
+const dialog = ref<InstanceType<typeof ReceiptDialog> | null>();
 const reload = () => {};
-
+const showReceipt = (receipt: Receipt) => {
+	dialog.value?.show();
+	dialog.value?.setReceipt(receipt);
+}
 defineExpose({reload});
 </script>
 <script lang="ts">
@@ -17,7 +23,7 @@ export default defineComponent({name: 'ReceiptTable'})
 			<span class="table-header-text">Cost</span>
 			<span class="table-header-text">Category</span>
 		</div>
-		<div v-for="receipt of $page.props.receipts" class="table-row">
+		<div v-for="receipt of $page.props.receipts" class="table-row" @click="showReceipt(receipt)">
 			<span>{{ receipt.reference }}</span>
 			<span>{{ receipt.store }}</span>
 			<span>{{ receipt.location }}</span>
@@ -25,6 +31,7 @@ export default defineComponent({name: 'ReceiptTable'})
 			<span>{{ receipt.category}}</span>
 		</div>
 	</div>
+	<ReceiptDialog ref="dialog" />
 </template>
 <style lang="scss" scoped>
 .table {
