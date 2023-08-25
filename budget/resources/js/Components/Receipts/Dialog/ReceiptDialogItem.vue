@@ -31,6 +31,9 @@ const validCategory = (value: string) => { return value.length == 0 ? 'Category 
 const defaultNumber = (item: any, defaultValue: number = 0): number => {
 	return item == '' ? defaultValue : item as number;
 }
+const setCategory = (cat: string) => {
+	item.category = cat;
+}
 
 addIcons(MdDeleteforeverOutlined, HiSolidPencilAlt);
 defineExpose({item});
@@ -55,7 +58,7 @@ defineComponent({
 				<VueDropdownMenu
 					:rules="validCategory"
 					:items="ReceiptStore.state.categories"
-					@model.changed="(n: string) => item.category = n"
+					@changed="(n: string) => setCategory(n)"
 					:key="`item_category-${id}`"
 				/>
 				<div class="icon-button ml-2 p-1">

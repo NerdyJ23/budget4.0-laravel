@@ -15,7 +15,7 @@ const container= ref<HTMLElement | null>(null);
 
 const showOptions = () => {
 	is.show = true;
-	nextTick(() => {offsetItems()})
+	nextTick(() => { offsetItems() })
 }
 const hideOptions = () => {nextTick(() => is.show = false);}
 const offsetItems = () => {
@@ -34,16 +34,9 @@ const filteredItems = computed(() => {
 	});
 })
 
-watch(filterValue, () => { emit('model.changed', filterValue.value) });
-// const filter = () => {
-// 	console.log(filterValue);
-// 	console.log(filterValue.value.trim().length);
-// 	if (filterValue.value.trim().length > 2) {
-// 		nextTick(() => offsetItems());
-// 		return true;
-// 	}
-// 	return false;
-// };
+watch(filterValue, () => {
+	emit('changed', filterValue.value);
+});
 
 //Definitions
 const props = withDefaults(defineProps<{
@@ -51,13 +44,13 @@ const props = withDefaults(defineProps<{
 	id?: string,
 	rules?: Function
 }>(), {
-	id: `dropdown-${crypto.randomUUID()}`
+
 });
 
 const emit = defineEmits<{
-	(e: 'model.changed', value: any): void
+	(e: 'changed', value: any): void
 }>();
-
+const id = props.id ?? crypto.randomUUID();
 addIcons(MdArrowdropdown, MdArrowdropup);
 </script>
 <script lang="ts">
@@ -75,6 +68,7 @@ export default defineComponent({
 			@input.change="showOptions"
 			@blur="hideOptions"
 			:rules="rules"
+			:key="`dropdown-${id}`"
 			/>
 		<div v-if="is.show" class="relative" ref="container">
 			<span
