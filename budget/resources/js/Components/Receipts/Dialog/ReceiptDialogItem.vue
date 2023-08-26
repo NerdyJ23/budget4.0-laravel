@@ -62,7 +62,7 @@ defineComponent({
 					:key="`item_category-${id}`"
 				/>
 				<div class="icon-button ml-2 p-1">
-					<VIcon v-if="is.editing" class=" fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
+					<VIcon v-if="is.editing" class="fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
 					<VIcon v-else class=" fill-blue-400" name="hi-solid-pencil-alt" scale="1.5"></VIcon>
 				</div>
 			</div>

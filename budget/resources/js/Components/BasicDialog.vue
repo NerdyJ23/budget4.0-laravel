@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { defineComponent, ref, reactive, nextTick, onMounted } from 'vue';
 import { addIcons } from "oh-vue-icons";
-import { RiLoader5Fill  } from "oh-vue-icons/icons";
+import { RiLoader5Fill, IoCloseOutline } from "oh-vue-icons/icons";
 
 const props = defineProps<{
 	persistent?: boolean,
-	blur?: boolean
+	blur?: boolean,
+	title?: string
 }>();
 
 const is = reactive({
@@ -45,7 +46,7 @@ onMounted(() => {
 	});
 });
 
-addIcons(RiLoader5Fill);
+addIcons(RiLoader5Fill, IoCloseOutline);
 defineExpose({is, show, hide, setLoading});
 </script>
 <script lang="ts">
@@ -70,14 +71,26 @@ export default defineComponent({name: 'BasicDialog'})
 				'object-center shadow-md  px-5 py-3 inset-0 rounded-md'
 			]"
 		>
-			<slot></slot>
+		<div class="flex flex-row">
+			<slot name="title">
+				<span class="header-text mr-auto">{{ title }}</span>
+			</slot>
+			<slot name="close">
+				<span class="ml-auto icon-button hover:animate-hop-once" @click="hide">
+					<VIcon name="io-close-outline" label="Close" scale="1.3"></VIcon>
+				</span>
+			</slot>
+		</div>
+		<slot></slot>
 
-			<!-- Loading Overlay -->
-			<div v-if="is.loading" class="h-full w-full backdrop-blur-sm absolute top-0 left-0">
-				<div class="grid h-full justify-items-center content-center">
+		<!-- Loading Overlay -->
+		<div v-if="is.loading" class="h-full w-full backdrop-blur-sm absolute top-0 left-0">
+			<div class="grid h-full justify-items-center content-center">
+				<slot name="loading_icon">
 					<VIcon class="opacity-50" name="ri-loader-5-fill" animation="spin" label="Close" scale="8"></VIcon>
-				</div>
+				</slot>
 			</div>
+		</div>
 		</dialog>
 	</div>
 </template>

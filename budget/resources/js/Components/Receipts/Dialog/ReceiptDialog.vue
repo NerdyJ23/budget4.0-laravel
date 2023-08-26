@@ -11,9 +11,7 @@ import BasicDialog from '@/Components/BasicDialog.vue';
 import ConfirmButton from '@/Components/Inputs/ConfirmButton.vue';
 import CancelButton from '@/Components/Inputs/CancelButton.vue';
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
-
-import { addIcons } from "oh-vue-icons";
-import { IoCloseOutline } from "oh-vue-icons/icons";
+import ReceiptDocumentDialog from './ReceiptDocumentDialog.vue';
 
 //Props
 const props = withDefaults(defineProps<{
@@ -32,18 +30,23 @@ const props = withDefaults(defineProps<{
 
 //Data
 let receipt: Receipt = reactive(props.receipt);
+let docsToUpload: File[] = [];
 
 const is = reactive({
 	loading: false,
 	editing: props.editing
-})
-
-const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
-const receiptForm = ref<InstanceType<typeof Form> | null>(null);
+});
 const error = ref({
 	show: false,
 	message: ''
-})
+});
+
+
+
+//Refs
+const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
+const documentDialog = ref<InstanceType<typeof ReceiptDocumentDialog> | null>(null);
+const receiptForm = ref<InstanceType<typeof Form> | null>(null);
 
 //Methods
 const validDate = (value: string) => {
@@ -53,8 +56,6 @@ const validDate = (value: string) => {
 	}
 	const newDate = moment(value);
 	const now = moment();
-
-	// console.log(`date entered: ${newDate.getTime()} < ${now.getTime()} ?= ${newDate.getTime() < now.getTime()}`);
 	return newDate.isBefore(now) ? true : 'Date cannot be in the future';
 }
 
@@ -86,12 +87,35 @@ const focusLastItem = () => {
 const saveReceipt = () => {
 	const meta = receiptForm.value?.getMeta();
 	receiptForm.value?.validate();
+
 	nextTick(async () => {
 		if (meta && meta.dirty && meta.valid) {
 			dialog.value?.setLoading(true);
 			const response = await receiptApi.createReceipt(receipt);
-			console.log(response);
+
 			if (response.status === 201) {
+				if (docsToUpload.length > 0) {
+					let fullErrors = "";
+					const createdReceipt: Receipt = {
+						id: response.data.result[0].id,
+						store: response.data.result[0].store,
+						date: response.data.result[0].date,
+						location: response.data.result[0].location,
+						reference: response.data.result[0].reference,
+						items: []
+					};
+
+					for(const file of docsToUpload) {
+						const response = await receiptApi.uploadDocument(file, createdReceipt);
+						if (response.status != 201) {
+							fullErrors += `${response.data.errors}\n`;
+						}
+					}
+
+					if (fullErrors.length > 1) {
+						console.error(JSON.stringify(fullErrors))
+					}
+				}
 				setTimeout(() => {
 					dialog.value?.setLoading(false);
 					dialog.value?.hide();
@@ -104,12 +128,14 @@ const saveReceipt = () => {
 	})
 }
 
+const uploadDocument = async (file: File) => {
+	const response = await receiptApi.uploadDocument(file, receipt);
+	if (response.status === 201) {
+		return;
+	}
+	return response.data.errors;
+}
 const deleteItem = (index: any) => {
-	console.log(index);
-	// const i = items.indexOf(index);
-	// console.log(i);
-	const item = receipt.items[index];
-	console.log(item);
 	receipt.items.splice(index, 1);
 	if (receipt.items.length == 0) {
 		nextTick(() => addNewReceiptItem());
@@ -122,7 +148,14 @@ const setReceipt = (newReceipt: Receipt) => {
 
 const show = () => {dialog.value?.show();}
 const hide = () => {dialog.value?.hide();}
-const cost = ():number => {
+
+//Receipt documents
+const showReceiptDocumentDialog = () => { documentDialog.value?.show();}
+const storeDocuments = (dialogFiles: File[]) => {
+	docsToUpload = dialogFiles;
+}
+
+const cost = (): number => {
 	if (receipt.cost && receipt.cost > 0) {
 		return receipt.cost;
 	}
@@ -134,7 +167,6 @@ const cost = ():number => {
 }
 
 //Setup
-addIcons(IoCloseOutline);
 onMounted(() => {
 	if (!props.receipt.id) {
 		addNewReceiptItem();
@@ -154,15 +186,13 @@ export default defineComponent({
 });
 </script>
 <template>
-	<BasicDialog ref="dialog" class="flex flex-col min-w-[50vw]" :persistent="is.editing" blur>
-	<!-- Header -->
-	<div class="flex flex-row">
-		<span class="header-text mr-auto">{{ is.editing ? 'Create' : ''}} Receipt</span>
-		<span class="icon-button hover:animate-hop-once" @click="($refs.dialog as typeof BasicDialog).hide()">
-			<VIcon name="io-close-outline" label="Close" scale="1.3"></VIcon>
-		</span>
-	</div>
-
+	<BasicDialog
+		ref="dialog"
+		class="flex flex-col min-w-[50vw]"
+		:persistent="is.editing"
+		blur
+		:title="`Create ${is.editing ? 'Create' : ''}`"
+	>
 	<!-- Receipt Items -->
 	<div>
 		<VForm ref="receiptForm">
@@ -203,7 +233,10 @@ export default defineComponent({
 	</div>
 	<!-- Receipt Footer -->
 	<div class="pt-4 border-t border-solid border-neutral-500 flex flex-row">
-		<div v-if="is.editing" class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
+		<template v-if="is.editing">
+			<div class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
+			<div class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents</div>
+		</template>
 		<span class="ml-auto font-semibold text-lg self-center">Total: ${{ cost().toFixed(2) }}</span>
 		<div class="ml-auto inline-flex flex-row">
 			<template v-if="is.editing">
@@ -213,6 +246,7 @@ export default defineComponent({
 		</div>
 	</div>
 	</BasicDialog>
+	<ReceiptDocumentDialog ref="documentDialog" @save="(files) => storeDocuments(files)" :new-receipt="is.editing"/>
 </template>
 <style lang="scss">
 .overscroll {

@@ -31,5 +31,19 @@ export default {
 			return error.response;
 		});
 		return response;
+	},
+
+	//Documents
+	uploadDocument(file: File, receipt: Receipt) {
+		const formData = new FormData();
+		formData.append('file', file);
+		const response = api().post(`/receipt/${receipt.id}/documents`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		}).catch((error) => {
+			return error.response;
+		});
+		return response;
 	}
 }
