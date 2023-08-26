@@ -191,7 +191,7 @@ export default defineComponent({
 		class="flex flex-col min-w-[50vw]"
 		:persistent="is.editing"
 		blur
-		:title="`Create ${is.editing ? 'Create' : ''}`"
+		:title="`${is.editing ? 'Create' : ''} Receipt`"
 	>
 	<!-- Receipt Items -->
 	<div>
