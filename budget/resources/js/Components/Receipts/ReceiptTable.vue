@@ -24,9 +24,9 @@ export default defineComponent({name: 'ReceiptTable'})
 			<span class="table-header-text">Category</span>
 		</div>
 		<div v-for="receipt of $page.props.receipts" class="table-row" @click="showReceipt(receipt)">
-			<span>{{ receipt.reference }}</span>
-			<span>{{ receipt.store }}</span>
-			<span>{{ receipt.location }}</span>
+			<span>{{ receipt.reference ?? '-' }}</span>
+			<span>{{ receipt.store ?? '-' }}</span>
+			<span>{{ receipt.location ?? '-' }}</span>
 			<span>${{ receipt.cost.toFixed(2) }}</span>
 			<span>{{ receipt.category}}</span>
 		</div>

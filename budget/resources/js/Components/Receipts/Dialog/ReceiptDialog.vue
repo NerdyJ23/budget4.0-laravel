@@ -178,9 +178,9 @@ export default defineComponent({
 					<span class="font-semibold text-md">Store</span>
 					<span class="font-semibold text-md">Location</span>
 					<span class="font-semibold text-md">Date</span>
-					<span>{{ receipt.reference }}</span>
-					<span>{{ receipt.store }}</span>
-					<span>{{ receipt.location }}</span>
+					<span>{{ receipt.reference ?? '-' }}</span>
+					<span>{{ receipt.store ?? '-' }}</span>
+					<span>{{ receipt.location ?? '-' }}</span>
 					<span>{{ receipt.date }}</span>
 				</template>
 			</div>
