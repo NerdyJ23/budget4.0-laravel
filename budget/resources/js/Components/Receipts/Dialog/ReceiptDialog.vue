@@ -118,8 +118,9 @@ const saveReceipt = () => {
 					}
 				}
 				setTimeout(() => {
-					dialog.value?.setLoading(false);
-					dialog.value?.hide();
+					window.location.reload();
+					// dialog.value?.setLoading(false);
+					// dialog.value?.hide();
 				}, 800);
 			} else {
 				error.value.show = true;

@@ -5,10 +5,14 @@ import ReceiptDialog from '@/Components/Receipts/Dialog/ReceiptDialog.vue';
 
 import { BiFileEarmarkText } from "oh-vue-icons/icons";
 import { addIcons } from "oh-vue-icons";
+import { usePage } from '@inertiajs/vue3';
+import receiptApi from '@/services/Receipts/receiptApi';
 const showDialog = ref(false);
 
+const receipts = ref(usePage().props.receipts);
+
 const dialog = ref<InstanceType<typeof ReceiptDialog> | null>();
-const reload = () => {};
+const reload = () => { window.location.reload() };
 const showReceipt = (receipt: Receipt) => {
 	showDialog.value = true;
 	nextTick(() => {
@@ -32,7 +36,7 @@ defineExpose({reload});
 			<span class="table-header-text">Cost</span>
 			<span class="table-header-text">Category</span>
 		</div>
-		<div v-for="receipt of $page.props.receipts" class="table-row" @click="showReceipt(receipt)">
+		<div v-for="receipt of receipts" class="table-row" @click="showReceipt(receipt)">
 			<span class="inline-flex flex-row">
 				<span v-if="receipt.documents.length" class="self-start"><VIcon  name="bi-file-earmark-text" /></span>
 				<span class="mx-auto">{{ receipt.reference ?? '-' }}</span>

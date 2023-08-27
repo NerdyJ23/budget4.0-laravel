@@ -3,5 +3,5 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
         user: User[];
     };
 
-	receipts: Receipt[];
+	receipts: Array<Receipt>;
 };
