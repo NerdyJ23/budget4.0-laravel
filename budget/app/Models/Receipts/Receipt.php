@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Receipts\ReceiptItem;
+use App\Models\Receipts\ReceiptDocument;
 use App\Models\Users\User;
 
 class Receipt extends Model
@@ -41,6 +42,10 @@ class Receipt extends Model
 
 	public function receiptItem(): HasMany {
 		return $this->hasMany(ReceiptItem::class, 'Receipt', 'ID');
+	}
+
+	public function receiptDocument(): HasMany {
+		return $this->hasMany(ReceiptDocument::class, 'Receipt_ID', 'ID');
 	}
 
 	public function user(): BelongsTo {

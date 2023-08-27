@@ -26,10 +26,9 @@ let receipt: Receipt = reactive({
 	date: '',
 	location: '',
 	reference: '',
-	items: []
+	items: [],
+	documents: []
 });
-
-let docsToUpload: File[] = [];
 
 const is = reactive({
 	loading: false,
@@ -93,7 +92,7 @@ const saveReceipt = () => {
 			const response = await receiptApi.createReceipt(receipt);
 
 			if (response.status === 201) {
-				if (docsToUpload.length > 0) {
+				if (receipt.documents.length > 0) {
 					let fullErrors = "";
 					const createdReceipt: Receipt = {
 						id: response.data.result[0].id,
@@ -101,13 +100,16 @@ const saveReceipt = () => {
 						date: response.data.result[0].date,
 						location: response.data.result[0].location,
 						reference: response.data.result[0].reference,
-						items: []
+						items: [],
+						documents: []
 					};
 
-					for(const file of docsToUpload) {
-						const response = await receiptApi.uploadDocument(file, createdReceipt);
-						if (response.status != 201) {
-							fullErrors += `${response.data.errors}\n`;
+					for(const file of receipt.documents) {
+						if (file instanceof File) {
+							const response = await receiptApi.uploadDocument(file, createdReceipt);
+							if (response.status != 201) {
+								fullErrors += `${response.data.errors}\n`;
+							}
 						}
 					}
 
@@ -165,9 +167,6 @@ const showReceiptDocumentDialog = () => {
 		documentDialog.value?.show();
 	})
 }
-const storeDocuments = (dialogFiles: File[]) => {
-	docsToUpload = dialogFiles;
-}
 
 const cost = (): number => {
 	if (receipt.cost && receipt.cost > 0) {
@@ -203,7 +202,6 @@ export default defineComponent({
 		:title="`${is.editing ? 'Create Receipt' : ''}`"
 		@destroy="$emit('destroy')"
 	>
-	{{ receipt }}
 	<!-- Receipt Items -->
 	<div>
 		<VForm ref="receiptForm">
@@ -247,7 +245,7 @@ export default defineComponent({
 		<template v-if="is.editing">
 			<div class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
 		</template>
-		<div class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents</div>
+		<div class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents ({{ receipt.documents?.length ?? 0 }})</div>
 		<span class="ml-auto font-semibold text-lg self-center">Total: ${{ cost().toFixed(2) }}</span>
 		<div class="ml-auto inline-flex flex-row">
 			<template v-if="is.editing">
@@ -260,10 +258,9 @@ export default defineComponent({
 	<ReceiptDocumentDialog
 		v-if="receiptDocumentDialogShowing"
 		ref="documentDialog"
-		@save="(files) => storeDocuments(files)"
 		@destroy="receiptDocumentDialogShowing = false"
 		:new-receipt="is.editing"
-		:receipt="receipt ?? null"
+		:receipt="receipt"
 	/>
 </template>
 <style lang="scss">

@@ -1,51 +1,33 @@
 <script setup lang="ts">
-import { ReceiptDocument } from '@/types/Receipts/receiptDocument';
 import { defineComponent, computed } from 'vue';
 import { addIcons } from "oh-vue-icons";
 import { ViFileTypePdf, BiFileEarmarkImage, MdInsertdrivefileOutlined, BiFileEarmarkZip, MdClose } from "oh-vue-icons/icons";
 
 const props = defineProps<{
-	file: ReceiptDocument | File,
-	editing: boolean
+	filename: string,
+	filesize?: number,
+	url?: string,
+	editing?: boolean
 }>();
 
-const filename = computed(() => {
-	console.log(props.file);
-	return props.file instanceof File ? (props.file as File).name : (props.file as ReceiptDocument).filename;
-});
-
 const extension = computed((): string => {
-	const i = filename.value.split('.').pop();
+	const i = props.filename.split('.').pop();
 	return i ? i.toLowerCase() : ''
 })
-const sizeMeasurement = computed(() => {
-	if (props.file instanceof File) {
-		const size = props.file.size;
+
+const displayFileSize = computed(() => {
+	if (props.filesize) {
+		const size = props.filesize;
 		if (size <= 1000) {
-			return 'b';
+			return `${size} b`;
 		} else if (size <= 100000) {
-			return 'kb';
+			return `${(size / 1000).toFixed(2)} kb`;
 		} else if (size > 1000000) {
-			return 'mb';
+			return `${(size / 1000000).toFixed(2)} mb`;
 		}
 	}
-	return null;
 })
 
-const filesize = computed((): number | null => {
-	if (props.file instanceof File) {
-		switch(sizeMeasurement.value) {
-			case 'b':
-				return props.file.size;
-			case 'kb':
-				return props.file.size / 1000;
-			case 'mb':
-			default:
-				return props.file.size / 1000000;
-		}
-	}
-	return null;
-});
 const icon = computed((): string => {
 	if (extension) {
 		switch(extension.value) {
@@ -69,14 +51,14 @@ const icon = computed((): string => {
 
 const newTab = computed(():boolean => { return icon.value === "bi-file-earmark-image" || icon.value === "vi-file-type-pdf"})
 const openFile = () => {
-	if (!(props.file instanceof File)) {
+	if (props.url) {
 		const link = document.createElement('a');
-		link.setAttribute('href', `${props.file.url}?method=${newTab.value ? '_blank' : 'download'}`);
+		link.setAttribute('href', `${props.url}?method=${newTab.value ? '_blank' : 'download'}`);
 		link.setAttribute('target', '_blank');
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
-		URL.revokeObjectURL(props.file.url);
+		URL.revokeObjectURL(props.url);
 	}
 }
 addIcons(ViFileTypePdf, BiFileEarmarkImage, MdInsertdrivefileOutlined, BiFileEarmarkZip, MdClose)
@@ -93,7 +75,7 @@ addIcons(ViFileTypePdf, BiFileEarmarkImage, MdInsertdrivefileOutlined, BiFileEar
 		<VIcon :name="icon"></VIcon>
 		<span>
 			<span :class="[{'cursor-pointer' :!editing}]" @click="openFile"> {{ filename }} </span>
-			<span class="text-xs">{{ filesize?.toFixed(2) }}{{ sizeMeasurement }}</span>
+			<span class="text-xs">{{ displayFileSize }}</span>
 		</span>
 	</div>
 </template>

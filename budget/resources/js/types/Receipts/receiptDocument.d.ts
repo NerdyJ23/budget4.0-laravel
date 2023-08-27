@@ -1,5 +1,5 @@
 export interface ReceiptDocument {
-	id?: string;
-	filename: string;
-	url: string;
+	id: string;
+	name: string;
+	uploadedUtc: string;
 }

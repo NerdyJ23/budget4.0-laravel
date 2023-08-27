@@ -3,6 +3,8 @@ import { Receipt } from '@/types/Receipts/receipt';
 import { defineComponent, ref, nextTick } from 'vue';
 import ReceiptDialog from '@/Components/Receipts/Dialog/ReceiptDialog.vue';
 
+import { BiFileEarmarkText } from "oh-vue-icons/icons";
+import { addIcons } from "oh-vue-icons";
 const showDialog = ref(false);
 
 const dialog = ref<InstanceType<typeof ReceiptDialog> | null>();
@@ -17,7 +19,7 @@ const showReceipt = (receipt: Receipt) => {
 const dialogDestroyed = () => {
 	showDialog.value = false;
 }
-
+addIcons(BiFileEarmarkText);
 defineExpose({reload});
 </script>
 <script lang="ts">export default defineComponent({name: 'ReceiptTable'});</script>
@@ -31,7 +33,10 @@ defineExpose({reload});
 			<span class="table-header-text">Category</span>
 		</div>
 		<div v-for="receipt of $page.props.receipts" class="table-row" @click="showReceipt(receipt)">
-			<span>{{ receipt.reference ?? '-' }}</span>
+			<span class="inline-flex flex-row">
+				<span v-if="receipt.documents.length" class="self-start"><VIcon  name="bi-file-earmark-text" /></span>
+				<span class="mx-auto">{{ receipt.reference ?? '-' }}</span>
+			</span>
 			<span>{{ receipt.store ?? '-' }}</span>
 			<span>{{ receipt.location ?? '-' }}</span>
 			<span>${{ receipt.cost.toFixed(2) }}</span>
