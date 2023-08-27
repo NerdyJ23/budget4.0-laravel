@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Web\Receipts;
 use App\Http\Controllers\Controller as BaseController;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Response;
+use App\Clients\Documents\DocumentClient;
+
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Schemas\Schema;
 
@@ -35,11 +38,13 @@ class ReceiptController extends BaseController {
 	static function getDocument(Request $request, string $receiptId, string $docId) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$receipt = ReceiptClient::get(user: $user, id: $receiptId);
-		$file = ReceiptDocumentClient::getFile(id: $docId, receipt: $receipt, user: $user);
+
 		if ($request->input('method') && $request->input('method') == '_blank') { //show in browser
-			return parent::sendResponse($file);
+			$fileModel = ReceiptDocumentClient::getModel(id: $docId, receipt: $receipt, user: $user);
+			$filePath = ReceiptDocumentClient::getFullFilePath(receipt: $receipt, user: $user, file: $fileModel);
+			return response()->file($filePath);
 		}
-		return $file;
+		return ReceiptDocumentClient::downloadFile(id: $docId, receipt: $receipt, user: $user);
 	}
 
 	static function graph(Request $request) {

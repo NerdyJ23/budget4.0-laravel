@@ -26,4 +26,8 @@ class DocumentClient extends BaseClient {
 	protected function delete(string $fullpath) {
 		return Storage::disk($this->disk)->delete($fullpath);
 	}
+
+	protected function path(string $filename) {
+		return Storage::disk($this->disk)->path($filename);
+	}
 }

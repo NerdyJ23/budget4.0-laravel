@@ -17,6 +17,11 @@ class ReceiptDocumentClient extends DocumentClient {
 		return $user->id . '/' . $receipt->ID;
 	}
 
+	static function getFullFilePath(User $user, Receipt $receipt, ReceiptDocument $file) {
+		$client = new DocumentClient;
+		return $client->path($user->id . '/' . $receipt->ID . '/' . $file->UUID);
+	}
+
 	static function listFiles(User $user, Receipt $receipt) {
 		return ReceiptDocument::where([
 			'Receipt_ID' => $receipt->ID,
@@ -45,6 +50,7 @@ class ReceiptDocumentClient extends DocumentClient {
 			'User_ID' => $user->id
 		])->first();
 	}
+
 	static function getFile(string $id, Receipt $receipt, User $user) {
 		$fileModel = self::getModel(id: $id, receipt: $receipt, user: $user);
 		if ($fileModel == null) {
@@ -66,6 +72,7 @@ class ReceiptDocumentClient extends DocumentClient {
 		$client = new DocumentClient;
 		return $client->download($path);
 	}
+
 	static function deleteFile(string $id, Receipt $receipt, User $user) {
 		$fileModel = self::getModel(id: $id, receipt: $receipt, user: $user);
 		if ($fileModel == null) {
