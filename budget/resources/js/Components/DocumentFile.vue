@@ -71,8 +71,8 @@ const newTab = computed(():boolean => { return icon.value === "bi-file-earmark-i
 const openFile = () => {
 	if (!(props.file instanceof File)) {
 		const link = document.createElement('a');
-		link.setAttribute('href', `${props.file.url}?method=${newTab ? '_blank' : 'download'}`);
-		newTab ? link.setAttribute('target', '_blank') : link.setAttribute('download', props.file.filename);
+		link.setAttribute('href', `${props.file.url}?method=${newTab.value ? '_blank' : 'download'}`);
+		link.setAttribute('target', '_blank');
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);

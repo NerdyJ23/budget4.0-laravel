@@ -38,13 +38,13 @@ class ReceiptController extends BaseController {
 	static function getDocument(Request $request, string $receiptId, string $docId) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$receipt = ReceiptClient::get(user: $user, id: $receiptId);
+		$fileModel = ReceiptDocumentClient::getModel(id: $docId, receipt: $receipt, user: $user);
+		$filePath = ReceiptDocumentClient::getFullFilePath(receipt: $receipt, user: $user, file: $fileModel);
 
 		if ($request->input('method') && $request->input('method') == '_blank') { //show in browser
-			$fileModel = ReceiptDocumentClient::getModel(id: $docId, receipt: $receipt, user: $user);
-			$filePath = ReceiptDocumentClient::getFullFilePath(receipt: $receipt, user: $user, file: $fileModel);
-			return response()->file($filePath);
+			return response()->download($filePath, $fileModel->Name, [], 'inline');
 		}
-		return ReceiptDocumentClient::downloadFile(id: $docId, receipt: $receipt, user: $user);
+		return response()->download($filePath, $fileModel->Name);
 	}
 
 	static function graph(Request $request) {
