@@ -32,10 +32,15 @@ Route::prefix('dashboard')->middleware('logged_in')->group(function () {
 // Route::get('/', function(Request $request) {
 // 	return ReceiptController::list(request: $request);
 // });
+Route::prefix('receipts')->middleware('logged_in')->group(function () {
+	Route::get('/', function (Request $request) {
+		return ReceiptController::list($request);
+	})->name('receipts');
 
-Route::get('/receipts', function (Request $request) {
-	return ReceiptController::list($request);
-})->name('receipts');
+	Route::get('/{uuid}/documents/{docUuid}', function(Request $request, string $uuid, string $docUuid) {
+		return ReceiptController::getDocument(request: $request, receiptId: $uuid, docId: $docUuid);
+	});
+});
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
 //         'canLogin' => Route::has('login'),

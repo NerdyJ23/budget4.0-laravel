@@ -16,6 +16,10 @@ class DocumentClient extends BaseClient {
 	}
 
 	protected function get(string $path) {
+		return Storage::disk($this->disk)->get($path);
+	}
+
+	protected function download(string $path) {
 		return Storage::disk($this->disk)->download($path);
 	}
 

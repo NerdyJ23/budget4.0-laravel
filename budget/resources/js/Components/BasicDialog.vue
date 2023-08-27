@@ -16,7 +16,11 @@ const is = reactive({
 });
 
 const show = () => { is.open = true; toggleOverflow();}
-const hide = () => { is.open = false; toggleOverflow();}
+const hide = () => {
+	is.open = false;
+	toggleOverflow();
+	emit('destroy');
+}
 const setLoading = (isLoading: boolean) =>{
 	is.loading = isLoading;
 	setTimeout(() => is.loading = false, 10000); //In case of errors stop loading 10s in
@@ -46,6 +50,9 @@ onMounted(() => {
 	});
 });
 
+const emit = defineEmits<{
+	(e: 'destroy'): void
+}>();
 addIcons(RiLoader5Fill, IoCloseOutline);
 defineExpose({is, show, hide, setLoading});
 </script>

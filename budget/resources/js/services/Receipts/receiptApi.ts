@@ -45,5 +45,13 @@ export default {
 			return error.response;
 		});
 		return response;
+	},
+
+	loadDocumentList(receipt: Receipt) {
+		console.log(receipt);
+		const response = api().get(`/receipt/${receipt.id}/documents`).catch((error) => {
+			return error.response;
+		})
+		return response;
 	}
 }

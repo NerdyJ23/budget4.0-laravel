@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Receipt } from '@/types/Receipts/receipt';
 import { ReceiptItem } from '@/types/Receipts/receiptItem';
-import { defineComponent, ref, onMounted, reactive, nextTick } from 'vue';
+import { defineComponent, ref, onMounted, reactive, nextTick, onUnmounted } from 'vue';
 import { Form } from 'vee-validate';
 import moment from 'moment';
 import receiptApi from '@/services/Receipts/receiptApi';
@@ -15,21 +15,20 @@ import ReceiptDocumentDialog from './ReceiptDocumentDialog.vue';
 
 //Props
 const props = withDefaults(defineProps<{
-	receipt?: Receipt
 	editing?: boolean
 }>(), {
-	editing: false,
-	receipt: Receipt => ({
-		store: '',
-		date: '',
-		location: '',
-		reference: '',
-		items: []
-	})
+	editing: false
 });
 
 //Data
-let receipt: Receipt = reactive(props.receipt);
+let receipt: Receipt = reactive({
+	store: '',
+	date: '',
+	location: '',
+	reference: '',
+	items: []
+});
+
 let docsToUpload: File[] = [];
 
 const is = reactive({
@@ -40,7 +39,7 @@ const error = ref({
 	show: false,
 	message: ''
 });
-
+const receiptDocumentDialogShowing = ref(false);
 
 
 //Refs
@@ -146,11 +145,26 @@ const setReceipt = (newReceipt: Receipt) => {
 	receipt = newReceipt;
 }
 
-const show = () => {dialog.value?.show();}
-const hide = () => {dialog.value?.hide();}
+const show = () => {
+	receiptDocumentDialogShowing.value = true;
+	dialog.value?.show();
+	nextTick(() => {
+		if (!receipt.id) {
+			addNewReceiptItem();
+		}
+	})
+}
+const hide = () => {
+	dialog.value?.hide();
+}
 
 //Receipt documents
-const showReceiptDocumentDialog = () => { documentDialog.value?.show();}
+const showReceiptDocumentDialog = () => {
+	receiptDocumentDialogShowing.value = true;
+	nextTick(() => {
+		documentDialog.value?.show();
+	})
+}
 const storeDocuments = (dialogFiles: File[]) => {
 	docsToUpload = dialogFiles;
 }
@@ -166,13 +180,8 @@ const cost = (): number => {
 	return total;
 }
 
-//Setup
-onMounted(() => {
-	if (!props.receipt.id) {
-		addNewReceiptItem();
-	}
-});
 defineExpose({dialog, reset, show, hide, setReceipt});
+defineEmits(['destroy']);
 </script>
 
 <script lang="ts">
@@ -191,8 +200,10 @@ export default defineComponent({
 		class="flex flex-col min-w-[50vw]"
 		:persistent="is.editing"
 		blur
-		:title="`${is.editing ? 'Create' : ''} Receipt`"
+		:title="`${is.editing ? 'Create Receipt' : ''}`"
+		@destroy="$emit('destroy')"
 	>
+	{{ receipt }}
 	<!-- Receipt Items -->
 	<div>
 		<VForm ref="receiptForm">
@@ -235,8 +246,8 @@ export default defineComponent({
 	<div class="pt-4 border-t border-solid border-neutral-500 flex flex-row">
 		<template v-if="is.editing">
 			<div class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
-			<div class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents</div>
 		</template>
+		<div class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents</div>
 		<span class="ml-auto font-semibold text-lg self-center">Total: ${{ cost().toFixed(2) }}</span>
 		<div class="ml-auto inline-flex flex-row">
 			<template v-if="is.editing">
@@ -246,7 +257,14 @@ export default defineComponent({
 		</div>
 	</div>
 	</BasicDialog>
-	<ReceiptDocumentDialog ref="documentDialog" @save="(files) => storeDocuments(files)" :new-receipt="is.editing"/>
+	<ReceiptDocumentDialog
+		v-if="receiptDocumentDialogShowing"
+		ref="documentDialog"
+		@save="(files) => storeDocuments(files)"
+		@destroy="receiptDocumentDialogShowing = false"
+		:new-receipt="is.editing"
+		:receipt="receipt ?? null"
+	/>
 </template>
 <style lang="scss">
 .overscroll {

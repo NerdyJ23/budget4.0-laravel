@@ -45,7 +45,7 @@ class ReceiptDocumentClient extends DocumentClient {
 			'User_ID' => $user->id
 		])->first();
 	}
-	static function getFile(string $id, Receipt $receipt, User $user): StreamedResponse {
+	static function getFile(string $id, Receipt $receipt, User $user) {
 		$fileModel = self::getModel(id: $id, receipt: $receipt, user: $user);
 		if ($fileModel == null) {
 			throw new NotFoundException;
@@ -56,6 +56,16 @@ class ReceiptDocumentClient extends DocumentClient {
 		return $client->get($path);
 	}
 
+	static function downloadFile(string $id, Receipt $receipt, User $user): StreamedResponse {
+		$fileModel = self::getModel(id: $id, receipt: $receipt, user: $user);
+		if ($fileModel == null) {
+			throw new NotFoundException;
+		}
+
+		$path = self::getFilePath(user: $user, receipt: $receipt) . '/' . $fileModel->UUID;
+		$client = new DocumentClient;
+		return $client->download($path);
+	}
 	static function deleteFile(string $id, Receipt $receipt, User $user) {
 		$fileModel = self::getModel(id: $id, receipt: $receipt, user: $user);
 		if ($fileModel == null) {

@@ -3,17 +3,24 @@ import { Receipt } from '@/types/Receipts/receipt';
 import { defineComponent, ref, nextTick } from 'vue';
 import ReceiptDialog from '@/Components/Receipts/Dialog/ReceiptDialog.vue';
 
+const showDialog = ref(false);
+
 const dialog = ref<InstanceType<typeof ReceiptDialog> | null>();
 const reload = () => {};
 const showReceipt = (receipt: Receipt) => {
-	dialog.value?.show();
-	dialog.value?.setReceipt(receipt);
+	showDialog.value = true;
+	nextTick(() => {
+		dialog.value?.setReceipt(receipt);
+		dialog.value?.show();
+	})
 }
+const dialogDestroyed = () => {
+	showDialog.value = false;
+}
+
 defineExpose({reload});
 </script>
-<script lang="ts">
-export default defineComponent({name: 'ReceiptTable'})
-</script>
+<script lang="ts">export default defineComponent({name: 'ReceiptTable'});</script>
 <template>
 	<div class="mx-2">
 		<div class="table-header rounded-t-md">
@@ -31,7 +38,7 @@ export default defineComponent({name: 'ReceiptTable'})
 			<span>{{ receipt.category}}</span>
 		</div>
 	</div>
-	<ReceiptDialog ref="dialog" />
+	<ReceiptDialog v-if="showDialog" ref="dialog" @destroy="dialogDestroyed"/>
 </template>
 <style lang="scss" scoped>
 .table {

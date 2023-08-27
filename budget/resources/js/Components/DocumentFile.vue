@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ReceiptDocument } from '@/types/receiptDocument';
+import { ReceiptDocument } from '@/types/Receipts/receiptDocument';
 import { defineComponent, computed } from 'vue';
 import { addIcons } from "oh-vue-icons";
 import { ViFileTypePdf, BiFileEarmarkImage, MdInsertdrivefileOutlined, BiFileEarmarkZip, MdClose } from "oh-vue-icons/icons";
 
 const props = defineProps<{
 	file: ReceiptDocument | File,
+	editing: boolean
 }>();
 
 const filename = computed(() => {
@@ -67,7 +68,17 @@ const icon = computed((): string => {
 })
 
 const newTab = computed(():boolean => { return icon.value === "bi-file-earmark-image" || icon.value === "vi-file-type-pdf"})
-
+const openFile = () => {
+	if (!(props.file instanceof File)) {
+		const link = document.createElement('a');
+		link.setAttribute('href', `${props.file.url}?method=${newTab ? '_blank' : 'download'}`);
+		newTab ? link.setAttribute('target', '_blank') : link.setAttribute('download', props.file.filename);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		URL.revokeObjectURL(props.file.url);
+	}
+}
 addIcons(ViFileTypePdf, BiFileEarmarkImage, MdInsertdrivefileOutlined, BiFileEarmarkZip, MdClose)
 </script>
 
@@ -76,12 +87,12 @@ addIcons(ViFileTypePdf, BiFileEarmarkImage, MdInsertdrivefileOutlined, BiFileEar
 </script>
 <template>
 	<div class="flex flex-row items-center">
-		<div class="icon-button self-center">
+		<div v-if="editing" class="icon-button self-center">
 			<VIcon name="md-close" class="fill-red-500 m-0.5" scale="1.2" @click="$emit('delete')" />
 		</div>
 		<VIcon :name="icon"></VIcon>
 		<span>
-			{{ filename }}
+			<span :class="[{'cursor-pointer' :!editing}]" @click="openFile"> {{ filename }} </span>
 			<span class="text-xs">{{ filesize?.toFixed(2) }}{{ sizeMeasurement }}</span>
 		</span>
 	</div>
