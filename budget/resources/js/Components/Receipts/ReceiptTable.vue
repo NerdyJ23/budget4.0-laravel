@@ -6,13 +6,12 @@ import ReceiptDialog from '@/Components/Receipts/Dialog/ReceiptDialog.vue';
 import { BiFileEarmarkText } from "oh-vue-icons/icons";
 import { addIcons } from "oh-vue-icons";
 import { usePage } from '@inertiajs/vue3';
-import receiptApi from '@/services/Receipts/receiptApi';
-const showDialog = ref(false);
 
+const showDialog = ref(false);
 const receipts = ref(usePage().props.receipts);
 
 const dialog = ref<InstanceType<typeof ReceiptDialog> | null>();
-const reload = () => { window.location.reload() };
+const reload = () => { window.location.reload() }; //Lazy hack instead of soft-reloading the page
 const showReceipt = (receipt: Receipt) => {
 	showDialog.value = true;
 	nextTick(() => {
@@ -24,7 +23,7 @@ const dialogDestroyed = () => {
 	showDialog.value = false;
 }
 addIcons(BiFileEarmarkText);
-defineExpose({reload});
+defineExpose({reload, receipts});
 </script>
 <script lang="ts">export default defineComponent({name: 'ReceiptTable'});</script>
 <template>
@@ -43,7 +42,7 @@ defineExpose({reload});
 			</span>
 			<span>{{ receipt.store ?? '-' }}</span>
 			<span>{{ receipt.location ?? '-' }}</span>
-			<span>${{ receipt.cost.toFixed(2) }}</span>
+			<span>${{ receipt.cost?.toFixed(2) }}</span>
 			<span>{{ receipt.category}}</span>
 		</div>
 	</div>

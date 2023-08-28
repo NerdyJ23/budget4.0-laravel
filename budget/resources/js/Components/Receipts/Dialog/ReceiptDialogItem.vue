@@ -6,7 +6,7 @@ import ReceiptStore from '@/store/receiptStore';
 
 
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
-import VueDropdownMenu from '@/Components/Inputs/VueDropdownMenu.vue';
+import ReceiptCategoryDropdown from '@/Components/Receipts/ReceiptCategoryDropdown.vue';
 
 import { addIcons } from "oh-vue-icons";
 import { MdDeleteforeverOutlined, HiSolidPencilAlt } from "oh-vue-icons/icons";
@@ -55,7 +55,7 @@ defineComponent({
 			</div>
 			<span class="text-lg self-center align-self-center">$ {{ total }}</span>
 			<div class="self-center inline-flex flex-row">
-				<VueDropdownMenu
+				<ReceiptCategoryDropdown
 					:rules="validCategory"
 					:items="ReceiptStore.state.categories"
 					@changed="(n: string) => setCategory(n)"

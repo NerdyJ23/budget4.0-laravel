@@ -2,7 +2,7 @@
 import { defineComponent, reactive, ref, computed, watch } from 'vue';
 import { addIcons } from "oh-vue-icons";
 import { MdArrowdropdown, MdArrowdropup } from "oh-vue-icons/icons";
-import VueTextField from './VueTextField.vue';
+import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import { nextTick } from 'vue';
 import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 
@@ -53,7 +53,7 @@ addIcons(MdArrowdropdown, MdArrowdropup);
 </script>
 <script lang="ts">
 export default defineComponent({
-	name: "DropdownMenu"
+	name: "ReceiptCategoryDropdown"
 });
 </script>
 <template>

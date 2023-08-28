@@ -9,13 +9,16 @@ const state: ReceiptStoreState = {
 	selectedMonth: today.getMonth(),
 	selectedYear: today.getFullYear(),
 	categories: [],
+	filter: {
+		category: "",
+		receipt: ""
+	}
 }
 
 const getters = {
 }
 const actions = {
 	async loadCategories({ state }:any ) {
-		console.log(state);
 		const response = await receiptApi.loadCategories();
 		if (response.status === 200) {
 			for (const cat of response.data.result) {

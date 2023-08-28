@@ -20,7 +20,7 @@
 						:placeholder="placeholder"
 						:id="id"
 						@focus="$emit('focused')"
-						@input="$emit('input.change')"
+						@input="(e: Event) => $emit('input.change', e)"
 						:class="[`
 							border-solid border border-zinc-400 rounded-sm p-1 disabled:bg-zinc-300 w-full`,
 							{'border-red-400': meta.dirty && !meta.valid},
