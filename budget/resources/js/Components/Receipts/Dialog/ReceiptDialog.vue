@@ -263,8 +263,3 @@ export default defineComponent({
 		:receipt="receipt"
 	/>
 </template>
-<style lang="scss">
-.overscroll {
-	overscroll-behavior: contain;
-}
-</style>

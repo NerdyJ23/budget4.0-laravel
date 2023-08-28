@@ -35,3 +35,7 @@
 .force-front {
 	z-index: 999;
 }
+
+.overscroll {
+	overscroll-behavior: contain;
+}
