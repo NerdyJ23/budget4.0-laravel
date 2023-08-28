@@ -18,7 +18,7 @@ const location = window.location.href;
 const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
 const input = ref<InstanceType<typeof VueTextField> | null>(null);
 
-	const reload = () => {
+const reload = () => {
 	receiptTable.value?.reload();
 };
 

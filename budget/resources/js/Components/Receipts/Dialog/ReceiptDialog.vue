@@ -245,7 +245,8 @@ export default defineComponent({
 		<template v-if="is.editing">
 			<div class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
 		</template>
-		<div class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents ({{ receipt.documents?.length ?? 0 }})</div>
+		<div v-if="receipt.documents.length || is.editing" class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents ({{ receipt.documents?.length ?? 0 }})</div>
+		<div v-else class="py-1 ml-2">&nbsp</div>
 		<span class="absolute left-0 right-0 mx-auto text-center font-semibold text-lg self-center pointer-events-none">Total: ${{ cost().toFixed(2) }}</span>
 		<div class="ml-auto inline-flex flex-row">
 			<template v-if="is.editing">

@@ -17,10 +17,10 @@ export default defineComponent({
 })
 </script>
 <template>
-	<div class="h-screen flex flex-col">
+	<div class="h-screen flex flex-col overscroll min-h-screen relative">
 		<header-bar></header-bar>
-		<div class="inline-flex flex-row h-full">
-			<div class="basis-1/6">
+		<div class="inline-flex flex-row h-screen">
+			<div class="basis-1/6 sticky">
 				<slot name="sidebar">
 					<SideBar class="border border-solid border-slate-800">
 						<PlainButtonLink text="Receipts" :link="route('receipts')" :current="currentPage('receipts')"></PlainButtonLink>
