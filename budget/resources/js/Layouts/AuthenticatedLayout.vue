@@ -17,17 +17,17 @@ export default defineComponent({
 })
 </script>
 <template>
-	<div class="h-screen flex flex-col overscroll min-h-screen relative">
+	<div class="flex flex-col h-screen min-h-screen max-h-screen">
 		<header-bar></header-bar>
-		<div class="inline-flex flex-row h-screen">
-			<div class="basis-1/6 sticky">
+		<div class="inline-flex flex-row">
+			<div>
 				<slot name="sidebar">
-					<SideBar class="border border-solid border-slate-800">
-						<PlainButtonLink text="Receipts" :link="route('receipts')" :current="currentPage('receipts')"></PlainButtonLink>
+					<SideBar class="border border-solid border-slate-800 sticky top-0 h-screen max-h-screen min-h-screen md:w-48">
+						<PlainButtonLink class="w-full" text="Receipts" :link="route('receipts')" :current="currentPage('receipts')"></PlainButtonLink>
 					</SideBar>
 				</slot>
 			</div>
-			<div class="basis-5/6">
+			<div class="w-full overscroll-y-contain">
 				<Breadcrumb v-if="false"/>
 				<slot></slot>
 			</div>

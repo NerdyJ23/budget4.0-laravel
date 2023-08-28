@@ -18,9 +18,6 @@ const props = withDefaults(defineProps<{
 	editing: false
 });
 
-const is = reactive({
-	editing: props.editing
-});
 const item: ReceiptItem = props.item;
 const id: string = item.id ?? crypto.randomUUID();
 
@@ -46,7 +43,7 @@ defineComponent({
 </script>
 <template>
 	<div class="relative grid grid-cols-5 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-amber-400/20">
-		<template v-if="is.editing">
+		<template v-if="editing">
 			<VueTextField v-model="item.name" :rules="validName" class="self-center" placeholder="Item Name" :name="`item_name-${id}`" />
 			<VueTextField v-model="item.count" class="self-center mx-auto w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
 			<div class="inline-flex flex-row w-[100px] self-center justify-self-center">
@@ -62,7 +59,7 @@ defineComponent({
 					:key="`item_category-${id}`"
 				/>
 				<div class="icon-button ml-2 p-1">
-					<VIcon v-if="is.editing" class="fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
+					<VIcon v-if="editing" class="fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
 					<VIcon v-else class=" fill-blue-400" name="hi-solid-pencil-alt" scale="1.5"></VIcon>
 				</div>
 			</div>

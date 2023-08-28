@@ -5,6 +5,8 @@ import { defineComponent, ref, onMounted, reactive, nextTick, onUnmounted } from
 import { Form } from 'vee-validate';
 import moment from 'moment';
 import receiptApi from '@/services/Receipts/receiptApi';
+import { BiPencilSquare } from "oh-vue-icons/icons";
+import { addIcons } from "oh-vue-icons";
 
 import ReceiptDialogItem from './ReceiptDialogItem.vue';
 import BasicDialog from '@/Components/BasicDialog.vue';
@@ -179,6 +181,7 @@ const cost = (): number => {
 	return total;
 }
 
+addIcons(BiPencilSquare);
 defineExpose({dialog, reset, show, hide, setReceipt});
 defineEmits(['destroy']);
 </script>
@@ -205,7 +208,7 @@ export default defineComponent({
 	<!-- Receipt Items -->
 	<div>
 		<VForm ref="receiptForm">
-			<div class="grid grid-cols-4 gap-x-4 gap-y-1">
+			<div class="grid grid-cols-4 gap-x-4 gap-y-1 relative">
 				<template v-if="editing">
 					<VueTextField v-model="receipt.reference" placeholder="Receipt Number" name="receiptnumber" />
 					<VueTextField v-model="receipt.store" placeholder="Store Name" name="store" />
@@ -221,16 +224,20 @@ export default defineComponent({
 					<span>{{ receipt.store ?? '-' }}</span>
 					<span>{{ receipt.location ?? '-' }}</span>
 					<span>{{ receipt.date }}</span>
+					<div class="text-center py-1 mx-2 select-none cursor-pointer self-center px-3 rounded-sm bg-orange-400 hover:bg-orange-500 absolute right-0 inline-flex flex-row">
+						<VIcon name="bi-pencil-square" class="self-center"/>
+						<span class="pl-1" @click="is.editing = true">Edit</span>
+					</div>
 				</template>
 			</div>
 			<div class="table mt-4 pt-1 w-full">
-				<div class="overflow-y-scroll overscroll max-h-[70vh] pb-8 min-h-[40vh]">
+				<div class="overflow-y-auto overscroll max-h-[70vh] pb-8 min-h-[40vh]">
 					<div class="table-head grid grid-cols-5 force-front gap-2 mb-2 px-2 sticky top-0">
-						<span class="table-head-text">Name</span>
-						<span class="table-head-text text-center">Count</span>
-						<span class="table-head-text text-center">Cost</span>
-						<span class="table-head-text">Total</span>
-						<span class="table-head-text">Category</span>
+						<span class>Name</span>
+						<span class="text-center">Count</span>
+						<span class="text-center">Cost</span>
+						<span class>Total</span>
+						<span class>Category</span>
 					</div>
 					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in receipt.items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
 				</div>
@@ -254,6 +261,8 @@ export default defineComponent({
 				<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="py-1 text-md self-center ml-2" />
 			</template>
 		</div>
+		<template v-if="!is.editing">
+		</template>
 	</div>
 	</BasicDialog>
 	<ReceiptDocumentDialog
