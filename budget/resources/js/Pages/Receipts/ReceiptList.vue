@@ -58,8 +58,9 @@ const updateCategory = (category: string) => {
 	ReceiptStore.state.filter.category = category.toUpperCase();
 	filteredReceipts();
 }
-const updateReceiptFilter = (e: Event) => {
-	ReceiptStore.state.filter.receipt = (e.target as HTMLInputElement).value;
+const updateReceiptFilter = (value: string) => {
+	console.log(value);
+	ReceiptStore.state.filter.receipt = value;
 	filteredReceipts();
 }
 
@@ -83,7 +84,7 @@ export default defineComponent({
 	<AuthenticatedLayout>
 		<div class="m-2">
 			<div class="receipt-controls mx-2">
-				<VueTextField class="w-full" @input.change="(e: Event) => updateReceiptFilter(e)" name="search-name" placeholder="Search" clearable/>
+				<VueTextField class="w-full" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
 				<ReceiptCategoryDropdown
 					:items="ReceiptStore.state.categories"
 					placeholder="Category"

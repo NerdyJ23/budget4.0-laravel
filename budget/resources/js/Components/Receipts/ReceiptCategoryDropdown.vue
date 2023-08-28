@@ -64,6 +64,7 @@ export default defineComponent({
 			v-bind="$attrs"
 			@focused="showOptions"
 			@input.change="showOptions"
+			@changed="(value: string) => filterValue = value"
 			@blur="hideOptions"
 			:rules="rules"
 			:key="`dropdown-${id}`"
