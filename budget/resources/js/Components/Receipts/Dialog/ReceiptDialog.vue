@@ -209,7 +209,7 @@ export default defineComponent({
 	<div>
 		<VForm ref="receiptForm">
 			<div class="grid grid-cols-4 gap-x-4 gap-y-1 relative">
-				<template v-if="editing">
+				<template v-if="is.editing">
 					<VueTextField v-model="receipt.reference" placeholder="Receipt Number" name="receiptnumber" />
 					<VueTextField v-model="receipt.store" placeholder="Store Name" name="store" />
 					<VueTextField v-model="receipt.location" placeholder="Location" name="location" />
