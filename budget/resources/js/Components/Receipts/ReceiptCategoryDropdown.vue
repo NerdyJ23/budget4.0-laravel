@@ -12,6 +12,7 @@ const is = reactive({
 	show: false
 });
 const container= ref<HTMLElement | null>(null);
+const inputfield = ref<InstanceType<typeof VueTextField> | null>(null);
 
 const showOptions = () => {
 	is.show = true;
@@ -33,7 +34,12 @@ const filteredItems = computed(() => {
 		return item.name.includes(filterValue.value.toUpperCase());
 	});
 })
-
+const updateFilterValue = (value: string) => {
+	filterValue.value = value;
+	if (inputfield.value && inputfield.value.selfInput) {
+		inputfield.value.selfInput.value = value;
+	}
+}
 watch(filterValue, () => { emit('changed', filterValue.value) })
 
 //Definitions
@@ -60,11 +66,12 @@ export default defineComponent({
 	<div class="grid grid-cols-1">
 		<VueTextField
 			:name="id"
+			ref="inputfield"
 			v-model="filterValue"
 			v-bind="$attrs"
 			@focused="showOptions"
 			@input.change="showOptions"
-			@changed="(value: string) => filterValue = value"
+			@changed="(value: string) => updateFilterValue(value)"
 			@blur="hideOptions"
 			:rules="rules"
 			:key="`dropdown-${id}`"

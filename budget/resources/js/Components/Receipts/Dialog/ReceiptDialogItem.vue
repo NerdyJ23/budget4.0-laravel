@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, reactive, computed } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import { ReceiptItem } from '@/types/Receipts/receiptItem';
 import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 import ReceiptStore from '@/store/receiptStore';
@@ -18,6 +18,8 @@ const props = withDefaults(defineProps<{
 	editing: false
 });
 
+props.item.category = (props.item.category as ReceiptItemCategory).name ?? props.item.category;
+
 const item: ReceiptItem = props.item;
 const id: string = item.id ?? crypto.randomUUID();
 
@@ -27,9 +29,6 @@ const validName = (value: string) => { return value.length == 0 ? 'Name is requi
 const validCategory = (value: string) => { return value.length == 0 ? 'Category cannot be blank' : true };
 const defaultNumber = (item: any, defaultValue: number = 0): number => {
 	return item == '' ? defaultValue : item as number;
-}
-const setCategory = (cat: string) => {
-	item.category = cat;
 }
 
 addIcons(MdDeleteforeverOutlined, HiSolidPencilAlt);
@@ -53,9 +52,9 @@ defineComponent({
 			<span class="text-lg self-center align-self-center">$ {{ total }}</span>
 			<div class="self-center inline-flex flex-row">
 				<ReceiptCategoryDropdown
+					v-model="item.category"
 					:rules="validCategory"
 					:items="ReceiptStore.state.categories"
-					@changed="(n: string) => setCategory(n)"
 					:key="`item_category-${id}`"
 				/>
 				<div class="icon-button ml-2 p-1">

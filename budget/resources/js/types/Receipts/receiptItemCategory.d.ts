@@ -1,5 +1,5 @@
 export interface ReceiptItemCategory {
-	id: string;
+	id?: string;
 	name: string;
 	archived: boolean;
 }

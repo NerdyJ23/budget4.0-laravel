@@ -86,7 +86,7 @@ const emit = defineEmits<{
 	(e: 'changed', value: string):void,
 	(e: 'focused'): void
 }>();
-defineExpose({input});
+defineExpose({input, selfInput});
 addIcons(IoCloseOutline);
 </script>
 <script lang="ts">
