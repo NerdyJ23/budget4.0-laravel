@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import receiptApi from '@/services/Receipts/receiptApi';
 import { Receipt } from '@/types/Receipts/receipt';
+import { BarItem } from '@/types/Graphs/graph';
+
 import { defineComponent, ref, onMounted, reactive, computed } from 'vue';
 import BarGraph from '@/Components/Graphs/BarGraph.vue';
 import { useStore } from 'vuex';
@@ -20,7 +22,7 @@ const is = reactive({
 	loading: false,
 	show: false
 });
-const graphValues = reactive({});
+const graphValues: Array<BarItem> = [];
 const selectedMonth = computed({
 	get: () => store.getters.selectedMonth,
 	set: (value) => store.commit('selectedMonth', value)
@@ -33,8 +35,9 @@ const selectedYear = computed({
 
 const title = computed(() => `${store.getters.getMonthListAsStrings[store.getters.selectedMonth - 1]} - ${store.getters.selectedYear}`)
 const loadReceipts = async () => {
-	const response = await receiptApi.listReceipts(selected.month as number, selected.year as number);
-
+	graphValues.length = 0;
+	const response = await receiptApi.listReceipts(store.getters.selectedMonth, store.getters.selectedYear);
+	receipts.length = 0;
 	if (response.status === 200) {
 		for(const item of response.data.result) {
 			const receiptItem = {
@@ -50,17 +53,24 @@ const loadReceipts = async () => {
 			receipts.push(receiptItem);
 		}
 	}
-	console.log(response);
 }
 
 const generateGraph = () => {
+	let localGraphValues = {};
 	for(const receipt of receipts) {
 		for(const item of receipt.items) {
-			if (!graphValues[item.category.name]) {
-				graphValues[item.category.name] = 0;
+			if (!localGraphValues[item.category.name]) {
+				localGraphValues[item.category.name] = 0;
 			}
-			graphValues[item.category.name] += item.cost * item.count;
+			localGraphValues[item.category.name] += item.cost * item.count;
 		}
+	}
+	for (const [key, value] of Object.entries(localGraphValues)) {
+		const temp: BarItem = {
+			key: key,
+			value: value as number
+		};
+		graphValues.push(temp);
 	}
 }
 

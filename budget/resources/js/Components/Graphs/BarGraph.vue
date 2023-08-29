@@ -1,32 +1,37 @@
 <script setup lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { newPlot, Data } from 'plotly.js-dist-min';
+import { BarItem } from '@/types/Graphs/graph';
 
 const props = defineProps<{
-	values?: Object,
+	values: Array<BarItem>,
 	title: string
 }>();
 const graph = ref<HTMLElement | null>(null);
 const id = `${crypto.randomUUID()}-barchart`;
 
 const loadData = () => {
-	console.log(props.values);
-			let x = Object.keys(props.values as Object);
-			let y = Object.values(props.values as Object);
-			const plot: Data[] = [{
-				x: x,
-				y: y,
-				type: 'bar'
-			}];
+	props.values.sort((a, b) => {
+		if (a.value == b.value) {
+			return 0;
+		}
+		return a.value < b.value ? 1 : -1;
+	});
 
-			const layout = {
-				title: props.title,
-				xaxis: {
-					tickangle: -45
-				},
-				sort: true
-			};
-			newPlot((graph.value as HTMLElement), plot, layout);
+	const plot: Data[] = [{
+		x: props.values.map(item => item.key),
+		y: props.values.map(item => item.value),
+		type: 'bar'
+	}];
+
+	const layout = {
+		title: props.title,
+		xaxis: {
+			tickangle: -45
+		},
+		sort: true
+	};
+	newPlot((graph.value as HTMLElement), plot, layout);
 }
 
 onMounted(() => {
