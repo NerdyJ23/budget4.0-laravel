@@ -24,6 +24,20 @@ export default {
 		});
 		return response;
 	},
+
+	updateReceipt(receipt: Receipt) {
+		const form = new FormData();
+		form.append('name', receipt.store);
+		form.append('date', receipt.date);
+		form.append('location', receipt.location);
+		form.append('reference', receipt.reference);
+		form.append('items', JSON.stringify(receipt.items));
+
+		const response = api().patch(`/receipt/${receipt.id}`, form).catch((error) => {
+			return error.response;
+		});
+		return response;
+	},
 	//Categories
 	loadCategories(archived = false) {
 		const response = api().get(`/receipt/category?archived=${archived ? 1 : 0}`)

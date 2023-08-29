@@ -15,7 +15,8 @@ const reload = () => { window.location.reload() }; //Lazy hack instead of soft-r
 const showReceipt = (receipt: Receipt) => {
 	showDialog.value = true;
 	nextTick(() => {
-		dialog.value?.setReceipt(receipt);
+		const newReceipt = JSON.parse(JSON.stringify(receipt));
+		dialog.value?.setReceipt(newReceipt);
 		dialog.value?.show();
 	})
 }

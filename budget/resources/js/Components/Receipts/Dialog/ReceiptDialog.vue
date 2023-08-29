@@ -89,9 +89,9 @@ const saveReceipt = () => {
 	nextTick(async () => {
 		if (meta && meta.dirty && meta.valid) {
 			dialog.value?.setLoading(true);
-			const response = await receiptApi.createReceipt(receipt);
-
-			if (response.status === 201) {
+			const response = receipt.id ? await receiptApi.updateReceipt(receipt) : await receiptApi.createReceipt(receipt);
+			const success = receipt.id ? response.status === 200 : response.status === 201;
+			if (success) {
 				if (receipt.documents.length > 0) {
 					let fullErrors = "";
 					const createdReceipt: Receipt = {
