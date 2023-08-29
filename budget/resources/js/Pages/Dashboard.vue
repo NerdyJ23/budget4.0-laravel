@@ -9,7 +9,7 @@ import Breadcrumb from '@/Components/Navigation/Breadcrumb.vue';
 <script lang="ts">
 export default defineComponent({
 	name: "Dashboard",
-	components: { ReceiptGraph },
+	components: { ReceiptGraph, Head },
 })
 </script>
 <template>

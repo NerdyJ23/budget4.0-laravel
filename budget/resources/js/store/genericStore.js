@@ -6,6 +6,18 @@ const state = {
   }
 
 const getters = {
+	getMonthAsString({state}, value) {
+		return state.months[value];
+	},
+	getWeekdayAsString({state}, value) {
+		return state.weekday[value];
+	},
+	getMonthListAsStrings(state) {
+		return state.months;
+	},
+	getWeekdayListAsString(state) {
+		return state.weekday;
+	}
   }
 const actions = {
 }

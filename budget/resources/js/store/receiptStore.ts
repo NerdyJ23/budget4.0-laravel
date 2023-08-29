@@ -16,6 +16,12 @@ const state: ReceiptStoreState = {
 }
 
 const getters = {
+	selectedMonth(state: ReceiptStoreState) {
+		return state.selectedMonth;
+	},
+	selectedYear(state: ReceiptStoreState) {
+		return state.selectedYear;
+	}
 }
 const actions = {
 	async loadCategories({ state }:any ) {
@@ -34,8 +40,17 @@ const actions = {
 		}
 	}
 }
+const mutations = {
+	selectedMonth(state: ReceiptStoreState, value: number) {
+		state.selectedMonth = value;
+	},
+	selectedYear(state: ReceiptStoreState, value: number) {
+		state.selectedYear = value;
+	}
+}
 export default {
 	state,
 	actions,
-	getters
+	getters,
+	mutations
 }
