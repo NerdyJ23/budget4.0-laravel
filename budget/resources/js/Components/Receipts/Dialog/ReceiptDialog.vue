@@ -58,7 +58,6 @@ const validDate = (value: string) => {
 	return newDate.isBefore(now) ? true : 'Date cannot be in the future';
 }
 
-
 const reset = () => {
 	receipt.store = '';
 	receipt.date = '';
@@ -208,28 +207,30 @@ export default defineComponent({
 	<!-- Receipt Items -->
 	<div>
 		<VForm ref="receiptForm">
-			<div class="grid grid-cols-4 gap-x-4 gap-y-1 relative">
-				<template v-if="is.editing">
+			<template v-if="is.editing">
+				<div class="grid grid-cols-4 gap-x-4 gap-y-1 relative">
 					<VueTextField v-model="receipt.reference" placeholder="Receipt Number" name="receiptnumber" />
 					<VueTextField v-model="receipt.store" placeholder="Store Name" name="store" />
 					<VueTextField v-model="receipt.location" placeholder="Location" name="location" />
 					<VueTextField v-model="receipt.date" :rules="validDate" placeholder="Date" name="date" type="date" required/>
+				</div>
 				</template>
 				<template v-else>
-					<span class="font-semibold text-md">Receipt Number</span>
-					<span class="font-semibold text-md">Store</span>
-					<span class="font-semibold text-md">Location</span>
-					<span class="font-semibold text-md">Date</span>
-					<span>{{ receipt.reference ?? '-' }}</span>
-					<span>{{ receipt.store ?? '-' }}</span>
-					<span>{{ receipt.location ?? '-' }}</span>
-					<span>{{ receipt.date }}</span>
-					<div class="text-center py-1 mx-2 select-none cursor-pointer self-center px-3 rounded-sm bg-orange-400 hover:bg-orange-500 absolute right-0 inline-flex flex-row">
-						<VIcon name="bi-pencil-square" class="self-center"/>
-						<span class="pl-1" @click="is.editing = true">Edit</span>
+					<div class="grid grid-cols-5 gap-x-4 gap-y-1 relative">
+						<span class="font-semibold text-md">Receipt Number</span>
+						<span class="font-semibold text-md">Store</span>
+						<span class="font-semibold text-md">Location</span>
+						<span class="font-semibold text-md">Date</span>
+						<div class="text-center py-1 mx-2 select-none cursor-pointer self-center px-3 rounded-sm bg-orange-400 hover:bg-orange-500 inline-flex flex-row"  @click="is.editing = true">
+							<VIcon name="bi-pencil-square" class="self-center"/>
+							<span class="pl-1">Edit</span>
+						</div>
+						<span>{{ receipt.reference ?? '-' }}</span>
+						<span>{{ receipt.store ?? '-' }}</span>
+						<span>{{ receipt.location ?? '-' }}</span>
+						<span>{{ receipt.date }}</span>
 					</div>
 				</template>
-			</div>
 			<div class="table mt-4 pt-1 w-full">
 				<div class="overflow-y-auto overscroll max-h-[70vh] pb-8 min-h-[40vh]">
 					<div class="table-head grid grid-cols-5 force-front gap-2 mb-2 px-2 sticky top-0">

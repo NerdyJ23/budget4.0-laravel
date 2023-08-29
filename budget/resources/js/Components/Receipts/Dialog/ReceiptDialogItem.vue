@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, reactive } from 'vue';
 import { ReceiptItem } from '@/types/Receipts/receiptItem';
 import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 import ReceiptStore from '@/store/receiptStore';
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<{
 
 props.item.category = (props.item.category as ReceiptItemCategory).name ?? props.item.category;
 
-const item: ReceiptItem = props.item;
+const item: ReceiptItem = reactive(props.item);
 const id: string = item.id ?? crypto.randomUUID();
 
 const total = computed(() => { return ((item.cost * item.count) ?? 0 )})
@@ -53,6 +53,7 @@ defineComponent({
 			<div class="self-center inline-flex flex-row">
 				<ReceiptCategoryDropdown
 					v-model="item.category"
+					@changed="(value: string) => item.category = value"
 					:rules="validCategory"
 					:items="ReceiptStore.state.categories"
 					:key="`item_category-${id}`"
@@ -68,7 +69,7 @@ defineComponent({
 			<span class="w-full text-sm text-center">{{ item.count }}</span>
 			<span class="w-full text-sm text-center">${{ item.cost.toFixed(2) }}</span>
 			<span class="w-full text-sm">${{ total.toFixed(2) }}</span>
-			<span class="w-full text-sm">{{ (item.category as ReceiptItemCategory).name }}</span>
+			<span class="w-full text-sm">{{ item.category }}</span>
 		</template>
 	</div>
 </template>
