@@ -40,6 +40,7 @@ const updateFilterValue = (value: string) => {
 		inputfield.value.selfInput.value = value;
 	}
 }
+
 watch(filterValue, () => { emit('changed', filterValue.value) })
 
 //Definitions
@@ -55,6 +56,7 @@ const emit = defineEmits<{
 	(e: 'changed', value: any): void
 }>();
 const id = props.id ?? crypto.randomUUID();
+defineExpose({updateFilterValue});
 addIcons(MdArrowdropdown, MdArrowdropup);
 </script>
 <script lang="ts">

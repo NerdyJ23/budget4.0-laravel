@@ -16,15 +16,11 @@ import { nextTick } from 'vue';
 const matches = route('receipts') == window.location.origin + window.location.pathname;
 const location = window.location.href;
 const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
-const input = ref<InstanceType<typeof VueTextField> | null>(null);
+const categoryFilterInput = ref<InstanceType<typeof ReceiptCategoryDropdown> | null>(null);
 
 const reload = () => {
 	receiptTable.value?.reload();
 };
-
-onMounted(() => {
-	store.dispatch('loadCategories');
-})
 
 const filteredReceipts = () => {
 	let filteredReceipts: Array<Receipt> = usePage().props.receipts;
@@ -64,6 +60,16 @@ const updateReceiptFilter = (value: string) => {
 	filteredReceipts();
 }
 
+onMounted(() => {
+	const urlParams = new URLSearchParams(window.location.search);
+	if(urlParams.get('category')) {
+		if (categoryFilterInput.value) {
+			console.log(categoryFilterInput.value);
+			categoryFilterInput.value.updateFilterValue(urlParams.get('category')!.toUpperCase())
+		}
+	}
+	store.dispatch('loadCategories');
+})
 defineExpose({matches, location});
 </script>
 <script lang="ts">
@@ -87,6 +93,7 @@ export default defineComponent({
 				<VueTextField class="w-full" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
 				<ReceiptCategoryDropdown
 					:items="ReceiptStore.state.categories"
+					ref="categoryFilterInput"
 					placeholder="Category"
 					name="search-category"
 					key="search-category"
