@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import receiptApi from '@/services/Receipts/receiptApi';
 import { Receipt } from '@/types/Receipts/receipt';
-import { BarItem } from '@/types/Graphs/graph';
+import { BarItem, BarColor } from '@/types/Graphs/graph';
+
+import LoadingDialog from '@/Components/LoadingDialog.vue';
 
 import { defineComponent, ref, onMounted, reactive, computed } from 'vue';
 import BarGraph from '@/Components/Graphs/BarGraph.vue';
@@ -33,7 +35,7 @@ const selectedYear = computed({
 	set: (value) => store.commit('selectedYear', value)
 });
 
-const title = computed(() => `${store.getters.getMonthListAsStrings[store.getters.selectedMonth - 1]} - ${store.getters.selectedYear}`)
+const title = computed(() => `${store.getters.getMonthListAsStrings[store.getters.selectedMonth - 1]} ${store.getters.selectedYear}`)
 const loadReceipts = async () => {
 	graphValues.length = 0;
 	const response = await receiptApi.listReceipts(store.getters.selectedMonth, store.getters.selectedYear);
@@ -54,6 +56,17 @@ const loadReceipts = async () => {
 		}
 	}
 }
+const randomRgb = ():BarColor => {
+	let r = Math.floor(Math.random() * 256);
+	let g = Math.floor(Math.random() * 256);
+	let b = Math.floor(Math.random() * 256);
+	return {
+		r: r,
+		g: g,
+		b: b,
+		a: 1
+	} as BarColor;
+}
 
 const generateGraph = () => {
 	let localGraphValues = {};
@@ -68,7 +81,9 @@ const generateGraph = () => {
 	for (const [key, value] of Object.entries(localGraphValues)) {
 		const temp: BarItem = {
 			key: key,
-			value: value as number
+			value: value as number,
+			color: randomRgb(),
+			text: `$${(value as number).toFixed(2)}`
 		};
 		graphValues.push(temp);
 	}
@@ -76,9 +91,11 @@ const generateGraph = () => {
 
 const refreshGraph = async () => {
 	is.show = false;
+	is.loading = true;
 	await loadReceipts();
 	generateGraph();
 	is.show = true;
+	is.loading = false;
 }
 
 onMounted(async () => {
@@ -92,9 +109,7 @@ onMounted(async () => {
 
 	store.commit('selectedMonth', selected.month);
 	store.commit('selectedYear', selected.year);
-	await loadReceipts();
-	generateGraph();
-	is.show = true;
+	refreshGraph();
 })
 
 defineExpose({
@@ -121,6 +136,8 @@ export default defineComponent({
 				</option>
 			</select>
 		</div>
-		<BarGraph class="w-full" v-if="is.show" :title="title" :values="graphValues"></BarGraph>
+		<LoadingDialog v-if="is.loading"></LoadingDialog>
+		<BarGraph class="w-full" v-else-if="is.show && graphValues.length" :title="title" :values="graphValues"></BarGraph>
+		<span v-else class="text-center w-full text-xl font-semibold">No data</span>
 	</div>
 </template>
