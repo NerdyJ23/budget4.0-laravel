@@ -30,8 +30,27 @@ class ReceiptController extends BaseController {
 		}
 
 		$user = UserClient::getByToken($request->cookie('token'));
+		$receiptList = ReceiptClient::list(user: $user, filter: $filter);
+
+		if ($request->input('category') != null) {
+			$tempList = [];
+			foreach ($receiptList as $receipt) {
+				$hasCategory = false;
+				foreach ($receipt->receiptItem as $item) {
+					if ($item->receiptItemCategory->Name == strtoupper($request->input('category'))) {
+						$hasCategory = true;
+						break;
+					}
+				}
+				if ($hasCategory) {
+					$tempList[] = $receipt;
+				}
+ 			}
+			$receiptList = $tempList;
+		}
+
 		return Inertia::render('Receipts/ReceiptList', [
-			'receipts' => Schema::schema(ReceiptClient::list(user: $user, filter: $filter), 'Receipt')
+			'receipts' => Schema::schema($receiptList, 'Receipt')
 		]);
 	}
 
