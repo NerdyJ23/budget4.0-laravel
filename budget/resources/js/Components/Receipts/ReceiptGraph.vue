@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import receiptApi from '@/services/Receipts/receiptApi';
 import { Receipt } from '@/types/Receipts/receipt';
+import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 import { BarItem, BarColor } from '@/types/Graphs/graph';
 
 import LoadingDialog from '@/Components/LoadingDialog.vue';
 
 import { defineComponent, ref, onMounted, reactive, computed } from 'vue';
 import BarGraph from '@/Components/Graphs/BarGraph.vue';
-import { useStore } from 'vuex';
+import { useReceiptStore } from '@/store/receiptPiniaStore';
+import { useGenericStore } from '@/store/genericPiniaStore';
 
 const receipts: Receipt[] = [];
 const urlParams = new URLSearchParams(window.location.search);
 const date = new Date;
-const store = useStore();
+
+const receiptStore = useReceiptStore();
+const genericStore = useGenericStore();
 
 const selected = reactive({
 	year: urlParams.get('year') ?? date.getFullYear(),
@@ -25,20 +29,22 @@ const is = reactive({
 	show: false
 });
 const graphValues: Array<BarItem> = [];
+
+//convert to writeable state later
 const selectedMonth = computed({
-	get: () => store.getters.selectedMonth,
-	set: (value) => store.commit('selectedMonth', value)
+	get: () => receiptStore.selected.month,
+	set: (value) => receiptStore.$patch({selected: {month: value}})
 });
 
 const selectedYear = computed({
-	get: () => store.getters.selectedYear,
-	set: (value) => store.commit('selectedYear', value)
+	get: () => receiptStore.selected.year,
+	set: (value) => receiptStore.$patch({selected: {year: value}})
 });
 
-const title = computed(() => `${store.getters.getMonthListAsStrings[store.getters.selectedMonth - 1]} ${store.getters.selectedYear}`)
+const title = computed(() => `${genericStore.months[receiptStore.selected.month - 1]} ${receiptStore.selected.year}`)
 const loadReceipts = async () => {
 	graphValues.length = 0;
-	const response = await receiptApi.listReceipts(store.getters.selectedMonth, store.getters.selectedYear);
+	const response = await receiptApi.listReceipts(receiptStore.selected.month, receiptStore.selected.year);
 	receipts.length = 0;
 	if (response.status === 200) {
 		for(const item of response.data.result) {
@@ -69,13 +75,13 @@ const randomRgb = ():BarColor => {
 }
 
 const generateGraph = () => {
-	let localGraphValues = {};
+	let localGraphValues = {} as any;
 	for(const receipt of receipts) {
 		for(const item of receipt.items) {
-			if (!localGraphValues[item.category.name]) {
-				localGraphValues[item.category.name] = 0;
+			if (!localGraphValues[(item.category as ReceiptItemCategory).name]) {
+				localGraphValues[(item.category as ReceiptItemCategory).name] = 0;
 			}
-			localGraphValues[item.category.name] += item.cost * item.count;
+			localGraphValues[(item.category as ReceiptItemCategory).name] += item.cost * item.count;
 		}
 	}
 	for (const [key, value] of Object.entries(localGraphValues)) {
@@ -107,8 +113,13 @@ onMounted(async () => {
 		selected.year = parseInt(selected.year as string);
 	}
 
-	store.commit('selectedMonth', selected.month);
-	store.commit('selectedYear', selected.year);
+	receiptStore.$patch({
+		selected: {
+			month: selected.month,
+			year: selected.year
+		}
+	});
+
 	refreshGraph();
 })
 
@@ -128,8 +139,8 @@ export default defineComponent({
 		<div class="inline-flex flex-row">
 			<select v-model="selectedMonth" @change="refreshGraph">
 				<option
-					v-for="(month, index) in store.getters.getMonthListAsStrings"
-					:selected="index == store.getters.selectedMonth"
+					v-for="(month, index) in genericStore.months"
+					:selected="index == receiptStore.selected.month"
 					:value="index + 1"
 				>
 					{{ month }}

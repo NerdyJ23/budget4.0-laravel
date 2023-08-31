@@ -2,8 +2,7 @@
 import { defineComponent, ref, computed, watch, reactive } from 'vue';
 import { ReceiptItem } from '@/types/Receipts/receiptItem';
 import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
-import ReceiptStore from '@/store/receiptStore';
-
+import { useReceiptStore } from '@/store/receiptPiniaStore';
 
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import ReceiptCategoryDropdown from '@/Components/Receipts/ReceiptCategoryDropdown.vue';
@@ -17,7 +16,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 	editing: false
 });
-
+const ReceiptStore = useReceiptStore();
 props.item.category = (props.item.category as ReceiptItemCategory).name ?? props.item.category;
 
 const item: ReceiptItem = reactive(props.item);
@@ -55,7 +54,7 @@ defineComponent({
 					v-model="item.category"
 					@changed="(value: string) => item.category = value"
 					:rules="validCategory"
-					:items="ReceiptStore.state.categories"
+					:items="ReceiptStore.categories"
 					:key="`item_category-${id}`"
 				/>
 				<div class="icon-button ml-2 p-1">

@@ -13,10 +13,10 @@ export default {
 
 	createReceipt(receipt: Receipt) {
 		const form = new FormData();
-		form.append('name', receipt.store);
+		form.append('name', receipt.store as string);
 		form.append('date', receipt.date);
-		form.append('location', receipt.location);
-		form.append('reference', receipt.reference);
+		form.append('location', receipt.location as string);
+		form.append('reference', receipt.reference as string);
 		form.append('items', JSON.stringify(receipt.items));
 
 		const response = api().post(`/receipt`, form).catch((error) => {
@@ -27,10 +27,10 @@ export default {
 
 	updateReceipt(receipt: Receipt) {
 		const form = new FormData();
-		form.append('name', receipt.store);
+		form.append('name', receipt.store as string);
 		form.append('date', receipt.date);
-		form.append('location', receipt.location);
-		form.append('reference', receipt.reference);
+		form.append('location', receipt.location as string);
+		form.append('reference', receipt.reference as string);
 		form.append('items', JSON.stringify(receipt.items));
 
 		const response = api().patch(`/receipt/${receipt.id}`, form).catch((error) => {

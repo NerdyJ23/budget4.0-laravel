@@ -9,10 +9,10 @@ import ConfirmButton from '@/Components/Inputs/ConfirmButton.vue';
 import ReceiptDialog from '@/Components/Receipts/Dialog/ReceiptDialog.vue';
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import ReceiptCategoryDropdown from '@/Components/Receipts/ReceiptCategoryDropdown.vue';
-import store from '@/store';
-import ReceiptStore from '@/store/receiptStore';
+import { useReceiptStore } from '@/store/receiptPiniaStore';
 import { nextTick } from 'vue';
 
+const ReceiptStore = useReceiptStore();
 const matches = route('receipts') == window.location.origin + window.location.pathname;
 const location = window.location.href;
 const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
@@ -24,7 +24,7 @@ const reload = () => {
 
 const filteredReceipts = () => {
 	let filteredReceipts: Array<Receipt> = usePage().props.receipts;
-	const nameFilter = (ReceiptStore.state.filter.receipt.trim()).toLowerCase();
+	const nameFilter = (ReceiptStore.filter.receipt.trim()).toLowerCase();
 	if (nameFilter != '') {
 		//FILTER RECEIPT
 		filteredReceipts = filteredReceipts.filter((receipt) => {
@@ -36,7 +36,7 @@ const filteredReceipts = () => {
 		});
 	}
 
-	const categoryFilter = ReceiptStore.state.filter.category.trim();
+	const categoryFilter = ReceiptStore.filter.category.trim();
 	if (categoryFilter != '') {
 		filteredReceipts = filteredReceipts.filter((receipt) => {
 			return receipt.category == categoryFilter;
@@ -51,12 +51,12 @@ const filteredReceipts = () => {
 };
 
 const updateCategory = (category: string) => {
-	ReceiptStore.state.filter.category = category.toUpperCase();
+	ReceiptStore.filter.category = category.toUpperCase();
 	filteredReceipts();
 }
 const updateReceiptFilter = (value: string) => {
 	console.log(value);
-	ReceiptStore.state.filter.receipt = value;
+	ReceiptStore.filter.receipt = value;
 	filteredReceipts();
 }
 
@@ -68,7 +68,7 @@ onMounted(() => {
 			categoryFilterInput.value.updateFilterValue(urlParams.get('category')!.toUpperCase())
 		}
 	}
-	store.dispatch('loadCategories');
+	ReceiptStore.loadCategories();
 })
 defineExpose({matches, location});
 </script>
@@ -92,7 +92,7 @@ export default defineComponent({
 			<div class="receipt-controls mx-2 sticky top-0 bg-white p-2">
 				<VueTextField class="w-full" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
 				<ReceiptCategoryDropdown
-					:items="ReceiptStore.state.categories"
+					:items="ReceiptStore.categories"
 					ref="categoryFilterInput"
 					placeholder="Category"
 					name="search-category"

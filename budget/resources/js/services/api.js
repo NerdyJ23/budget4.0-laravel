@@ -1,8 +1,9 @@
 import axios from 'axios';
-import GenericStore from "@/store/genericStore";
+import { useGenericStore } from '@/store/genericPiniaStore';
 
 function api() {
-	const apiUrl = GenericStore.state.api;
+	const store = useGenericStore();
+	const apiUrl = store.api;
     const api = axios.create({
         baseURL: apiUrl,
         headers: {
