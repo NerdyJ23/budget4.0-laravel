@@ -5,7 +5,7 @@ export default {
 		let form = new FormData();
 		form.append('username', username);
 		form.append('password', password);
-		const response = api().post(`/user/login/`, form, {
+		const response = api().post(`/user/login`, form, {
 			withCredentials: true
 		}).catch((error) => {
 			return error.response;
