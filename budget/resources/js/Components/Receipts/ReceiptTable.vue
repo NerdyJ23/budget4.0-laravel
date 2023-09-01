@@ -39,7 +39,7 @@ const dialogDestroyed = () => {
 
 const readableDate = (date: string):string  => {
 	const dateObj = new Date(date);
-	return `${dateObj.getDate()}${dateOrdinal(dateObj.getDate())} ${GenericStore.months[dateObj.getMonth() - 1]}`;
+	return `${dateObj.getDate()}${dateOrdinal(dateObj.getDate())} ${GenericStore.months[dateObj.getMonth()]}`;
 }
 const dateOrdinal = (number: number):string => {
 	if (number > 3 && number < 21) return "th";
