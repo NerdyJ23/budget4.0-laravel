@@ -16,9 +16,6 @@ const layout: Partial<Layout> = reactive({
 	xaxis: {
 		visible: false
 	},
-	legend: {
-		orientation: 'h',
-	},
 	hovermode: 'closest',
 	dragmode: 'pan'
 });
@@ -28,6 +25,7 @@ const config: Partial<Config> = reactive({
 	scrollZoom: true,
 	displayModeBar: false,
 	showTips: false,
+	responsive: true
 });
 
 const loadData = () => {

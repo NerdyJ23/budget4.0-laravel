@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Receipts\ReceiptCategoryController;
 use App\Http\Controllers\Api\Users\UserController;
 use App\Http\Controllers\Api\Login\LoginController;
 
+use App\Http\Controllers\RedisController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -92,6 +93,11 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 
 	Route::delete('/{uuid}/documents/{doc}', function (Request $request, string $receiptId, string $docId) {
 		return ReceiptDocumentController::delete(request: $request, receiptId: $receiptId, id: $docId);
+	});
+
+	//Receipt Graph Information
+	Route::get('/costs/yearly', function (Request $request) {
+		return ReceiptController::getYearlyCosts(request: $request);
 	});
 });
 

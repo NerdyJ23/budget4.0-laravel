@@ -6,18 +6,19 @@ import { defineComponent } from 'vue';
 import Breadcrumb from '@/Components/Navigation/Breadcrumb.vue';
 
 </script>
-<script lang="ts">
-export default defineComponent({
-	name: "Dashboard",
-	components: { ReceiptGraph, Head },
-})
-</script>
 <template>
-    <Head title="Dashboard" />
+    <Head title="Graphs" />
     <AuthenticatedLayout>
-		<h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-		<div class="grid grid-cols-2 gap-x-2">
-
+		<div class="grid grid-cols-2 gap-x-2 px-2">
+			<div class="border border-solid border-zinc-300 rounded-lg my-2 p-2 w-full">
+				<span class="text-xl font-semibold">
+					Monthly Overview
+				</span>
+				<ReceiptGraph />
+			</div>
+			<div class="w-full">
+				Yearly Overview
+			</div>
 		</div>
     </AuthenticatedLayout>
 </template>

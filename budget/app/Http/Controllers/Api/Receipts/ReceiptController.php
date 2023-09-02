@@ -9,6 +9,7 @@ use App\Clients\Receipts\ReceiptItemCategoryClient;
 use App\Clients\Users\UserClient;
 
 use App\Http\Schemas\Schema;
+use Illuminate\Support\Facades\Redis;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Receipts\ReceiptPostRequest;
@@ -132,5 +133,27 @@ class ReceiptController extends BaseApiController {
 		//Update Receipt Cost and Total
 		$receipt = ReceiptClient::generateCostAndCategory(receipt: $receipt->refresh());
 		return parent::sendResponse(body: Schema::schema($receipt, 'Receipt'));
+	}
+
+	static function getYearlyCosts(Request $request): array {
+		$user = UserClient::getByToken($request->cookie('token'));
+		$key = 'user-id-' . $user->id . ':costs:yearly';
+		if (count(Redis::hgetall($key)) > 0) {
+			$r = [];
+			foreach (Redis::hgetall($key) as $cost) {
+				$r[] = floatval($cost);
+			}
+			return $r;
+		}
+
+		$result = ReceiptClient::getYearlyReceiptCosts(
+			user: $user,
+			year: date('Y')
+		);
+		for ($i = 0; $i < count($result); $i++) {
+			Redis::hset($key, $i+1, $result[$i]);
+		}
+		Redis::expire($key, 86400);
+		return $result;
 	}
 }

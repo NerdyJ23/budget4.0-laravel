@@ -37,6 +37,10 @@ Route::prefix('receipts')->middleware('logged_in')->group(function () {
 		return ReceiptController::list($request);
 	})->name('receipts');
 
+	Route::get('/graphs', function (Request $request) {
+		return Inertia::render('Receipts/ReceiptGraphOverview');
+	});
+
 	Route::get('/{uuid}/documents/{docUuid}', function(Request $request, string $uuid, string $docUuid) {
 		return ReceiptController::getDocument(request: $request, receiptId: $uuid, docId: $docUuid);
 	});

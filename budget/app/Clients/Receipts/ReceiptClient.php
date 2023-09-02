@@ -93,4 +93,15 @@ class ReceiptClient extends BaseClient {
 		$receipt->save();
 		return $receipt;
 	}
+
+	static function getYearlyReceiptCosts(User $user, int $year) {
+		$costs = [];
+		for ($i = 1; $i <= 12; $i++) {
+			$costs[] = Receipt::where('User', $user->id)
+			->whereMonth('Date', $i)
+			->whereYear('Date', $year)
+			->sum('Cost');
+		}
+		return $costs;
+	}
 }
