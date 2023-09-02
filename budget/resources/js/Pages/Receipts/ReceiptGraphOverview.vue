@@ -18,7 +18,7 @@ import Breadcrumb from '@/Components/Navigation/Breadcrumb.vue';
 				</span>
 				<ReceiptGraph />
 			</div>
-			<div class="w-full">
+			<div class="border border-solid border-zinc-300 rounded-lg my-2 p-2 w-full">
 				<span class="text-xl font-semibold">
 					Yearly Overview
 				</span>

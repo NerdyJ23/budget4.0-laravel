@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import ReceiptGraph from '@/Components/Receipts/ReceiptGraph.vue';
 import { defineComponent } from 'vue';
 import Breadcrumb from '@/Components/Navigation/Breadcrumb.vue';
 
-</script>
-<script lang="ts">
-export default defineComponent({
-	name: "Dashboard",
-	components: { ReceiptGraph, Head },
-})
 </script>
 <template>
     <Head title="Dashboard" />

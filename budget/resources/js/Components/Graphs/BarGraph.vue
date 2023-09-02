@@ -4,17 +4,23 @@ import { newPlot, react, Data, Layout, Config, PlotlyHTMLElement, PlotHoverEvent
 import { BarItem } from '@/types/Graphs/graph';
 import { reactive } from 'vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	values: Array<BarItem>,
-	title: string
-}>();
+	title: string,
+	sort: 'asc' | 'desc' | 'none',
+	labels: boolean,
+	config?: Config | Partial<Config>
+}>(), {
+	sort: 'desc',
+	labels: false
+});
 const id = `${crypto.randomUUID()}-barchart`;
 const data: Array<Data> = reactive([]);
 const graph = ref<HTMLElement | null>(null);
 const layout: Partial<Layout> = reactive({
 	title: `${props.title}`,
 	xaxis: {
-		visible: false
+		visible: props.labels
 	},
 	hovermode: 'closest',
 	dragmode: 'pan'
@@ -33,7 +39,12 @@ const loadData = () => {
 		if (a.value == b.value) {
 			return 0;
 		}
-		return a.value < b.value ? 1 : -1;
+		if (props.sort === 'desc') {
+			return a.value < b.value ? 1 : -1;
+		} else if (props.sort === 'asc') {
+			return a.value > b.value ? 1 : -1;
+		}
+		return 0;
 	});
 	props.values.map(item => data.push(createDataElement(item)))
 

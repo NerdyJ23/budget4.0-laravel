@@ -139,11 +139,13 @@ class ReceiptController extends BaseApiController {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$key = 'user-id-' . $user->id . ':costs:yearly';
 		if (count(Redis::hgetall($key)) > 0) {
-			$r = [];
+			$result = [];
 			foreach (Redis::hgetall($key) as $cost) {
-				$r[] = floatval($cost);
+				$result[] = floatval($cost);
 			}
-			return $r;
+			return [
+				'result' => $result
+			];
 		}
 
 		$result = ReceiptClient::getYearlyReceiptCosts(
@@ -154,6 +156,8 @@ class ReceiptController extends BaseApiController {
 			Redis::hset($key, $i+1, $result[$i]);
 		}
 		Redis::expire($key, 86400);
-		return $result;
+		return [
+			'result' => $result
+		];
 	}
 }
