@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import ReceiptGraph from '@/Components/Receipts/ReceiptGraph.vue';
+import ReceiptGraph from '@/Components/Receipts/Graphs/ReceiptGraph.vue';
+import ReceiptYearlyGraph from '@/Components/Receipts/Graphs/ReceiptYearlyGraph.vue';
+
 import { defineComponent } from 'vue';
 import Breadcrumb from '@/Components/Navigation/Breadcrumb.vue';
 
@@ -17,7 +19,10 @@ import Breadcrumb from '@/Components/Navigation/Breadcrumb.vue';
 				<ReceiptGraph />
 			</div>
 			<div class="w-full">
-				Yearly Overview
+				<span class="text-xl font-semibold">
+					Yearly Overview
+				</span>
+				<ReceiptYearlyGraph />
 			</div>
 		</div>
     </AuthenticatedLayout>

@@ -38,6 +38,14 @@ export default {
 		});
 		return response;
 	},
+
+	//Stats
+	// loadYearlyCosts() {
+	// 	const response = api().patch(`/receipt/${receipt.id}`).catch((error) => {
+	// 		return error.response;
+	// 	});
+	// 	return response;
+	// },
 	//Categories
 	loadCategories(archived = false) {
 		const response = api().get(`/receipt/category?archived=${archived ? 1 : 0}`)
