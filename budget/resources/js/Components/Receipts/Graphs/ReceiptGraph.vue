@@ -6,8 +6,9 @@ import { BarItem, BarColor } from '@/types/Graphs/graph';
 
 import LoadingDialog from '@/Components/LoadingDialog.vue';
 import MonthDropdown from '@/Components/Inputs/MonthDropdown.vue';
+import YearDropdown from '@/Components/Inputs/YearDropdown.vue';
 
-import { defineComponent, onMounted, reactive, computed } from 'vue';
+import { defineComponent, onMounted, reactive, computed, ref } from 'vue';
 import BarGraph from '@/Components/Graphs/BarGraph.vue';
 import { useReceiptStore } from '@/store/receiptPiniaStore';
 import { useGenericStore } from '@/store/genericPiniaStore';
@@ -30,15 +31,12 @@ const selectedMonth = computed({
 	set: (value) => receiptStore.$patch({selected: {month: value}})
 });
 
-const selectedYear = computed({
-	get: () => receiptStore.selected.year,
-	set: (value) => receiptStore.$patch({selected: {year: value}})
-});
+let selectedYear = ((new Date).getFullYear());
 
-const title = computed(() => `${genericStore.months[receiptStore.selected.month - 1]} ${receiptStore.selected.year}`)
+const title = computed(() => `${genericStore.months[receiptStore.selected.month - 1]} ${selectedYear}`)
 const loadReceipts = async () => {
 	graphValues.length = 0;
-	const response = await receiptApi.listReceipts(receiptStore.selected.month, receiptStore.selected.year);
+	const response = await receiptApi.listReceipts(receiptStore.selected.month, selectedYear);
 	receipts.length = 0;
 	if (response.status === 200) {
 		for(const item of response.data.result) {
@@ -118,6 +116,7 @@ export default defineComponent({
 	<div class="inline-flex flex-col w-full">
 		<div class="inline-flex flex-row">
 			<MonthDropdown v-model="selectedMonth" @update:model-value="refreshGraph"/>
+			<YearDropdown v-model="selectedYear" @update:model-value="refreshGraph"/>
 		</div>
 		<LoadingDialog v-if="is.loading"></LoadingDialog>
 		<BarGraph class="w-full" v-else-if="is.show && graphValues.length" :title="title" :values="graphValues"></BarGraph>

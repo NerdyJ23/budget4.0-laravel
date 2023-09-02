@@ -24,6 +24,7 @@ export default defineComponent({
 				<slot name="sidebar">
 					<SideBar class="border border-solid border-slate-800 sticky top-0 h-screen max-h-screen min-h-screen md:w-48">
 						<PlainButtonLink class="w-full" text="Receipts" :link="route('receipts')" :current="currentPage('receipts')"></PlainButtonLink>
+						<PlainButtonLink class="w-full" text="Graphs" :link="route('receipts.graphs')" :current="currentPage('receipts.graphs')"></PlainButtonLink>
 					</SideBar>
 				</slot>
 			</div>
