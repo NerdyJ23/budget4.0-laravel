@@ -5,11 +5,12 @@ import { defineStore } from 'pinia';
 import { ReceiptItemCategory } from "@/types/Receipts/receiptItemCategory";
 import { Receipt } from "@/types/Receipts/receipt";
 
+import { useUrlSearchParams } from '@vueuse/core';
 const today = new Date;
 export const useReceiptStore = defineStore('receiptStore', {
 	state: () => ({
 		selected: {
-			month: today.getMonth() as number,
+			month: (today.getMonth() + 1 )as number,
 			year: today.getFullYear() as number
 		},
 		receipts: [] as Receipt[],
@@ -33,6 +34,15 @@ export const useReceiptStore = defineStore('receiptStore', {
 				}
 			} else {
 				console.error('categories failed to load');
+			}
+		},
+		setup() {
+			const params = useUrlSearchParams('history');
+			if (params.month) {
+				this.selected.month = parseInt(params.month as string);
+			}
+			if (params.year) {
+				this.selected.year = parseInt(params.year as string);
 			}
 		},
 		filterReceipts(): Array<Receipt> {

@@ -2,7 +2,7 @@
 import { defineComponent, ref, onMounted, nextTick, reactive } from 'vue';
 import { Receipt } from '@/types/Receipts/receipt';
 import { Head, usePage } from '@inertiajs/vue3';
-import { useUrlSearchParams, useCloned } from '@vueuse/core';
+import { useUrlSearchParams } from '@vueuse/core';
 
 //Inputs
 import MonthDropdown from '@/Components/Inputs/MonthDropdown.vue';
@@ -26,6 +26,7 @@ const location = window.location.href;
 const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
 const categoryFilterInput = ref<InstanceType<typeof ReceiptCategoryDropdown> | null>(null);
 
+ReceiptStore.setup();
 if (ReceiptStore.receipts.length == 0) {
 	ReceiptStore.setReceipts(usePage().props.receipts);
 }
@@ -58,17 +59,9 @@ onMounted(() => {
 	const params = useUrlSearchParams('history');
 	if(params.category) {
 		if (categoryFilterInput.value) {
-			console.log(categoryFilterInput.value);
 			categoryFilterInput.value.updateFilterValue((params.category as string).toUpperCase())
 		}
 	}
-	if (params.month) {
-		ReceiptStore.selected.month = parseInt(params.month as string);
-	}
-	if (params.year) {
-		ReceiptStore.selected.year = parseInt(params.year as string);
-	}
-
 	ReceiptStore.loadCategories();
 })
 defineExpose({matches, location});

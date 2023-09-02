@@ -6,7 +6,6 @@ import moment from 'moment';
 
 import { BiFileEarmarkText } from "oh-vue-icons/icons";
 import { addIcons } from "oh-vue-icons";
-import { usePage } from '@inertiajs/vue3';
 import { useGenericStore } from '@/store/genericPiniaStore';
 
 const props = defineProps<{
@@ -64,7 +63,7 @@ defineExpose({reload});
 			<span class="table-header-text">Cost</span>
 			<span class="table-header-text">Category</span>
 		</div>
-		<div v-for="receipt of receipts" class="table-row" @click="showReceipt(receipt)" :key="receipts.id">
+		<div v-for="receipt of receipts" class="table-row" @click="showReceipt(receipt)" :key="receipt.id">
 			<span>{{ readableDate(receipt.date) }}</span>
 			<span class="inline-flex flex-row">
 				<span v-if="receipt.documents.length" class="self-start"><VIcon  name="bi-file-earmark-text" /></span>

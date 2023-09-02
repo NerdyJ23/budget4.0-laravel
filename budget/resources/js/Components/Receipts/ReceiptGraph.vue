@@ -5,24 +5,18 @@ import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 import { BarItem, BarColor } from '@/types/Graphs/graph';
 
 import LoadingDialog from '@/Components/LoadingDialog.vue';
+import MonthDropdown from '@/Components/Inputs/MonthDropdown.vue';
 
-import { defineComponent, ref, onMounted, reactive, computed } from 'vue';
+import { defineComponent, onMounted, reactive, computed } from 'vue';
 import BarGraph from '@/Components/Graphs/BarGraph.vue';
 import { useReceiptStore } from '@/store/receiptPiniaStore';
 import { useGenericStore } from '@/store/genericPiniaStore';
 
 const receipts: Receipt[] = [];
-const urlParams = new URLSearchParams(window.location.search);
 const date = new Date;
 
 const receiptStore = useReceiptStore();
 const genericStore = useGenericStore();
-
-const selected = reactive({
-	year: urlParams.get('year') ?? date.getFullYear(),
-	month: urlParams.get('month') ?? (date.getMonth() + 1)
-});
-
 
 const is = reactive({
 	loading: false,
@@ -105,21 +99,7 @@ const refreshGraph = async () => {
 }
 
 onMounted(async () => {
-	if (typeof selected.month == 'string') {
-		selected.month = parseInt(selected.month as string);
-	}
-
-	if (typeof selected.year == 'string') {
-		selected.year = parseInt(selected.year as string);
-	}
-
-	receiptStore.$patch({
-		selected: {
-			month: selected.month,
-			year: selected.year
-		}
-	});
-
+	receiptStore.setup();
 	refreshGraph();
 })
 
@@ -137,15 +117,7 @@ export default defineComponent({
 <template>
 	<div class="inline-flex flex-col w-full">
 		<div class="inline-flex flex-row">
-			<select v-model="selectedMonth" @change="refreshGraph">
-				<option
-					v-for="(month, index) in genericStore.months"
-					:selected="index == receiptStore.selected.month"
-					:value="index + 1"
-				>
-					{{ month }}
-				</option>
-			</select>
+			<MonthDropdown v-model="selectedMonth" @update:model-value="refreshGraph"/>
 		</div>
 		<LoadingDialog v-if="is.loading"></LoadingDialog>
 		<BarGraph class="w-full" v-else-if="is.show && graphValues.length" :title="title" :values="graphValues"></BarGraph>
