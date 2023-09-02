@@ -9,19 +9,13 @@ import { addIcons } from "oh-vue-icons";
 import { usePage } from '@inertiajs/vue3';
 import { useGenericStore } from '@/store/genericPiniaStore';
 
+const props = defineProps<{
+	receipts: Array<Receipt>
+}>();
+
 const GenericStore = useGenericStore();
 const showDialog = ref(false);
 
-const receiptProp = ref(usePage().props.receipts);
-const receipts: Array<Receipt> = reactive(receiptProp.value.sort((a: Receipt, b: Receipt) => {
-	if (moment(a.date).isBefore(moment(b.date))) {
-		return -1;
-	} else if (moment(a.date).isSame(moment(b.date))) {
-		return 0;
-	} else {
-		return 1;
-	}
-}))
 const dialog = ref<InstanceType<typeof ReceiptDialog> | null>();
 const reload = () => { window.location.reload() }; //Lazy hack instead of soft-reloading the page
 
@@ -33,6 +27,7 @@ const showReceipt = (receipt: Receipt) => {
 		dialog.value?.show();
 	})
 }
+
 const dialogDestroyed = () => {
 	showDialog.value = false;
 }
@@ -56,7 +51,7 @@ const dateOrdinal = (number: number):string => {
 }
 
 addIcons(BiFileEarmarkText);
-defineExpose({reload, receipts});
+defineExpose({reload});
 </script>
 <script lang="ts">export default defineComponent({name: 'ReceiptTable'});</script>
 <template>
@@ -69,7 +64,7 @@ defineExpose({reload, receipts});
 			<span class="table-header-text">Cost</span>
 			<span class="table-header-text">Category</span>
 		</div>
-		<div v-for="receipt of receipts" class="table-row" @click="showReceipt(receipt)">
+		<div v-for="receipt of receipts" class="table-row" @click="showReceipt(receipt)" :key="receipts.id">
 			<span>{{ readableDate(receipt.date) }}</span>
 			<span class="inline-flex flex-row">
 				<span v-if="receipt.documents.length" class="self-start"><VIcon  name="bi-file-earmark-text" /></span>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { defineComponent, ref, onMounted, nextTick } from 'vue';
+import { defineComponent, ref, onMounted, nextTick, reactive } from 'vue';
 import { Receipt } from '@/types/Receipts/receipt';
 import { Head, usePage } from '@inertiajs/vue3';
-import { useUrlSearchParams } from '@vueuse/core';
+import { useUrlSearchParams, useCloned } from '@vueuse/core';
 
 //Inputs
 import MonthDropdown from '@/Components/Inputs/MonthDropdown.vue';
@@ -22,50 +22,28 @@ import { useReceiptStore } from '@/store/receiptPiniaStore';
 const ReceiptStore = useReceiptStore();
 const matches = route('receipts') == window.location.origin + window.location.pathname;
 const location = window.location.href;
+
 const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
 const categoryFilterInput = ref<InstanceType<typeof ReceiptCategoryDropdown> | null>(null);
 
-const reload = () => {
-	receiptTable.value?.reload();
-};
-
-const filteredReceipts = () => {
-	let filteredReceipts: Array<Receipt> = usePage().props.receipts;
-	const nameFilter = (ReceiptStore.filter.receipt.trim()).toLowerCase();
-	if (nameFilter != '') {
-		//FILTER RECEIPT
-		filteredReceipts = filteredReceipts.filter((receipt) => {
-			return receipt.store?.toLowerCase().includes(nameFilter) ||
-			receipt.location?.toLowerCase().includes(nameFilter) ||
-			receipt.date.toLowerCase().includes(nameFilter) ||
-			receipt.cost?.toString().toLowerCase().includes(nameFilter) ||
-			receipt.createdUtc?.toString().toLowerCase().includes(nameFilter);
-		});
-	}
-
-	const categoryFilter = ReceiptStore.filter.category.trim();
-	if (categoryFilter != '') {
-		filteredReceipts = filteredReceipts.filter((receipt) => {
-			return receipt.category == categoryFilter;
-		})
-	}
-	if (receiptTable.value) {
-		receiptTable.value.receipts = filteredReceipts;
-		nextTick(() => {
-			receiptTable.value?.$forceUpdate();
-		});
-	}
-};
+if (ReceiptStore.receipts.length == 0) {
+	ReceiptStore.receipts = usePage().props.receipts;
+}
+let receipts: Array<Receipt> = reactive(JSON.parse(JSON.stringify(ReceiptStore.receipts)));
 
 const updateCategory = (category: string) => {
 	ReceiptStore.filter.category = category.toUpperCase();
-	filteredReceipts();
-}
+	receipts.length = 0;
+	for(const receipt of ReceiptStore.filterReceipts()) {
+		receipts.push(receipt);
+	}}
 
 const updateReceiptFilter = (value: string) => {
-	console.log(value);
 	ReceiptStore.filter.receipt = value;
-	filteredReceipts();
+	receipts.length = 0;
+	for(const receipt of ReceiptStore.filterReceipts()) {
+		receipts.push(receipt);
+	}
 }
 
 const setHeaderValue = (value: number, param: string) => {
@@ -129,7 +107,7 @@ export default defineComponent({
 				<ConfirmButton class="ml-auto self-center min-w-max py-1 text-sm" @click="openCreateReceiptDialog">Create Receipt</ConfirmButton>
 			</div>
 			<div class="table-container pt-2">
-				<ReceiptTable ref="receiptTable" key="receiptId"/>
+				<ReceiptTable key="receiptTable" :receipts="receipts"/>
 			</div>
 		</div>
 		<!-- Create new receipt dialog -->
