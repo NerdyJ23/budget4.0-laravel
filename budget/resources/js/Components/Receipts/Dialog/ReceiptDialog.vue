@@ -130,13 +130,6 @@ const saveReceipt = () => {
 	})
 }
 
-const uploadDocument = async (file: File) => {
-	const response = await receiptApi.uploadDocument(file, receipt);
-	if (response.status === 201) {
-		return;
-	}
-	return response.data.errors;
-}
 const deleteItem = (index: any) => {
 	receipt.items.splice(index, 1);
 	if (receipt.items.length == 0) {
@@ -149,7 +142,6 @@ const setReceipt = (newReceipt: Receipt) => {
 }
 
 const show = () => {
-	receiptDocumentDialogShowing.value = true;
 	dialog.value?.show();
 	nextTick(() => {
 		if (!receipt.id) {
@@ -270,7 +262,7 @@ export default defineComponent({
 		v-if="receiptDocumentDialogShowing"
 		ref="documentDialog"
 		@destroy="receiptDocumentDialogShowing = false"
-		:new-receipt="is.editing"
+		:editing="is.editing"
 		:receipt="receipt"
 	/>
 </template>

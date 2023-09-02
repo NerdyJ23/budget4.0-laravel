@@ -9,17 +9,20 @@ import { defineComponent, ref, reactive } from 'vue';
 import { BiFileEarmarkPlus } from "oh-vue-icons/icons";
 import { addIcons } from "oh-vue-icons";
 import receiptApi from "@/services/Receipts/receiptApi";
-import { onMounted } from "vue";
+
 const props = withDefaults(defineProps<{
-	newReceipt: boolean,
+	editing: boolean,
 	receipt: Receipt
 }>(), {
-	newReceipt: false
+	editing: false
 });
 
 const is = reactive({
-	editing: props.newReceipt
+	editing: props.editing,
+	uploading: false
 });
+
+const receipt = ref(props.receipt);
 
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -27,23 +30,50 @@ const fileHover = ref(false);
 
 
 const show = () => { dialog.value?.show(); }
-const removeFile = (index: number) => {	props.receipt.documents.splice(index, 1) }
+const removeFile = (index: number) => {	receipt.value.documents.splice(index, 1) }
 
-const dragAndDrop = (event: DragEvent) => {
+const uploadDocument = async (file: File) => {
+	is.uploading = true;
+	const response = await receiptApi.uploadDocument(file, receipt.value);
+	if (response.status === 201) {
+		const result = response.data.result[0];
+		const doc: ReceiptDocument = {
+			id: result.id,
+			name: result.name,
+			uploadedUtc: result.uploadedUtc
+		};
+		is.uploading = false;
+		return doc;
+	}
+	is.uploading = false;
+	return response.data.errors;
+}
+
+const dragAndDrop = async (event: DragEvent) => {
 	event.preventDefault();
 	event.stopPropagation();
 	if (event.dataTransfer) {
 		let localFiles = event.dataTransfer.files;
 		for(const file of localFiles) {
-			props.receipt.documents.push(file);
+			if (receipt.value.id) {
+				const result = await uploadDocument(file);
+				receipt.value.documents.push(result);
+			} else {
+				receipt.value.documents.push(file);
+			}
 		}
 	}
 }
 
-const fileInputChange = () => {
+const fileInputChange = async () => {
 	if (fileInput.value && fileInput.value.files) {
 		for (const file of fileInput.value.files) {
-			props.receipt.documents.push(file);
+			if (receipt.value.id) {
+				const result = await uploadDocument(file);
+				receipt.value.documents.push(result);
+			} else {
+				receipt.value.documents.push(file);
+			}
 		}
 		fileInput.value.value = "";
 	}
@@ -61,10 +91,9 @@ defineExpose({ show });
 </script>
 <script lang="ts">export default defineComponent({name: "ReceiptDocumentDialog"});</script>
 <template>
-<BasicDialog ref="dialog" :title="`${newReceipt ? 'Attach' : ''} Documents`.trim()" :persistent="newReceipt">
+<BasicDialog ref="dialog" :title="`${is.editing ? 'Attach' : ''} Documents`.trim()" :persistent="is.editing">
 	<div class="flex flex-col h-full"  style="min-width: 30vw">
-		<div
-		v-if="is.editing"
+		<div v-if="is.editing" key="drag-drop-area"
 			@dragenter="$event.preventDefault(); fileHover = true;"
 			@dragover="$event.preventDefault(); fileHover = true;"
 			@dragleave="$event.preventDefault(); fileHover = false;"
@@ -88,7 +117,10 @@ defineExpose({ show });
 			<input type="file" ref="fileInput" multiple class="hidden" @change="fileInputChange"/>
 		</div>
 		<div v-for="(file, index) in receipt.documents">
-			<ReceiptDocumentFile :file="file" @delete="removeFile(index)" :editing="is.editing" :receipt="receipt"/>
+			<ReceiptDocumentFile :file="file" @delete="removeFile(index)" :editing="is.editing" :receipt="receipt" :key="index"/>
+		</div>
+		<div v-if="is.uploading">
+			Uploading...
 		</div>
 		<div v-if="receipt.documents.length == 0" class="text-lg italic w-full text-center">
 			No Files

@@ -35,7 +35,7 @@ class ReceiptDocumentClient extends DocumentClient {
 			path: self::getFilePath(user: $user, receipt: $receipt),
 			file: $file,
 		);
-		ReceiptDocument::create([
+		return ReceiptDocument::create([
 			'Name' => $file->getClientOriginalName(),
 			'UUID' => $filename,
 			'Receipt_ID' => $receipt->ID,
