@@ -1,0 +1,1 @@
+php artisan serve & npm run dev & service mysql start && fg
