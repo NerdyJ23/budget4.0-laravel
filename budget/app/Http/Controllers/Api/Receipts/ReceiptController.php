@@ -137,7 +137,8 @@ class ReceiptController extends BaseApiController {
 
 	static function getYearlyCosts(Request $request): array {
 		$user = UserClient::getByToken($request->cookie('token'));
-		$key = 'user-id-' . $user->id . ':costs:yearly';
+		$year = $request->query('year') ?? date('Y');
+		$key = 'user-id-' . $user->id . ':costs:yearly:' . $year;
 		if (count(Redis::hgetall($key)) > 0) {
 			$result = [];
 			foreach (Redis::hgetall($key) as $cost) {
@@ -150,7 +151,7 @@ class ReceiptController extends BaseApiController {
 
 		$result = ReceiptClient::getYearlyReceiptCosts(
 			user: $user,
-			year: date('Y')
+			year: $year
 		);
 		for ($i = 0; $i < count($result); $i++) {
 			Redis::hset($key, $i+1, $result[$i]);

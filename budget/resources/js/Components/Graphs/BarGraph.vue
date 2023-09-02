@@ -7,8 +7,8 @@ import { reactive } from 'vue';
 const props = withDefaults(defineProps<{
 	values: Array<BarItem>,
 	title: string,
-	sort: 'asc' | 'desc' | 'none',
-	labels: boolean,
+	sort?: 'asc' | 'desc' | 'none',
+	labels?: boolean,
 	config?: Config | Partial<Config>
 }>(), {
 	sort: 'desc',

@@ -40,8 +40,8 @@ export default {
 	},
 
 	// Stats
-	loadYearlyCosts() {
-		const response = api().get(`/receipt/costs/yearly`).catch((error) => {
+	loadYearlyCosts(year: number) {
+		const response = api().get(`/receipt/costs/yearly?year=${year}`).catch((error) => {
 			return error.response;
 		});
 		return response;
