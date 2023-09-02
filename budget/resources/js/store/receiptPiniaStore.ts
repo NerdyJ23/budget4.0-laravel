@@ -40,11 +40,12 @@ export const useReceiptStore = defineStore('receiptStore', {
 			if (this.filter.receipt != '') {
 				//FILTER RECEIPT
 				filteredReceipts = filteredReceipts.filter((receipt) => {
-					return receipt.store?.toLowerCase().includes(this.filter.receipt) ||
-					receipt.location?.toLowerCase().includes(this.filter.receipt) ||
-					receipt.date.toLowerCase().includes(this.filter.receipt) ||
-					receipt.cost?.toString().toLowerCase().includes(this.filter.receipt) ||
-					receipt.createdUtc?.toString().toLowerCase().includes(this.filter.receipt);
+					return receipt.store?.toLowerCase().includes(this.filter.receipt.toLowerCase()) ||
+					receipt.reference?.toLowerCase().includes(this.filter.receipt.toLowerCase()) ||
+					receipt.location?.toLowerCase().includes(this.filter.receipt.toLowerCase()) ||
+					receipt.date.toLowerCase().includes(this.filter.receipt.toLowerCase()) ||
+					receipt.cost?.toString().toLowerCase().includes(this.filter.receipt.toLowerCase()) ||
+					receipt.createdUtc?.toString().toLowerCase().includes(this.filter.receipt.toLowerCase());
 				});
 			}
 

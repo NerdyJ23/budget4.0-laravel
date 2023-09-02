@@ -27,7 +27,7 @@ const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
 const categoryFilterInput = ref<InstanceType<typeof ReceiptCategoryDropdown> | null>(null);
 
 if (ReceiptStore.receipts.length == 0) {
-	ReceiptStore.receipts = usePage().props.receipts;
+	ReceiptStore.setReceipts(usePage().props.receipts);
 }
 let receipts: Array<Receipt> = reactive(JSON.parse(JSON.stringify(ReceiptStore.receipts)));
 
