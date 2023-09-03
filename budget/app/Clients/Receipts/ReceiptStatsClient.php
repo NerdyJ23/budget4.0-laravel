@@ -28,4 +28,11 @@ class ReceiptStatsClient extends BaseClient {
 		}
 		return $costs;
 	}
+
+	static function getStoreCountAndCosts(User $user, int $year) {
+		return Receipt::where('User', $user->id)
+		->whereYear('Date', $year)
+		->get()
+		->countBy('Store');
+	}
 }

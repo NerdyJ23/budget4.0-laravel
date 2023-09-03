@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Receipts;
 use App\Http\Controllers\Api\BaseApiController;
 use App\Clients\Users\UserClient;
 use App\Clients\Receipts\ReceiptClient;
+use App\Clients\Receipts\ReceiptStatsClient;
 
 use App\Http\Schemas\Schema;
 use Illuminate\Support\Facades\Redis;
@@ -45,8 +46,19 @@ class ReceiptStatsController extends BaseApiController {
 		];
 	}
 
-	static function getFavouriteStores(Request $request): array {
+	static function getFavouriteStores(Request $request) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$year = $request->query('year') ?? date('Y');
+		$result = ReceiptStatsClient::getStoreCountAndCosts(user: $user, year: $year);
+		$output = [];
+		foreach($result->sortDesc()->all() as $store => $value) {
+			$output[] = [
+				'store' => $store,
+				'count' => $value
+			];
+		}
+		return [
+			'result' => $output
+		];
 	}
 }
