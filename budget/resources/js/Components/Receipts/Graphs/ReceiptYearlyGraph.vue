@@ -22,7 +22,7 @@ const loadValues = async () => {
 	is.loading = true;
 	const response = await receiptApi.loadYearlyCosts(ReceiptStore.selected.year);
 	if (response.status === 200) {
-		for(let i = 1; i < GenericStore.months.length; i++) {
+		for(let i = 1; i <= GenericStore.months.length; i++) {
 			value.push({
 				key: GenericStore.months[i - 1],
 				value: response.data.result[i - 1],
