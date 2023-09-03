@@ -40,6 +40,12 @@ const updateFilterValue = (value: string) => {
 		inputfield.value.selfInput.value = value;
 	}
 }
+const width = computed(() => {
+	if (inputfield.value) {
+		return `width: ${inputfield.value.selfInput!.clientWidth}px;`;
+	}
+	return `width: 0px`;
+});
 
 watch(filterValue, () => { emit('changed', filterValue.value) })
 
@@ -77,21 +83,22 @@ export default defineComponent({
 			@blur="hideOptions"
 			:rules="rules"
 			:key="`dropdown-${id}`"
-			uppercase
 			/>
-		<div v-if="is.show" class="relative" ref="container">
-			<span
-				class="autocomplete-item uppercase"
+		<div v-if="is.show" class="relative" ref="container" :style="width">
+			<span class="autocomplete-item uppercase"
 				v-if="filterValue.trim().length >= 2"
 				v-for="item in filteredItems"
 				@mousedown="filterValue = item.name"
 			>{{ item.name }}</span>
+			<span v-else class="autocomplete-item italic text-sm text-left">
+				Begin typing...
+			</span>
 		</div>
 	</div>
 </template>
 <style lang="scss">
 .autocomplete-item {
 	z-index: 999;
-	@apply hover:bg-zinc-200 absolute overflow-hidden text-ellipsis cursor-pointer bg-zinc-100 border-x border-b border-solid border-slate-300 p-4 w-full left-0 right-0;
+	@apply hover:bg-zinc-200 absolute overflow-hidden text-ellipsis cursor-pointer bg-zinc-100 border-x border-b border-solid border-slate-300 px-4 py-2 w-full;
 }
 </style>

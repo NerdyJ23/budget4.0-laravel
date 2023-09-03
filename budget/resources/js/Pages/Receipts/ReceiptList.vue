@@ -9,6 +9,7 @@ import MonthDropdown from '@/Components/Inputs/MonthDropdown.vue';
 import YearDropdown from '@/Components/Inputs/YearDropdown.vue';
 import ConfirmButton from '@/Components/Inputs/ConfirmButton.vue';
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
+import FilterDropdownMenu from '@/Components/Search/FilterDropdownMenu.vue';
 
 //Components
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -82,22 +83,27 @@ export default defineComponent({
 <template>
 	<Head title="Receipts" />
 	<AuthenticatedLayout>
-		<div class="">
+		<div class="overflow-x-hidden">
 			<div class="receipt-controls mx-2 sticky top-0 bg-white p-2">
-				<VueTextField class="w-full" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
-				<MonthDropdown v-model="ReceiptStore.selected.month" @update:model-value="(value: number) => setHeaderValue(value, 'month')"/>
-				<YearDropdown v-model="ReceiptStore.selected.year" @update:model-value="(value: number) => setHeaderValue(value, 'year')" />
+				<VueTextField class="w-full self-center" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
 				<ReceiptCategoryDropdown
 					:items="ReceiptStore.categories"
 					ref="categoryFilterInput"
 					placeholder="Category"
 					name="search-category"
 					key="search-category"
-					class="self-center px-2 min-w-max"
+					class="self-center pl-1 min-w-max"
 					@changed="(category: string) => updateCategory(category)"
 					clearable
 				/>
-				<ConfirmButton class="ml-auto self-center min-w-max py-1 text-sm" @click="openCreateReceiptDialog">Create Receipt</ConfirmButton>
+				<FilterDropdownMenu class="p-2">
+					<span class="text-md py-1 px-2 flex w-full border-b border-slate-400/50">Filter By</span>
+					<div class="flex flex-row p-2">
+						<MonthDropdown class="ml-2 rounded-none rounded-l-xl border border-r-slate-50/100" v-model="ReceiptStore.selected.month" @update:model-value="(value: number) => setHeaderValue(value, 'month')"/>
+						<YearDropdown class="mr-2 rounded-none rounded-r-xl" v-model="ReceiptStore.selected.year" @update:model-value="(value: number) => setHeaderValue(value, 'year')" />
+					</div>
+				</FilterDropdownMenu>
+				<ConfirmButton class="ml-auto self-center min-w-max py-1 text-md" @click="openCreateReceiptDialog">Create Receipt</ConfirmButton>
 			</div>
 			<div class="table-container pt-2">
 				<ReceiptTable key="receiptTable" :receipts="receipts"/>
