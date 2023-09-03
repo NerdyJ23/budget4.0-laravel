@@ -49,7 +49,7 @@ class ReceiptFilter extends BaseFilter {
 
 	public function setStore(string $store, ?StringFilterType $filterType = null) {
 		if (trim($store) == '') {
-			throw new InputValidationException('Receipt Name cannot be empty');
+			throw new InputValidationException('Receipt Store cannot be empty');
 		}
 
 		$this->store = trim($store);
@@ -84,7 +84,7 @@ class ReceiptFilter extends BaseFilter {
 			return false;
 		}
 
-		if (!is_null($this->store) && !parent::matchString(type: $this->storeFilterType, toFind: $this->store, value: $receipt->Name)) {
+		if (!is_null($this->store) && !parent::matchString(type: $this->storeFilterType, toFind: $this->store, value: $receipt->Store)) {
 			return false;
 		}
 

@@ -35,7 +35,7 @@ class ReceiptController extends BaseApiController {
 	static function create(ReceiptPostRequest $request) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$receipt = ReceiptClient::create(
-			name: $request->input('name'),
+			store: $request->input('store'),
 			location: $request->input('location'),
 			reference: $request->input('reference'),
 			date: $request->input('date'),
@@ -83,7 +83,7 @@ class ReceiptController extends BaseApiController {
 		$user = UserClient::getByToken(token: $request->cookie('token'));
 		$receipt = ReceiptClient::update(
 			receipt: ReceiptClient::get(user: $user, id: $id),
-			name: $request->input('name'),
+			store: $request->input('store'),
 			location: $request->input('location'),
 			reference: $request->input('reference'),
 			date: $request->input('date'),

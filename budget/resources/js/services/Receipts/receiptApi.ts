@@ -13,7 +13,7 @@ export default {
 
 	createReceipt(receipt: Receipt) {
 		const form = new FormData();
-		form.append('name', receipt.store ?? '');
+		form.append('store', receipt.store ?? '');
 		form.append('date', receipt.date);
 		form.append('location', receipt.location ?? '');
 		form.append('reference', receipt.reference ?? '');
@@ -27,7 +27,7 @@ export default {
 
 	updateReceipt(receipt: Receipt) {
 		const form = new FormData();
-		form.append('name', receipt.store ?? '');
+		form.append('store', receipt.store ?? '');
 		form.append('date', receipt.date);
 		form.append('location', receipt.location ?? '');
 		form.append('reference', receipt.reference ?? '');

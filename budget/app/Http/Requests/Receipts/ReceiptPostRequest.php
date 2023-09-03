@@ -23,7 +23,7 @@ class ReceiptPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'name' => 'nullable|max:100',
+			'store' => 'nullable|max:100',
 			'location' => 'nullable|max:30',
 			'reference' => 'nullable|max:60',
 			'date' => 'required:date',

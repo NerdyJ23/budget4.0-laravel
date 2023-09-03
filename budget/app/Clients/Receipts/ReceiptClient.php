@@ -31,14 +31,14 @@ class ReceiptClient extends BaseClient {
 	}
 
 	static function create(
-		?string $name,
+		?string $store,
 		?string $location,
 		?string $reference,
 		string $date,
 		User $user
 	): Receipt {
 		return Receipt::create([
-			'Name' => $name,
+			'Store' => $store,
 			'Location' => $location,
 			'ReceiptNumber' => $reference,
 			'Date' => $date,
@@ -60,13 +60,13 @@ class ReceiptClient extends BaseClient {
 
 	static function update(
 		Receipt $receipt,
-		?string $name,
+		?string $store,
 		?string $location,
 		?string $reference,
 		?string $date,
 		User $user
 	): Receipt {
-		$receipt->Name = $name;
+		$receipt->Store = $store;
 		$receipt->Location = $location;
 		$receipt->ReceiptNumber = $reference;
 		$receipt->Date = $date;

@@ -15,7 +15,7 @@ return new class extends Migration
 		if (!Schema::hasTable(self::TABLE)) {
 			Schema::create(self::TABLE, function (Blueprint $table) {
 				$table->id('ID');
-				$table->string('Name', 100)->nullable();
+				$table->string('Store', 100)->nullable();
 				$table->string('Location', 30)->nullable();
 				$table->string('ReceiptNumber', 60)->nullable();
 				$table->double('Cost')->default(0); //automatically calculated

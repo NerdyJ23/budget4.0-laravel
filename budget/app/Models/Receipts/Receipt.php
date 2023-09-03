@@ -22,7 +22,7 @@ class Receipt extends Model
 	const UPDATED_AT = 'EditedUTC';
 
 	protected $fillable = [
-		'Name',
+		'Store',
 		'Location',
 		'ReceiptNumber',
 		'Date',
