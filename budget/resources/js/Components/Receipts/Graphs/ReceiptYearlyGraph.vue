@@ -32,6 +32,7 @@ const loadValues = async () => {
 					b: 229,
 					a: 1
 				} as BarColor,
+				text: `$${response.data.result[i - 1]}`
 			})
 		}
 	}
