@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Receipt } from '@/types/Receipts/receipt';
 import { ReceiptItem } from '@/types/Receipts/receiptItem';
-import { defineComponent, ref, onMounted, reactive, nextTick, onUnmounted } from 'vue';
+import { defineComponent, ref, onMounted, reactive, nextTick, computed } from 'vue';
 import { Form } from 'vee-validate';
 import moment from 'moment';
 import receiptApi from '@/services/Receipts/receiptApi';
@@ -76,7 +76,7 @@ const addNewReceiptItem = () => {
 		category: ''
 	};
 	receipt.items.push(item);
-	nextTick(() => {focusLastItem()}) ;
+	nextTick(() => {focusLastItem()});
 }
 const focusLastItem = () => {
 	const items = document.querySelectorAll('[name ^= item_name]');
@@ -138,7 +138,7 @@ const deleteItem = (index: any) => {
 }
 
 const setReceipt = (newReceipt: Receipt) => {
-	receipt = newReceipt;
+	receipt = reactive(newReceipt);
 }
 
 const show = () => {
@@ -161,16 +161,16 @@ const showReceiptDocumentDialog = () => {
 	})
 }
 
-const cost = (): number => {
-	if (receipt.cost && receipt.cost > 0) {
-		return receipt.cost;
+const cost = computed((): number => {
+	if (is.editing) {
+		let total = 0;
+		receipt.items.forEach(item => {
+			total += (item.cost * item.count);
+		});
+		return total;
 	}
-	let total = 0;
-	receipt.items.forEach(item => {
-		total += (item.cost * item.count);
-	});
-	return total;
-}
+	return receipt.cost ?? 0;
+});
 
 addIcons(BiPencilSquare);
 defineExpose({dialog, reset, show, hide, setReceipt});
@@ -232,7 +232,7 @@ export default defineComponent({
 						<span class>Total</span>
 						<span class>Category</span>
 					</div>
-					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in receipt.items" :item="item" @delete="deleteItem(index)" :key="item.id"></ReceiptDialogItem>
+					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in receipt.items" :item="item" @delete="deleteItem(index)" :key="`${item.id}-${index}`"></ReceiptDialogItem>
 				</div>
 			</div>
 		</VForm>
@@ -247,7 +247,7 @@ export default defineComponent({
 		</template>
 		<div v-if="receipt.documents.length || is.editing" class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents ({{ receipt.documents?.length ?? 0 }})</div>
 		<div v-else class="py-1 ml-2">&nbsp</div>
-		<span class="absolute left-0 right-0 mx-auto text-center font-semibold text-lg self-center pointer-events-none">Total: ${{ cost().toFixed(2) }}</span>
+		<span class="absolute left-0 right-0 mx-auto text-center font-semibold text-lg self-center pointer-events-none">Total: ${{ cost.toFixed(2) }}</span>
 		<div class="ml-auto inline-flex flex-row">
 			<template v-if="is.editing">
 				<ConfirmButton class="py-1 text-md self-center" @click="saveReceipt"/>
