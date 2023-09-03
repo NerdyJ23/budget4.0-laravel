@@ -91,7 +91,7 @@ export default defineComponent({name: 'BasicDialog'})
 		<slot></slot>
 
 		<!-- Loading Overlay -->
-		<div v-if="is.loading" class="h-full w-full backdrop-blur-sm absolute top-0 left-0 force-front">
+		<div v-if="is.loading" class="h-full w-full bg-neutral-200/80 rounded-md absolute top-0 left-0 force-front">
 			<div class="grid h-full justify-items-center content-center">
 				<slot name="loading_icon">
 					<VIcon class="opacity-50" name="ri-loader-5-fill" animation="spin" label="Close" scale="8"></VIcon>
