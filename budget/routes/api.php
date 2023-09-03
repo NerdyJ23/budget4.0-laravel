@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 //Controllers
 use App\Http\Controllers\Api\Receipts\ReceiptController;
+use App\Http\Controllers\Api\Receipts\ReceiptStatsController;
 use App\Http\Controllers\Api\Receipts\ReceiptDocumentController;
 use App\Http\Controllers\Api\Receipts\ReceiptItemController;
 use App\Http\Controllers\Api\Receipts\ReceiptCategoryController;
@@ -95,9 +96,9 @@ Route::prefix('receipt')->middleware('logged_in')->group(function () {
 		return ReceiptDocumentController::delete(request: $request, receiptId: $receiptId, id: $docId);
 	});
 
-	//Receipt Graph Information
+	//Receipt Stats
 	Route::get('/costs/yearly', function (Request $request) {
-		return ReceiptController::getYearlyCosts(request: $request);
+		return ReceiptStatsController::getYearlyCosts(request: $request);
 	});
 });
 

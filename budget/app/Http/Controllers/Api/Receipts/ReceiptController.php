@@ -137,31 +137,4 @@ class ReceiptController extends BaseApiController {
 		$receipt = ReceiptClient::generateCostAndCategory(receipt: $receipt->refresh());
 		return parent::sendResponse(body: Schema::schema($receipt, 'Receipt'));
 	}
-
-	static function getYearlyCosts(Request $request): array {
-		$user = UserClient::getByToken($request->cookie('token'));
-		$year = $request->query('year') ?? date('Y');
-		$key = 'user-id-' . $user->id . ':costs:yearly:' . $year;
-		if (count(Redis::hgetall($key)) > 0) {
-			$result = [];
-			foreach (Redis::hgetall($key) as $cost) {
-				$result[] = floatval($cost);
-			}
-			return [
-				'result' => $result
-			];
-		}
-
-		$result = ReceiptClient::getYearlyReceiptCosts(
-			user: $user,
-			year: $year
-		);
-		for ($i = 0; $i < count($result); $i++) {
-			Redis::hset($key, $i+1, $result[$i]);
-		}
-		Redis::expire($key, 86400);
-		return [
-			'result' => $result
-		];
-	}
 }
