@@ -66,10 +66,10 @@ class ReceiptClient extends BaseClient {
 		?string $date,
 		User $user
 	): Receipt {
-		$receipt->Name = $name ?? $receipt->Name;
-		$receipt->Location = $location ?? $receipt->Location;
-		$receipt->ReceiptNumber = $reference ?? $receipt->ReceiptNumber;
-		$receipt->Date = $date ?? $receipt->Date;
+		$receipt->Name = $name;
+		$receipt->Location = $location;
+		$receipt->ReceiptNumber = $reference;
+		$receipt->Date = $date;
 		$receipt->save();
 		return $receipt->refresh();
 	}

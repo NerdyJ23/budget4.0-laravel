@@ -79,6 +79,7 @@ class ReceiptController extends BaseApiController {
 	}
 
 	static function update(ReceiptPatchRequest $request, string $id) {
+
 		$user = UserClient::getByToken(token: $request->cookie('token'));
 		$receipt = ReceiptClient::update(
 			receipt: ReceiptClient::get(user: $user, id: $id),
@@ -93,40 +94,42 @@ class ReceiptController extends BaseApiController {
 		//Update receipt items too
 		$items = json_decode($request->input('items'));
 		$errors = [];
-		foreach ($items as $item) {
-			try {
-				$filter = new ReceiptCategoryFilter();
-				$filter->setName($item->category);
+		if ($items != null) {
+			foreach ($items as $item) {
+				try {
+					$filter = new ReceiptCategoryFilter();
+					$filter->setName($item->category);
 
-				$categoryList = ReceiptItemCategoryClient::list(user: $user, filter: $filter);
-				$categoryModel = sizeOf($categoryList) == 0 ? ReceiptItemCategoryClient::create(name: $item->category, user: $user) : reset($categoryList);
-				$receiptItem = null;
+					$categoryList = ReceiptItemCategoryClient::list(user: $user, filter: $filter);
+					$categoryModel = sizeOf($categoryList) == 0 ? ReceiptItemCategoryClient::create(name: $item->category, user: $user) : reset($categoryList);
+					$receiptItem = null;
 
-				if (property_exists($item, 'id')) {
-					$receiptItem = ReceiptItemClient::get(id: $item->id, receipt: $receipt, user: $user);
+					if (property_exists($item, 'id')) {
+						$receiptItem = ReceiptItemClient::get(id: $item->id, receipt: $receipt, user: $user);
+					}
+
+					if ($receiptItem != null) {
+						$receiptItem = ReceiptItemClient::update(
+							item: $receiptItem,
+							name: $item->name,
+							count: $item->count,
+							cost: $item->cost,
+							category: $categoryModel,
+							user: $user
+						);
+					} else {
+						$receiptItem = ReceiptItemClient::create(
+							receipt: $receipt,
+							name: $item->name,
+							count: $item->count,
+							cost: $item->cost,
+							user: $user,
+							category: $categoryModel->Name
+						);
+					}
+				} catch (InputValidationException $e) {
+					$errors += [$item->name . ': ' . $e->getMessage()];
 				}
-
-				if ($receiptItem != null) {
-					$receiptItem = ReceiptItemClient::update(
-						item: $receiptItem,
-						name: $item->name,
-						count: $item->count,
-						cost: $item->cost,
-						category: $categoryModel,
-						user: $user
-					);
-				} else {
-					$receiptItem = ReceiptItemClient::create(
-						receipt: $receipt,
-						name: $item->name,
-						count: $item->count,
-						cost: $item->cost,
-						user: $user,
-						category: $categoryModel->Name
-					);
-				}
-			} catch (InputValidationException $e) {
-				$errors += [$item->name . ': ' . $e->getMessage()];
 			}
 		}
 
