@@ -26,14 +26,14 @@ class ReceiptStatsController extends BaseApiController {
 		if (count(Redis::hgetall($key)) > 0) {
 			$result = [];
 			foreach (Redis::hgetall($key) as $cost) {
-				$result[] = floatval($cost);
+				$result[] = round(floatval($cost), 2);
 			}
 			return [
 				'result' => $result
 			];
 		}
 
-		$result = ReceiptClient::getYearlyReceiptCosts(
+		$result = ReceiptStatsClient::getTotalCostPerMonth(
 			user: $user,
 			year: $year
 		);
@@ -41,21 +41,39 @@ class ReceiptStatsController extends BaseApiController {
 			Redis::hset($key, $i+1, $result[$i]);
 		}
 		Redis::expire($key, 86400);
+		$output = [];
+		foreach ($result as $i) {
+			$output[] = round($i, 2);
+		}
 		return [
-			'result' => $result
+			'result' => $output
 		];
 	}
 
 	static function getFavouriteStores(Request $request) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$year = $request->query('year') ?? date('Y');
-		$result = ReceiptStatsClient::getStoreCountAndCosts(user: $user, year: $year);
+		$key = 'user-id-' . $user->id . ':stats:stores:' . $year;
+		if (count(Redis::hgetall($key)) > 0) {
+			$result = [];
+			foreach (Redis::hgetall($key) as $data) {
+				$result[] = json_decode($data);
+			}
+			return [
+				'result' => $result
+			];
+		}
+		$result = ReceiptStatsClient::getStoreCount(user: $user, year: $year);
 		$output = [];
 		foreach($result->sortDesc()->all() as $store => $value) {
-			$output[] = [
+			$cost = ReceiptStatsClient::getYearlyCostOfStore(user: $user, store: $store, year: $year);
+			$obj = [
 				'store' => $store,
-				'count' => $value
+				'count' => $value,
+				'total' => round($cost, 2)
 			];
+			$output[] = $obj;
+			Redis::hset($key, $store, json_encode($obj));
 		}
 		return [
 			'result' => $output

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, onMounted, ref, defineEmits, computed } from 'vue';
+import { reactive, onMounted, ref, computed } from 'vue';
 import { MdFilterlistRound } from "oh-vue-icons/icons";
 import { addIcons } from "oh-vue-icons";
 import { onClickOutside } from '@vueuse/core'
@@ -19,7 +19,7 @@ const is = reactive({
 const x = computed(():string => {
 	if (innerDialog.value) {
 		const pos = innerDialog.value.getBoundingClientRect();
-		const buttonWidth = filterDialog.value.clientWidth;
+		const buttonWidth = filterDialog.value!.clientWidth;
 
 		console.log(pos);
 		if (pos.right > window.innerWidth) { //overflows off right

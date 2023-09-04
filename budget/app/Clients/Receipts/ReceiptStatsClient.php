@@ -18,7 +18,7 @@ use App\Exceptions\Http\UnauthorizedException;
 use App\Filters\Receipts\ReceiptFilter;
 
 class ReceiptStatsClient extends BaseClient {
-	static function getYearlyReceiptCosts(User $user, int $year) {
+	static function getTotalCostPerMonth(User $user, int $year) {
 		$costs = [];
 		for ($i = 1; $i <= 12; $i++) {
 			$costs[] = Receipt::where('User', $user->id)
@@ -29,10 +29,18 @@ class ReceiptStatsClient extends BaseClient {
 		return $costs;
 	}
 
-	static function getStoreCountAndCosts(User $user, int $year) {
+	static function getStoreCount(User $user, int $year) {
 		return Receipt::where('User', $user->id)
 		->whereYear('Date', $year)
 		->get()
 		->countBy('Store');
+	}
+
+	static function getYearlyCostOfStore(User $user, string $store, int $year) {
+		return Receipt::where([
+			'User' => $user->id,
+			'Store' => $store,
+		])->whereYear('Date', $year)
+		->get()->sum('Cost');
 	}
 }
