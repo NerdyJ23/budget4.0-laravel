@@ -47,6 +47,20 @@ export default {
 		return response;
 	},
 
+	loadFavouriteStores(year: number) {
+		const response = api().get(`/stats/stores?year=${year}`).catch((error) => {
+			return error.response
+		});
+		return response;
+	},
+
+	loadFavouriteCategories(year: number) {
+		const response = api().get(`/stats/categories?year=${year}`).catch((error) => {
+			return error.response
+		});
+		return response;
+	},
+
 	//Categories
 	loadCategories(archived = false) {
 		const response = api().get(`/receipt/category?archived=${archived ? 1 : 0}`)

@@ -106,6 +106,10 @@ Route::prefix('stats')->middleware('logged_in')->group(function () {
 	Route::get('/stores', function (Request $request) {
 		return ReceiptStatsController::getFavouriteStores(request: $request);
 	});
+
+	Route::get('/categories', function (Request $request) {
+		return ReceiptStatscontroller::getFavouriteCategories(request: $request);
+	});
 });
 Route::prefix('user')->group(function () {
 	Route::post('/', function (UserPostRequest $request) {
