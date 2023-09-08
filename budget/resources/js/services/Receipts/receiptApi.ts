@@ -47,14 +47,14 @@ export default {
 		return response;
 	},
 
-	loadFavouriteStores(year: number) {
+	loadFavouriteStores(year: number | string) {
 		const response = api().get(`/stats/stores?year=${year}`).catch((error) => {
 			return error.response
 		});
 		return response;
 	},
 
-	loadFavouriteCategories(year: number) {
+	loadFavouriteCategories(year: number | string) {
 		const response = api().get(`/stats/categories?year=${year}`).catch((error) => {
 			return error.response
 		});
