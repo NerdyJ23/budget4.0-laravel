@@ -36,10 +36,10 @@ watch(() => props.year, () => {
 		<div class="pl-2 w-full grid grid-cols-4 gap-x-2 gap-y-1 bg-slate-400 text-center">
 			<span class="font-semibold text-md">Store</span>
 			<span class="font-semibold text-md">Entries</span>
-			<span class="font-semibold text-md">Average Purchase Cost</span>
-			<span class="font-semibold text-md">Total Cost Per Year</span>
+			<span class="font-semibold text-md">Average Cost</span>
+			<span class="font-semibold text-md">Total Cost</span>
 		</div>
-		<div class="grid grid-cols-4 gap-x-2 gap-y-1">
+		<div class="grid grid-cols-4 gap-x-2 gap-y-1 text-sm pl-2">
 			<template v-for="store in storeList" :key="store.store">
 				<span class="capitalize">{{ store.store.toLowerCase() }}</span>
 				<span class="text-center">{{ store.count }}</span>

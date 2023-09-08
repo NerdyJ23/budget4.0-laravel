@@ -35,10 +35,10 @@ watch(() =>  props.year, () => {
 		<div class="pl-2 w-full grid grid-cols-4 gap-x-2 gap-y-1 bg-slate-400 text-center">
 			<span class="font-semibold text-md">Category</span>
 			<span class="font-semibold text-md">Item Count</span>
-			<span class="font-semibold text-md">Average Item Cost</span>
+			<span class="font-semibold text-md">Average Cost</span>
 			<span class="font-semibold text-md">Total Cost</span>
 		</div>
-		<div class="grid grid-cols-4 gap-x-2 gap-y-1">
+		<div class="grid grid-cols-4 gap-x-2 gap-y-1 text-sm pl-2">
 			<template v-for="item in categoryList" :key="item.name">
 				<span class="capitalize">{{ item.name.toLowerCase() }}</span>
 				<span class="text-center">{{ item.count }}</span>

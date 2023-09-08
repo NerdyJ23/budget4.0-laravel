@@ -22,9 +22,17 @@ export default defineComponent({
 		<div class="inline-flex flex-row">
 			<div>
 				<slot name="sidebar">
-					<SideBar class="border border-solid border-slate-800 sticky top-0 h-screen max-h-screen min-h-screen md:w-48">
-						<PlainButtonLink class="w-full" text="Receipts" :link="route('receipts')" :current="currentPage('receipts')"></PlainButtonLink>
-						<PlainButtonLink class="w-full" text="Graphs" :link="route('receipts.graphs')" :current="currentPage('receipts.graphs')"></PlainButtonLink>
+					<SideBar class="border border-solid border-slate-800 flex flex-col sticky top-0 h-screen max-h-screen min-h-screen md:w-48">
+						<PlainButtonLink class="w-full p-2" :link="route('receipts')" :current="currentPage('receipts')">
+							<span class="w-full text-xl text-left">Receipts</span>
+						</PlainButtonLink>
+						<PlainButtonLink class="w-full p-2" :link="route('receipts.graphs')" :current="currentPage('receipts.graphs')">
+							<span class="w-full text-xl text-left">Graphs</span>
+						</PlainButtonLink>
+						<template v-if="currentPage('receipts.graphs')">
+							<PlainButtonLink class="pl-1" @click="$emit('clicked', 'monthly')"><span class="w-full text-left border-l-4 border-solid border-neutral-400">&nbsp;Monthly</span></PlainButtonLink>
+							<PlainButtonLink class="pl-1" @click="$emit('clicked', 'yearly')"><span class="w-full text-left border-l-4 border-solid border-neutral-400">&nbsp;Yearly</span></PlainButtonLink>
+						</template>
 					</SideBar>
 				</slot>
 			</div>
