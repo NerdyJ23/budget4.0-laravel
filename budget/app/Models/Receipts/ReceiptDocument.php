@@ -13,6 +13,7 @@ class ReceiptDocument extends Model
 
 	protected $table = 'ReceiptDocuments';
 	protected $primaryKey = 'ID';
+	public $timestamps = false;
 
 	protected $fillable = [
 		'Receipt_ID',
