@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Receipt } from '@/types/Receipts/receipt';
+import { TableItem } from '@/types/table';
 
 import { Head } from '@inertiajs/vue3';
 import ReceiptGraph from '@/Components/Receipts/Graphs/ReceiptGraph.vue';
@@ -8,12 +9,20 @@ import ReceiptYearlyGraph from '@/Components/Receipts/Graphs/ReceiptYearlyGraph.
 import YearlyReceiptCategories from '@/Components/Receipts/Statistics/YearlyReceiptCategories.vue';
 import YearlyReceiptStores from '@/Components/Receipts/Statistics/YearlyReceiptStores.vue';
 import MonthDropdown from '@/Components/Inputs/MonthDropdown.vue';
+import SortableTable from '@/Components/Tables/SortableTable.vue';
+import LoadingDialog from '@/Components/LoadingDialog.vue';
 
 import { computed, onMounted, watch, reactive } from 'vue';
 import { useReceiptStore } from '@/store/receiptPiniaStore';
 import receiptApi from '@/services/Receipts/receiptApi';
 import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
-import { MdStoreOutlined } from 'oh-vue-icons/icons';
+
+export interface StatItem {
+	name: string,
+	count: number,
+	cost: string | number,
+	avg: string | number
+};
 
 const ReceiptStore = useReceiptStore();
 const receipts: Array<Receipt> = reactive([]);
@@ -77,22 +86,39 @@ const stats = computed(() => {
 		}
 	}
 
-	let catOut:Array<any> = [];
+	let catOut:Array<TableItem> = [];
+	let storeOut:Array<TableItem> = [];
+
 	for (let [key, value] of Object.entries(cats)) {
-		catOut.push(value);
+		catOut.push({
+			key: key,
+			item: {
+				name: cats[key].name.toLowerCase(),
+				count: cats[key].count,
+				cost: `$${cats[key].cost.toFixed(2)}`,
+				avg: `$${(cats[key].cost / cats[key].count).toFixed(2)}`
+			} as StatItem
+		} as TableItem);
 	}
-	catOut = catOut.sort((a, b) => b.count - a.count);
+	catOut = catOut.sort((a: TableItem, b: TableItem) => (b.item as StatItem).count - (a.item as StatItem).count);
 
 
-	let storeOut:Array<any> = [];
 	for (let [key, value] of Object.entries(stores)) {
-		storeOut.push(value);
+		storeOut.push({
+			key: key,
+			item: {
+				name: stores[key].name.toLowerCase(),
+				count: stores[key].count,
+				cost: `$${stores[key].cost.toFixed(2)}`,
+				avg: `$${(stores[key].cost / stores[key].count).toFixed(2)}`,
+			} as StatItem
+		});
 	}
-	storeOut = storeOut.sort((a, b) => b.count - a.count);
+	storeOut = storeOut.sort((a: TableItem, b: TableItem) => (b.item as StatItem).count - (a.item as StatItem).count);
 
 	return {
-		categories: catOut.slice(0, 5),
-		stores: storeOut.slice(0, 5)
+		categories: catOut as TableItem[],
+		stores: storeOut as TableItem[]
 	};
 });
 
@@ -114,52 +140,33 @@ onMounted(() => loadReceipts());
 			</span>
 			<div class="grid grid-cols-2 gap-x-2 px-2">
 				<div class="flex flex-col border border-solid border-zinc-300 rounded-lg my-2 p-2 w-full">
-					<div class="inline-flex flex-row">
-						<MonthDropdown v-model="ReceiptStore.selected.month" />
-					</div>
-					<ReceiptGraph :receipts="receipts" :loading="is.loading" />
-					<div v-if="!is.loading">
-						<span class="font-semibold text-lg">Top 5 Item Categories</span>
-						<div class="pl-2 w-full grid grid-cols-4 gap-x-2 gap-y-1 bg-slate-400 text-center">
-							<span class="font-semibold text-md">Category</span>
-							<span class="font-semibold text-md">Item Count</span>
-							<span class="font-semibold text-md">Average Cost</span>
-							<span class="font-semibold text-md">Total Cost</span>
+					<template v-if="!is.loading">
+						<div class="inline-flex flex-row">
+							<MonthDropdown v-model="ReceiptStore.selected.month" />
 						</div>
-						<div class="grid grid-cols-4 gap-x-2 gap-y-1 text-sm pl-2">
-							<template v-for="item in stats.categories" :key="item.name">
-								<span class="capitalize">{{ item.name.toLowerCase() }}</span>
-								<span class="text-center">{{ item.count }}</span>
-								<span class="text-center">${{ (item.cost / item.count).toFixed(2) }}</span>
-								<span class="text-center">${{ item.cost.toFixed(2) }}</span>
-							</template>
-						</div>
-					</div>
-
-					<div v-if="!is.loading" class="mt-2">
-						<span class="font-semibold text-lg">Top 5 Stores</span>
-						<div class="pl-2 w-full grid grid-cols-4 gap-x-2 gap-y-1 bg-slate-400 text-center">
-							<span class="font-semibold text-md">Store</span>
-							<span class="font-semibold text-md">Entries</span>
-							<span class="font-semibold text-md">Average Cost</span>
-							<span class="font-semibold text-md">Total Cost</span>
-						</div>
-						<div class="grid grid-cols-4 gap-x-2 gap-y-1 text-sm pl-2">
-							<template v-for="store in stats.stores" :key="store.name">
-								<span class="capitalize">{{ store.name.toLowerCase() }}</span>
-								<span class="text-center">{{ store.count }}</span>
-								<span class="text-center">${{ (store.cost / store.count).toFixed(2) }}</span>
-								<span class="text-center">${{ store.cost.toFixed(2) }}</span>
-							</template>
-						</div>
-					</div>
+						<ReceiptGraph :receipts="receipts" :loading="is.loading" />
+						<!-- Categories -->
+						<SortableTable
+							:headers="['category', 'item count', 'average cost', 'total cost']"
+							:items="stats.categories"
+							:loading="is.loading"
+							title="Item Categories"
+						/>
+						<!-- Stores -->
+						<SortableTable
+							:headers="['store', 'entries', 'average cost', 'total cost']"
+							:items="stats.stores"
+							:loading="is.loading"
+							title="Stores"
+						/>
+					</template>
+					<LoadingDialog v-else />
 				</div>
 				<div class="flex flex-col border border-solid border-zinc-300 rounded-lg my-2 p-2 w-full">
 					<ReceiptYearlyGraph />
 					<YearlyReceiptCategories :year="ReceiptStore.selected.year" />
 					<YearlyReceiptStores :year="ReceiptStore.selected.year" class="mt-2"/>
 				</div>
-
 			</div>
 		</div>
     </AuthenticatedLayout>
