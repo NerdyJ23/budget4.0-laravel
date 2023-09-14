@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Receipt } from '@/types/Receipts/receipt';
-import { TableItem, TableHeader } from '@/types/table';
+import { TableItem, TableHeader, TableSort } from '@/types/table';
 
 import { Head } from '@inertiajs/vue3';
 import ReceiptGraph from '@/Components/Receipts/Graphs/ReceiptGraph.vue';
@@ -53,18 +53,32 @@ const loadReceipts = async () => {
 }
 
 const yearTitle = computed(() => ReceiptStore.selected.year == (new Date).getFullYear() ? 'This Year' : ReceiptStore.selected.year);
+
 const categoryHeaders: Array<TableHeader> = [
 	{ name: 'category' },
-	{ name: 'item count', options: { sortable: true }},
-	{ name: 'average cost', options: { sortable: true }},
-	{ name: 'total cost', options: { sortable:true }}
-];
+	{ name: 'item count', options: { sortKey: 'count' }},
+	{ name: 'average cost', options: {
+		sortKey: 'avg',
+		finance: { decimals: 2 }
+	}},
+	{ name: 'total cost', options: {
+		sortKey: 'cost',
+		finance: { decimals: 2 }
+	}}
+] as TableHeader[];
+
 const storeHeaders: Array<TableHeader> = [
 	{ name: 'store' },
-	{ name: 'entries', options: { sortable: true }},
-	{ name: 'average cost', options: { sortable: true}},
-	{ name: 'total cost', options: { sortable: true }}
-];
+	{ name: 'entries', options: { sortKey: 'count' }},
+	{ name: 'average cost', options: {
+		sortKey: 'avg',
+		finance: { decimals: 2 }
+	} },
+	{ name: 'total cost', options: {
+		sortKey: 'cost',
+		finance: { decimals: 2 }
+	}}
+] as TableHeader[];
 //this is an absolute mess and needs to be refactored
 const stats = computed(() => {
 	let cats: any = [];
@@ -106,13 +120,11 @@ const stats = computed(() => {
 			item: {
 				name: cats[key].name.toLowerCase(),
 				count: cats[key].count,
-				cost: `$${cats[key].cost.toFixed(2)}`,
-				avg: `$${(cats[key].cost / cats[key].count).toFixed(2)}`
+				avg: (cats[key].cost / cats[key].count),
+				cost: cats[key].cost
 			} as StatItem
 		} as TableItem);
 	}
-	catOut = catOut.sort((a: TableItem, b: TableItem) => (b.item as StatItem).count - (a.item as StatItem).count);
-
 
 	for (let [key, value] of Object.entries(stores)) {
 		storeOut.push({
@@ -120,12 +132,11 @@ const stats = computed(() => {
 			item: {
 				name: stores[key].name.toLowerCase(),
 				count: stores[key].count,
-				cost: `$${stores[key].cost.toFixed(2)}`,
-				avg: `$${(stores[key].cost / stores[key].count).toFixed(2)}`,
+				avg: (stores[key].cost / stores[key].count),
+				cost: stores[key].cost
 			} as StatItem
 		});
 	}
-	storeOut = storeOut.sort((a: TableItem, b: TableItem) => (b.item as StatItem).count - (a.item as StatItem).count);
 
 	return {
 		categories: catOut as TableItem[],
@@ -133,6 +144,14 @@ const stats = computed(() => {
 	};
 });
 
+const storeSort: TableSort = {
+	direction: 'desc',
+	key: 'cost'
+};
+const categorySort: TableSort = {
+	direction: 'desc',
+	key: 'count'
+};
 
 watch(() => ReceiptStore.selected.year, () => {
 	loadReceipts();
@@ -160,14 +179,14 @@ onMounted(() => loadReceipts());
 						<SortableTable
 							:headers="categoryHeaders"
 							:items="stats.categories"
-							:loading="is.loading"
+							:sort="categorySort"
 							title="Item Categories"
 						/>
 						<!-- Stores -->
 						<SortableTable
 							:headers="storeHeaders"
 							:items="stats.stores"
-							:loading="is.loading"
+							:sort="storeSort"
 							title="Stores"
 						/>
 					</template>

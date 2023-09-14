@@ -3,12 +3,17 @@ export interface TableHeader {
 	options?: TableHeaderOptions
 }
 export interface TableHeaderOptions {
-	sortable: boolean
+	sortKey?: string,
+	finance?: {
+		operator: '$',
+		currency?: 'AUD',
+		decimals: number
+	}
 }
 
 export interface TableItem {
 	key: string,
-	item: Object,
+	item: any,
 	options?: TableItemOptions
 };
 export interface TableItemOptions {
