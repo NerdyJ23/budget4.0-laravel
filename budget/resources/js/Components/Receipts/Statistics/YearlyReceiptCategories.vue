@@ -54,5 +54,5 @@ watch(() =>  props.year, () => {
 
 </script>
 <template>
-	<SortableTable class="pl-2" v-if="!is.loading" :items="items" :headers="headers" title="Item Categories"/>
+	<SortableTable class="pl-2" :loading="is.loading" :items="items" :headers="headers" title="Item Categories" key="store-categories"/>
 </template>
