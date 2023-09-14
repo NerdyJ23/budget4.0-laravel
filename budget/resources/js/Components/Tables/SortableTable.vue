@@ -25,7 +25,7 @@ const tableId = crypto.randomUUID();
 
 const itemList = computed(() => {
 	if (sort.direction === 'asc') {
-		return items.slice(-props.count).reverse();
+		return items.slice(-props.count);
 	} else {
 		return items.slice(0, props.count);
 	}
