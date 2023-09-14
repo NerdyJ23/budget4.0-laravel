@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import receiptApi from '@/services/Receipts/receiptApi';
 import { reactive, onMounted, watch, computed } from 'vue';
+import { TableItem } from '@/types/table';
+import SortableTable from '@/Components/Tables/SortableTable.vue';
+export interface CategoryStat {
+	name: string,
+	cost: number,
+	count: number
+};
 
 const props = withDefaults(defineProps<{
 	year?: number | string,
@@ -9,19 +16,36 @@ const props = withDefaults(defineProps<{
 	year: (new Date).getFullYear(),
 	count: 5
 });
-
-const categories: Array<any> = reactive([]);
-const categoryList = computed(() => categories.slice(0, props.count));
+const is = reactive({
+	loading: true
+});
+const categories: Array<CategoryStat> = reactive([]);
 
 const loadCategoryStats = async () => {
+	is.loading = true;
 	const response = await receiptApi.loadFavouriteCategories(props.year);
 	categories.length = 0;
 	if (response.status === 200) {
 		for (const item of response.data.result) {
-			categories.push(item);
+			categories.push(item as CategoryStat);
 		}
 	}
+	is.loading = false;
 }
+const items = computed(() => {
+	return categories.map((item) => {
+		return {
+			key: item.name,
+			item: {
+				name: item.name.toLowerCase(),
+				count: item.count,
+				avg: `$${(item.cost / item.count).toFixed(2)}`,
+				cost: `$${item.cost.toFixed(2)}`
+			}
+		} as TableItem
+	}) as TableItem[];
+});
+const headers = computed(() => ['name', 'count', 'average cost', 'total cost']);
 
 onMounted((() => loadCategoryStats()));
 watch(() =>  props.year, () => {
@@ -30,21 +54,5 @@ watch(() =>  props.year, () => {
 
 </script>
 <template>
-	<div v-bind="$attrs">
-		<span class="font-semibold text-lg">Top {{ props.count }} Item Categories</span>
-		<div class="pl-2 w-full grid grid-cols-4 gap-x-2 gap-y-1 bg-slate-400 text-center">
-			<span class="font-semibold text-md">Category</span>
-			<span class="font-semibold text-md">Item Count</span>
-			<span class="font-semibold text-md">Average Cost</span>
-			<span class="font-semibold text-md">Total Cost</span>
-		</div>
-		<div class="grid grid-cols-4 gap-x-2 gap-y-1 text-sm pl-2">
-			<template v-for="item in categoryList" :key="item.name">
-				<span class="capitalize">{{ item.name.toLowerCase() }}</span>
-				<span class="text-center">{{ item.count }}</span>
-				<span class="text-center">${{ (item.cost / item.count).toFixed(2) }}</span>
-				<span class="text-center">${{ item.cost.toFixed(2) }}</span>
-			</template>
-		</div>
-	</div>
+	<SortableTable class="pl-2" v-if="!is.loading" :items="items" :headers="headers" title="Item Categories"/>
 </template>
