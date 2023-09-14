@@ -21,7 +21,12 @@ const props = withDefaults(defineProps<{
 const is = reactive({
 	loading: true
 });
-const headers = ['store', 'entries', 'average cost', 'total cost'];
+const headers = [
+	{ name: 'store' },
+	{ name: 'entries', options: { sortable: true } },
+	{ name: 'average cost', options: { sortable: true } },
+	{ name: 'total cost', options: { sortable: true } }
+];
 const stores:Array<StoreStats> = reactive([]);
 
 const loadStoreStats = async () => {

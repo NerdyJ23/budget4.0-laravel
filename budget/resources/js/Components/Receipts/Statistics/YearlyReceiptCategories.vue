@@ -45,7 +45,12 @@ const items = computed(() => {
 		} as TableItem
 	}) as TableItem[];
 });
-const headers = computed(() => ['name', 'count', 'average cost', 'total cost']);
+const headers = computed(() => [
+	{ name: 'name' },
+	{ name: 'count', options: { sortable: true }},
+	{ name: 'average cost', options: { sortable: true } },
+	{ name: 'total cost', options: { sortable: true } },
+]);
 
 onMounted((() => loadCategoryStats()));
 watch(() =>  props.year, () => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Receipt } from '@/types/Receipts/receipt';
-import { TableItem } from '@/types/table';
+import { TableItem, TableHeader } from '@/types/table';
 
 import { Head } from '@inertiajs/vue3';
 import ReceiptGraph from '@/Components/Receipts/Graphs/ReceiptGraph.vue';
@@ -53,7 +53,18 @@ const loadReceipts = async () => {
 }
 
 const yearTitle = computed(() => ReceiptStore.selected.year == (new Date).getFullYear() ? 'This Year' : ReceiptStore.selected.year);
-
+const categoryHeaders: Array<TableHeader> = [
+	{ name: 'category' },
+	{ name: 'item count', options: { sortable: true }},
+	{ name: 'average cost', options: { sortable: true }},
+	{ name: 'total cost', options: { sortable:true }}
+];
+const storeHeaders: Array<TableHeader> = [
+	{ name: 'store' },
+	{ name: 'entries', options: { sortable: true }},
+	{ name: 'average cost', options: { sortable: true}},
+	{ name: 'total cost', options: { sortable: true }}
+];
 //this is an absolute mess and needs to be refactored
 const stats = computed(() => {
 	let cats: any = [];
@@ -147,14 +158,14 @@ onMounted(() => loadReceipts());
 						<ReceiptGraph :receipts="receipts" :loading="is.loading" />
 						<!-- Categories -->
 						<SortableTable
-							:headers="['category', 'item count', 'average cost', 'total cost']"
+							:headers="categoryHeaders"
 							:items="stats.categories"
 							:loading="is.loading"
 							title="Item Categories"
 						/>
 						<!-- Stores -->
 						<SortableTable
-							:headers="['store', 'entries', 'average cost', 'total cost']"
+							:headers="storeHeaders"
 							:items="stats.stores"
 							:loading="is.loading"
 							title="Stores"
