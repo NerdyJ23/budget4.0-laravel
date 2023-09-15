@@ -21,13 +21,13 @@ import ReceiptCategoryDropdown from '@/Components/Receipts/ReceiptCategoryDropdo
 import { useReceiptStore } from '@/store/receiptPiniaStore';
 
 const ReceiptStore = useReceiptStore();
+ReceiptStore.setup();
 const matches = route('receipts') == window.location.origin + window.location.pathname;
 const location = window.location.href;
 
 const receiptTable = ref<InstanceType<typeof ReceiptTable> | null>(null);
 const categoryFilterInput = ref<InstanceType<typeof ReceiptCategoryDropdown> | null>(null);
 
-ReceiptStore.setup();
 if (ReceiptStore.receipts.length == 0) {
 	ReceiptStore.setReceipts(usePage().props.receipts);
 }
@@ -38,7 +38,8 @@ const updateCategory = (category: string) => {
 	receipts.length = 0;
 	for(const receipt of ReceiptStore.filterReceipts()) {
 		receipts.push(receipt);
-	}}
+	}
+}
 
 const updateReceiptFilter = (value: string) => {
 	ReceiptStore.filter.receipt = value;
@@ -82,8 +83,8 @@ export default defineComponent({
 
 <template>
 	<Head title="Receipts" />
-	<AuthenticatedLayout>
-		<div class="overflow-x-hidden">
+	<AuthenticatedLayout id="main2">
+		<div class="overflow-x-hidden" id="main">
 			<div class="receipt-controls mx-2 sticky top-0 bg-white">
 				<VueTextField class="w-full self-center" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
 				<ReceiptCategoryDropdown
@@ -122,7 +123,7 @@ export default defineComponent({
 			</div>
 		</div>
 		<!-- Create new receipt dialog -->
-		<ReceiptDialog ref="dialog" editing></ReceiptDialog>
+		<ReceiptDialog ref="dialog" editing class="force-front"></ReceiptDialog>
 	</AuthenticatedLayout>
 </template>
 <style lang="scss">

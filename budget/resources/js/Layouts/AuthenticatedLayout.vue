@@ -30,13 +30,15 @@ onMounted(() => {
 addIcons( BiArrowRightShort );
 </script>
 <template>
-	<div class="flex flex-col h-screen min-h-screen max-h-screen">
+	<div class="min-h-screen max-h-screen min-w-screen overflow-y-hidden">
 		<header-bar></header-bar>
-		<div class="inline-flex flex-row relative">
+		<div class="flex flex-row">
 			<div>
 				<slot name="sidebar">
 					<SideBar ref="sidebar"
-						:class="`transition-all ease-in-out flex flex-col absolute lg:sticky top-0 h-screen max-h-screen min-h-screen lg:w-48 ${show.sidebar ? 'w-48 force-front' : 'w-0'} bg-white border-r border-slate-800`">
+						:class="`transition-all ease-in-out flex flex-col absolute lg:sticky top-0 h-screen max-h-screen min-h-screen lg:w-48 ${show.sidebar ? 'w-48' : 'w-0'} bg-white border-r border-slate-800 z-50 md:z-0`"
+						style="z-index: 50;"
+					>
 						<PlainButtonLink :class="`w-full p-2 ${show.sidebar ? '' : 'invisible lg:visible'}`" :link="route('receipts')" :current="currentPage('receipts')">
 							<span class="w-full text-md lg:text-lg text-left">Receipts</span>
 						</PlainButtonLink>
@@ -51,7 +53,12 @@ addIcons( BiArrowRightShort );
 					</SideBar>
 				</slot>
 			</div>
-			<div :class="`w-full overscroll-y-contain ${show.sidebar ? 'grayscale blur-[1px]' : ''}`">
+			<div :class="[
+				`w-full relative max-h-screen overscroll-y-auto overflow-x-hidden`,
+				{'grayscale blur-[1px] pointer-events-none': show.sidebar}
+				]"
+				id="content"
+			>
 				<Breadcrumb v-if="false"/>
 				<slot></slot>
 			</div>

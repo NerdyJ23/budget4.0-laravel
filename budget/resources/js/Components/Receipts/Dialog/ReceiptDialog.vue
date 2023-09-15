@@ -220,7 +220,7 @@ export default defineComponent({
 <template>
 	<BasicDialog
 		ref="dialog"
-		class="flex flex-col min-w-full min-h-full md:min-w-[50vw] md:min-h-[30vh] rounded-none md:rounded-lg"
+		class="flex flex-col min-w-full min-h-full md:min-w-[50vw] md:min-h-[30vh] z-50 backdrop-blur-[1px]"
 		:persistent="is.editing"
 		blur
 		:title="`${is.editing ? 'Create Receipt' : ''}`"

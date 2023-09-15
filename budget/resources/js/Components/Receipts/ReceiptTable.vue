@@ -82,8 +82,10 @@ defineExpose({reload});
 			<span class="break-all text-xs md:text-sm lg:text-base pr-2">{{ receipt.category}}</span>
 
 		</div>
+		<Teleport to="html">
+			<ReceiptDialog v-if="showDialog" ref="dialog" @destroy="dialogDestroyed"/>
+		</Teleport>
 	</div>
-	<ReceiptDialog v-if="showDialog" ref="dialog" @destroy="dialogDestroyed"/>
 </template>
 <style lang="scss" scoped>
 .table {
