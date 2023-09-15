@@ -1,19 +1,43 @@
 <script setup lang="ts">
-import { defineComponent, reactive, ref, computed, watch } from 'vue';
+import { defineComponent, reactive, ref, computed, watch, onMounted } from 'vue';
 import { addIcons } from "oh-vue-icons";
 import { MdArrowdropdown, MdArrowdropup } from "oh-vue-icons/icons";
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import { nextTick } from 'vue';
 import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
+import { useReceiptStore } from '@/store/receiptPiniaStore';
 
+//Definitions
+const props = withDefaults(defineProps<{
+	items?: ReceiptItemCategory[],
+	id?: string,
+	rules?: Function
+}>(), {
+});
+
+//Variables
+const ReceiptStore = useReceiptStore();
 const filterValue = ref("");
+const id = props.id ?? crypto.randomUUID();
 
 const is = reactive({
 	show: false
 });
 const container= ref<HTMLElement | null>(null);
 const inputfield = ref<InstanceType<typeof VueTextField> | null>(null);
+const filteredItems = computed(() => {
+	return props.items?.filter((item: ReceiptItemCategory) => {
+		return item.name.includes(filterValue.value.toUpperCase());
+	});
+});
 
+const width = computed(() => {
+	if (inputfield.value) {
+		return `width: ${inputfield.value.selfInput!.clientWidth}px;`;
+	}
+	return `width: 0px`;
+});
+//Functions
 const showOptions = () => {
 	is.show = true;
 	nextTick(() => { offsetItems() })
@@ -29,39 +53,24 @@ const offsetItems = () => {
 		}
 	}
 }
-const filteredItems = computed(() => {
-	return props.items?.filter((item: ReceiptItemCategory) => {
-		return item.name.includes(filterValue.value.toUpperCase());
-	});
-})
+
 const updateFilterValue = (value: string) => {
 	filterValue.value = value;
 	if (inputfield.value && inputfield.value.selfInput) {
 		inputfield.value.selfInput.value = value;
 	}
 }
-const width = computed(() => {
-	if (inputfield.value) {
-		return `width: ${inputfield.value.selfInput!.clientWidth}px;`;
-	}
-	return `width: 0px`;
+
+//Final Setups
+onMounted(() => {
+	filterValue.value = ReceiptStore.filter.category;
 });
 
 watch(filterValue, () => { emit('changed', filterValue.value) })
-
-//Definitions
-const props = withDefaults(defineProps<{
-	items?: ReceiptItemCategory[],
-	id?: string,
-	rules?: Function
-}>(), {
-
-});
-
 const emit = defineEmits<{
 	(e: 'changed', value: any): void
 }>();
-const id = props.id ?? crypto.randomUUID();
+
 defineExpose({updateFilterValue});
 addIcons(MdArrowdropdown, MdArrowdropup);
 </script>

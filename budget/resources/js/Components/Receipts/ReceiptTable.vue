@@ -59,15 +59,16 @@ defineExpose({reload});
 </script>
 <template>
 	<div class="mx-0 lg:mx-2">
-		<div class="table-header rounded-none md:rounded-t-md">
+		<div class="table-header rounded-none lg:rounded-t-md">
 			<span class="table-header-text">Date</span>
-			<span class="table-header-text hidden md:inline">Reference <span class="hidden lg:inline">Number</span></span>
+			<span class="table-header-text hidden md:inline">Reference</span>
 			<span class="table-header-text">Store</span>
 			<span class="table-header-text">Location</span>
 			<span class="table-header-text">Cost</span>
-			<span class="table-header-text">Category</span>
+			<span class="table-header-text hidden md:inline">Category</span>
 		</div>
 		<div v-for="receipt of receipts" class="table-row" @click="showReceipt(receipt)" :key="receipt.id">
+			<span class="inline md:hidden col-span-full font-semibold">{{ receipt.store ?? '-' }}</span>
 			<span>
 				{{ readableDate(receipt.date).date }}<span class="hidden md:inline">{{ readableDate(receipt.date).ordinal }} {{ readableDate(receipt.date).month }}</span><span class="md:hidden">/{{ new Date(receipt.date).getMonth() + 1 }}</span>
 			</span>
@@ -75,10 +76,11 @@ defineExpose({reload});
 				<span v-if="receipt.documents.length" class="self-start"><VIcon  name="bi-file-earmark-text" /></span>
 				<span class="mx-auto">{{ receipt.reference ?? '-' }}</span>
 			</span>
-			<span>{{ receipt.store ?? '-' }}</span>
+			<span class="hidden md:inline">{{ receipt.store ?? '-' }}</span>
 			<span>{{ receipt.location ?? '-' }}</span>
 			<span>${{ receipt.cost?.toFixed(2) }}</span>
 			<span>{{ receipt.category}}</span>
+
 		</div>
 	</div>
 	<ReceiptDialog v-if="showDialog" ref="dialog" @destroy="dialogDestroyed"/>
@@ -86,13 +88,13 @@ defineExpose({reload});
 <style lang="scss" scoped>
 .table {
 	&-header {
-		@apply grid grid-cols-5 md:grid-cols-6 font-semibold text-sm md:text-base text-center bg-amber-500/80;
+		@apply grid grid-cols-4 md:grid-cols-6 lg:grid-cols-6 font-semibold text-sm md:text-base text-center bg-amber-500/80;
 		&-text {
 			@apply cursor-pointer hover:bg-amber-500 my-auto;
 		}
 	}
 	&-row {
-		@apply grid grid-cols-5 md:grid-cols-6 text-sm md:text-base cursor-pointer hover:bg-slate-300 text-center odd:bg-gray-200 even:bg-neutral-100;
+		@apply grid grid-cols-4 md:grid-cols-6 lg:grid-cols-6 text-sm md:text-base cursor-pointer hover:bg-slate-300 text-center odd:bg-gray-200 even:bg-neutral-100;
 	}
 }
 

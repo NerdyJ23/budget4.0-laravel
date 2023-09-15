@@ -92,7 +92,8 @@ export default defineComponent({
 					placeholder="Category"
 					name="search-category"
 					key="search-category"
-					class="self-center pl-1 min-w-max"
+					class="self-center pl-1 min-w-max hidden md:inline"
+					v-model="ReceiptStore.filter.category"
 					@changed="(category: string) => updateCategory(category)"
 					clearable
 				/>
@@ -102,8 +103,19 @@ export default defineComponent({
 						<MonthDropdown class="ml-2 rounded-none rounded-l-xl border border-r-slate-50/100" v-model="ReceiptStore.selected.month" @update:model-value="(value: number) => setHeaderValue(value, 'month')"/>
 						<YearDropdown class="mr-2 rounded-none rounded-r-xl" v-model="ReceiptStore.selected.year" @update:model-value="(value: number) => setHeaderValue(value, 'year')" />
 					</div>
+					<ReceiptCategoryDropdown
+						:items="ReceiptStore.categories"
+						ref="categoryFilterInput"
+						placeholder="Category"
+						name="search-category"
+						key="search-category"
+						class="self-center px-1 min-w-max inline md:hidden"
+						v-model="ReceiptStore.filter.category"
+						@changed="(category: string) => updateCategory(category)"
+						clearable
+					/>
 				</FilterDropdownMenu>
-				<ConfirmButton class="ml-auto self-center min-w-max py-1 text-md" @click="openCreateReceiptDialog">Create Receipt</ConfirmButton>
+				<ConfirmButton class="ml-auto self-center min-w-max py-1 text-sm lg:text-base" @click="openCreateReceiptDialog">Create <span class="hidden md:inline">Receipt</span></ConfirmButton>
 			</div>
 			<div class="table-container pt-2">
 				<ReceiptTable key="receiptTable" :receipts="receipts"/>
