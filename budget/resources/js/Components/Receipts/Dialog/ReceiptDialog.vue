@@ -44,7 +44,7 @@ const error = ref({
 	message: ''
 });
 const receiptDocumentDialogShowing = ref(false);
-const headers: Array<TableHeader> = [
+const headers = [
 	{ name: 'name' },
 	{ name: 'count',  options: { sortKey: 'count' } },
 	{ name: 'cost', options: {
@@ -56,7 +56,7 @@ const headers: Array<TableHeader> = [
 		finance: { decimals: 2 }
 	}},
 	{ name: 'category' }
-];
+] as TableHeader[];
 
 const stats = (): TableItem[] => {
 	return receipt.items.map(item => {
