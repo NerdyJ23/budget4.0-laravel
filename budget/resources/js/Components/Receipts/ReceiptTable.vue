@@ -31,10 +31,15 @@ const dialogDestroyed = () => {
 	showDialog.value = false;
 }
 
-const readableDate = (date: string):string  => {
+const readableDate = (date: string):any  => {
 	const dateObj = new Date(date);
-	return `${dateObj.getDate()}${dateOrdinal(dateObj.getDate())} ${GenericStore.months[dateObj.getMonth()]}`;
+	return {
+		date: dateObj.getDate(),
+		ordinal: dateOrdinal(dateObj.getDate()),
+		month: GenericStore.months[dateObj.getMonth()]
+	};
 }
+
 const dateOrdinal = (number: number):string => {
 	if (number > 3 && number < 21) return "th";
   switch (number % 10) {
@@ -52,20 +57,21 @@ const dateOrdinal = (number: number):string => {
 addIcons(BiFileEarmarkText);
 defineExpose({reload});
 </script>
-<script lang="ts">export default defineComponent({name: 'ReceiptTable'});</script>
 <template>
-	<div class="mx-2">
-		<div class="table-header rounded-t-md">
+	<div class="mx-0 lg:mx-2">
+		<div class="table-header rounded-none md:rounded-t-md">
 			<span class="table-header-text">Date</span>
-			<span class="table-header-text">Reference Number</span>
+			<span class="table-header-text hidden md:inline">Reference <span class="hidden lg:inline">Number</span></span>
 			<span class="table-header-text">Store</span>
 			<span class="table-header-text">Location</span>
 			<span class="table-header-text">Cost</span>
 			<span class="table-header-text">Category</span>
 		</div>
 		<div v-for="receipt of receipts" class="table-row" @click="showReceipt(receipt)" :key="receipt.id">
-			<span>{{ readableDate(receipt.date) }}</span>
-			<span class="inline-flex flex-row">
+			<span>
+				{{ readableDate(receipt.date).date }}<span class="hidden md:inline">{{ readableDate(receipt.date).ordinal }} {{ readableDate(receipt.date).month }}</span><span class="md:hidden">/{{ new Date(receipt.date).getMonth() + 1 }}</span>
+			</span>
+			<span class="md:inline-flex flex-row hidden">
 				<span v-if="receipt.documents.length" class="self-start"><VIcon  name="bi-file-earmark-text" /></span>
 				<span class="mx-auto">{{ receipt.reference ?? '-' }}</span>
 			</span>
@@ -80,13 +86,13 @@ defineExpose({reload});
 <style lang="scss" scoped>
 .table {
 	&-header {
-		@apply grid grid-cols-6 font-semibold text-center bg-amber-500/80;
+		@apply grid grid-cols-5 md:grid-cols-6 font-semibold text-sm md:text-base text-center bg-amber-500/80;
 		&-text {
-			@apply cursor-pointer hover:bg-amber-500 py-2 first-of-type:rounded-tl-md last-of-type:rounded-tr-md;
+			@apply cursor-pointer hover:bg-amber-500 my-auto;
 		}
 	}
 	&-row {
-		@apply grid grid-cols-6 cursor-pointer hover:bg-slate-300 text-center odd:bg-gray-200 even:bg-neutral-100;
+		@apply grid grid-cols-5 md:grid-cols-6 text-sm md:text-base cursor-pointer hover:bg-slate-300 text-center odd:bg-gray-200 even:bg-neutral-100;
 	}
 }
 
