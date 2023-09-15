@@ -84,7 +84,7 @@ export default defineComponent({
 	<Head title="Receipts" />
 	<AuthenticatedLayout>
 		<div class="overflow-x-hidden">
-			<div class="receipt-controls mx-2 sticky top-0 bg-white p-2">
+			<div class="receipt-controls mx-2 sticky top-0 bg-white">
 				<VueTextField class="w-full self-center" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
 				<ReceiptCategoryDropdown
 					:items="ReceiptStore.categories"

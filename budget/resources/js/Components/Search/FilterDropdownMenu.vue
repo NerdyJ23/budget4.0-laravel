@@ -21,15 +21,14 @@ const x = computed(():string => {
 		const pos = innerDialog.value.getBoundingClientRect();
 		const buttonWidth = filterDialog.value!.clientWidth;
 
-		console.log(pos);
 		if (pos.right > window.innerWidth) { //overflows off right
-			return `right: 0px`;
+			return `right-0`;
 		} else if (pos.left - pos.width < 0) { //overflows off left
-			return `left: 0`;
+			return `left-0`;
 		}
-		return `left: -${pos.width / 2 - buttonWidth}px`; //center under button
+		return `left-[-${(pos.width / 2 - buttonWidth)}px]`; //center under button
 	}
-	return `left: 0px`;
+	return `left-0`;
 })
 onMounted(() => {
 	onClickOutside(filterDialog.value, (event) => {
@@ -48,7 +47,7 @@ addIcons(MdFilterlistRound);
 		<div class="hover:bg-slate-300/60 cursor-pointer rounded-full p-1">
 			<VIcon class="" name="md-filterlist-round" :scale="iconSize*1.2" @click="is.open = true"></VIcon>
 		</div>
-		<div v-if="is.open" class="force-front border border-solid border-slate-300 absolute min-w-[200px] min-h-[200px] bg-white" :style="x" ref="innerDialog">
+		<div v-if="is.open" :class="`force-front border border-solid border-slate-300 absolute min-w-[250px] min-h-[200px] bg-white w-full ${x}`" ref="innerDialog">
 			<slot></slot>
 		</div>
 	</div>
