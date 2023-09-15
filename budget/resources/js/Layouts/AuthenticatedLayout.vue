@@ -36,14 +36,14 @@ addIcons( BiArrowRightShort );
 			<div>
 				<slot name="sidebar">
 					<SideBar ref="sidebar"
-						:class="`transition-all ease-in-out force-front flex flex-col absolute lg:sticky top-0 h-screen max-h-screen min-h-screen lg:w-48 ${show.sidebar ? 'w-48' : 'w-0'} bg-white border-r border-slate-800`">
+						:class="`transition-all ease-in-out flex flex-col absolute lg:sticky top-0 h-screen max-h-screen min-h-screen lg:w-48 ${show.sidebar ? 'w-48 force-front' : 'w-0'} bg-white border-r border-slate-800`">
 						<PlainButtonLink :class="`w-full p-2 ${show.sidebar ? '' : 'invisible lg:visible'}`" :link="route('receipts')" :current="currentPage('receipts')">
 							<span class="w-full text-md lg:text-lg text-left">Receipts</span>
 						</PlainButtonLink>
 						<PlainButtonLink :class="`w-full p-2 ${show.sidebar ? '' : 'invisible lg:visible'}`" :link="route('receipts.graphs')" :current="currentPage('receipts.graphs')">
 							<span class="w-full text-md lg:text-lg text-left">Graphs</span>
 						</PlainButtonLink>
-						<div class="h-full absolute force-front inset-y-0 -right-7 flex flex-col lg:invisible visible">
+						<div class="h-full absolute inset-y-0 -right-7 flex flex-col lg:invisible visible">
 							<div class="bg-white rounded-r-xl rounded-l-sm my-auto py-auto align-center hover:bg-slate-200 border-y border-r border-slate-800">
 								<VIcon name="bi-arrow-right-short" :class="`${show.sidebar ? 'rotate-180' : ''}`" scale="1.5" @click="toggleSidebar"/>
 							</div>

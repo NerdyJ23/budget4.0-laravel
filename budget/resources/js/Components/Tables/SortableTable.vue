@@ -12,8 +12,7 @@ const props = withDefaults(defineProps<{
 	items: TableItem[],
 	sort?: TableSort
 }>(), {
-	count: 5,
-	title: 'Items'
+	count: 5
 });
 
 let items: Array<TableItem> = reactive(props.items);
@@ -82,7 +81,7 @@ addIcons(BiArrowDownShort, BiArrowUpShort);
 </script>
 <template>
 	<div v-bind="$attrs">
-		<span class="font-semibold text-lg">{{ sort.direction === 'desc' ? 'Top' : 'Bottom' }} {{ props.count }} {{ props.title }}</span>
+		<span class="font-semibold text-lg" v-if="title">{{ sort.direction === 'desc' ? 'Top' : 'Bottom' }} {{ props.count }} {{ props.title }}</span>
 		<div :class="`grid grid-cols-${headers.length} gap-x-2 gap-y-1 bg-slate-400 text-center`">
 			<template v-for="header in headers">
 				<span

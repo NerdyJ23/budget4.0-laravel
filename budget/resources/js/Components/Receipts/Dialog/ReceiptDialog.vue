@@ -7,6 +7,7 @@ import moment from 'moment';
 import receiptApi from '@/services/Receipts/receiptApi';
 import { BiPencilSquare } from "oh-vue-icons/icons";
 import { addIcons } from "oh-vue-icons";
+import { TableItem, TableHeader, TableSort } from '@/types/table';
 
 import ReceiptDialogItem from './ReceiptDialogItem.vue';
 import BasicDialog from '@/Components/BasicDialog.vue';
@@ -14,6 +15,8 @@ import ConfirmButton from '@/Components/Inputs/ConfirmButton.vue';
 import CancelButton from '@/Components/Inputs/CancelButton.vue';
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import ReceiptDocumentDialog from './ReceiptDocumentDialog.vue';
+import SortableTable from '@/Components/Tables/SortableTable.vue';
+import { ReceiptItemCategory } from '@/types/Receipts/receiptItemCategory';
 
 //Props
 const props = withDefaults(defineProps<{
@@ -41,7 +44,34 @@ const error = ref({
 	message: ''
 });
 const receiptDocumentDialogShowing = ref(false);
+const headers: Array<TableHeader> = [
+	{ name: 'name' },
+	{ name: 'count',  options: { sortKey: 'count' } },
+	{ name: 'cost', options: {
+		sortKey: 'cost',
+		finance: { decimals: 2 }
+	}},
+	{ name: 'total', options: {
+		sortKey: 'total',
+		finance: { decimals: 2 }
+	}},
+	{ name: 'category' }
+];
 
+const stats = (): TableItem[] => {
+	return receipt.items.map(item => {
+		return {
+			key: item.name,
+			item: {
+				name: item.name,
+				count: item.count,
+				cost: item.cost,
+				total: item.cost * item.count,
+				category: (item.category as ReceiptItemCategory).name
+			}
+		} as TableItem
+	}) as Array<TableItem>;
+}
 //Refs
 const dialog = ref<InstanceType<typeof BasicDialog> | null>(null);
 const documentDialog = ref<InstanceType<typeof ReceiptDocumentDialog> | null>(null);
@@ -190,7 +220,7 @@ export default defineComponent({
 <template>
 	<BasicDialog
 		ref="dialog"
-		class="flex flex-col min-w-[50vw]"
+		class="flex flex-col min-w-full min-h-full md:min-w-[50vw] md:min-h-[30vh] rounded-none md:rounded-lg"
 		:persistent="is.editing"
 		blur
 		:title="`${is.editing ? 'Create Receipt' : ''}`"
@@ -206,31 +236,39 @@ export default defineComponent({
 					<VueTextField v-model="receipt.location" placeholder="Location" name="location" />
 					<VueTextField v-model="receipt.date" :rules="validDate" placeholder="Date" name="date" type="date" required/>
 				</div>
-				</template>
-				<template v-else>
-					<div class="grid grid-cols-5 gap-x-4 gap-y-1 relative">
-						<span class="font-semibold text-md">Receipt Number</span>
+			</template>
+			<template v-else>
+				<div class="flex flex-row">
+					<div class="grid grid-cols-4 gap-x-4 gap-y-1 relative flex-grow">
+						<span class="font-semibold text-md">Receipt <span class="hidden md:inline">Number</span></span>
 						<span class="font-semibold text-md">Store</span>
 						<span class="font-semibold text-md">Location</span>
 						<span class="font-semibold text-md">Date</span>
-						<div class="text-center py-1 mx-2 select-none cursor-pointer self-center px-3 rounded-sm bg-orange-400 hover:bg-orange-500 inline-flex flex-row"  @click="is.editing = true">
-							<VIcon name="bi-pencil-square" class="self-center"/>
-							<span class="pl-1">Edit</span>
-						</div>
 						<span>{{ receipt.reference ?? '-' }}</span>
 						<span>{{ receipt.store ?? '-' }}</span>
 						<span>{{ receipt.location ?? '-' }}</span>
 						<span>{{ receipt.date }}</span>
 					</div>
-				</template>
+					<div class="text-center py-1 mx-2 select-none cursor-pointer self-center ml-auto px-3 rounded-sm bg-orange-400 hover:bg-orange-500 inline-flex flex-row flex-shrink"  @click="is.editing = true">
+						<VIcon name="bi-pencil-square" class="self-center"/>
+						<span class="pl-1 hidden md:inline">Edit</span>
+					</div>
+				</div>
+			</template>
 			<div class="table mt-4 pt-1 w-full">
-				<div class="overflow-y-auto overscroll max-h-[70vh] pb-8 min-h-[40vh]">
+				<!-- Stores -->
+				<SortableTable v-if="!is.editing"
+					:headers="headers"
+					:items="stats()"
+					:count="9999"
+				/>
+				<div v-else class="overflow-y-auto overflow-x-hidden overscroll max-h-[70vh] pb-8 min-h-[40vh]">
 					<div class="table-head grid grid-cols-5 force-front gap-2 mb-2 px-2 sticky top-0">
-						<span class>Name</span>
+						<span>Name</span>
 						<span class="text-center">Count</span>
 						<span class="text-center">Cost</span>
-						<span class>Total</span>
-						<span class>Category</span>
+						<span>Total</span>
+						<span class="break-all">Category</span>
 					</div>
 					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in receipt.items" :item="item" @delete="deleteItem(index)" :key="`${item.id}-${index}`"></ReceiptDialogItem>
 				</div>
@@ -254,8 +292,6 @@ export default defineComponent({
 				<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="py-1 text-md self-center ml-2" />
 			</template>
 		</div>
-		<template v-if="!is.editing">
-		</template>
 	</div>
 	</BasicDialog>
 	<ReceiptDocumentDialog

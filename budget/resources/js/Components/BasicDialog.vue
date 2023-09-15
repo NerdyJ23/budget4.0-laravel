@@ -36,7 +36,7 @@ const hideSelf = () => {
 }
 
 const toggleOverflow = () => {
-	document.body.scrollTop = document.documentElement.scrollTop = 0;
+	// document.body.scrollTop = document.documentElement.scrollTop = 0;
 	nextTick(() => {
 		document.querySelector('html')?.classList.toggle('overflow-y-hidden');
 	})
@@ -65,8 +65,8 @@ export default defineComponent({name: 'BasicDialog'})
 		ref="backdrop"
 		v-if="is.open"
 		:class="[
-			{'backdrop-blur-sm': blur},
-			`w-full bg-neutral-600/60 absolute object-center inset-0`
+			{'backdrop-grayscale': blur},
+			`w-full h-full bg-neutral-600/60 absolute object-center inset-0`
 		]"
 		@mousedown.self="hideSelf"
 	>
@@ -75,7 +75,7 @@ export default defineComponent({name: 'BasicDialog'})
 			:open="is.open"
 			:class="[
 				{'animate-shake-horizontal': is.shake},
-				'object-center shadow-md  px-5 py-3 inset-0 rounded-md'
+				'object-center shadow-md px-5 py-3 inset-0 rounded-md'
 			]"
 		>
 		<div class="flex flex-row">
