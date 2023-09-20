@@ -22,10 +22,12 @@ class ReceiptStatsController extends BaseApiController {
 	static function getYearlyCosts(Request $request): array {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$year = $request->query('year') ?? date('Y');
-		$key = 'user-id-' . $user->id . ':costs:yearly:' . $year;
-		if (count(Redis::hgetall($key)) > 0) {
+		$key = 'user-id-' . $user->id . ':stats:costs:yearly';
+
+		if (Redis::hget($key, $year) != null) {
 			$result = [];
-			foreach (Redis::hgetall($key) as $cost) {
+			$cached = (array) json_decode(Redis::hget($key, $year));
+			foreach ($cached as $cost) {
 				$result[] = round(floatval($cost), 2);
 			}
 			return [
@@ -37,10 +39,9 @@ class ReceiptStatsController extends BaseApiController {
 			user: $user,
 			year: $year
 		);
-		for ($i = 0; $i < count($result); $i++) {
-			Redis::hset($key, $i+1, $result[$i]);
-		}
+		Redis::hset($key, $year, json_encode($result));
 		Redis::expire($key, 86400);
+
 		$output = [];
 		foreach ($result as $i) {
 			$output[] = round($i, 2);
@@ -53,7 +54,7 @@ class ReceiptStatsController extends BaseApiController {
 	static function getFavouriteStores(Request $request) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$year = $request->query('year') ?? date('Y');
-		$key = 'user-id-' . $user->id . ':stats:stores';
+		$key = 'user-id-' . $user->id . ':stats:stores:yearly';
 		if (Redis::hexists($key, $year) == 1) {
 			$output = json_decode(Redis::hget($key, $year));
 		} else {
@@ -78,7 +79,7 @@ class ReceiptStatsController extends BaseApiController {
 	static function getFavouriteCategories(Request $request) {
 		$user = UserClient::getByToken($request->cookie('token'));
 		$year = $request->query('year') ?? date('Y');
-		$key = 'user-id-' . $user->id . ':stats:categories';
+		$key = 'user-id-' . $user->id . ':stats:categories:yearly';
 		if (Redis::hexists($key, $year) == 1) {
 			$result = json_decode(Redis::hget($key, $year));
 		} else {

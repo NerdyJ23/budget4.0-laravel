@@ -10,6 +10,7 @@ use App\Models\Users\User;
 
 //Clients
 use App\Clients\BaseClient;
+use App\Clients\Receipts\ReceiptRedisClient;
 
 //Exceptions
 use App\Exceptions\Http\UnauthorizedException;
@@ -37,6 +38,7 @@ class ReceiptClient extends BaseClient {
 		string $date,
 		User $user
 	): Receipt {
+		ReceiptRedisClient::breakCache(user: $user);
 		return Receipt::create([
 			'Store' => $store,
 			'Location' => $location,
@@ -71,6 +73,7 @@ class ReceiptClient extends BaseClient {
 		$receipt->ReceiptNumber = $reference;
 		$receipt->Date = $date;
 		$receipt->save();
+		ReceiptRedisClient::breakCache(user: $user);
 		return $receipt->refresh();
 	}
 
