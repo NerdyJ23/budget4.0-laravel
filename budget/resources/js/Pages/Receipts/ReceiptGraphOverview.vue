@@ -181,6 +181,7 @@ onMounted(() => loadReceipts());
 							:items="stats.categories"
 							:sort="categorySort"
 							title="Item Categories"
+							key="item-category-stats"
 						/>
 						<!-- Stores -->
 						<SortableTable
@@ -188,6 +189,7 @@ onMounted(() => loadReceipts());
 							:items="stats.stores"
 							:sort="storeSort"
 							title="Stores"
+							key="store-category-stat"
 						/>
 					</template>
 					<LoadingDialog v-else />

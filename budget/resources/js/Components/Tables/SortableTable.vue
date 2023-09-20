@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, onMounted } from 'vue';
+import { computed, reactive, onMounted, nextTick } from 'vue';
 import { TableHeader, TableItem, TableSort } from '@/types/table';
 import { BiArrowDownShort, BiArrowUpShort } from "oh-vue-icons/icons";
 import { addIcons } from "oh-vue-icons";
@@ -24,7 +24,7 @@ const tableId = crypto.randomUUID();
 
 const itemList = computed(() => {
 	if (sort.direction === 'asc') {
-		return items.slice(-props.count);
+		return items.slice(-props.count).reverse();
 	} else {
 		return items.slice(0, props.count);
 	}
@@ -38,7 +38,7 @@ const changeSort = (item: TableHeader) => {
 			sort.key = item.options.sortKey;
 			sort.direction = 'desc';
 		}
-		sortItems();
+		nextTick(() => sortItems());
 	}
 }
 const sortItems = () => {

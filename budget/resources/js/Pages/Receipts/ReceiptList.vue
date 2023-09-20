@@ -123,7 +123,7 @@ export default defineComponent({
 			</div>
 		</div>
 		<!-- Create new receipt dialog -->
-		<ReceiptDialog ref="dialog" editing class="force-front"></ReceiptDialog>
+		<ReceiptDialog ref="dialog" editing></ReceiptDialog>
 	</AuthenticatedLayout>
 </template>
 <style lang="scss">

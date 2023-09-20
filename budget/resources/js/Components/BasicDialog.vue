@@ -66,7 +66,7 @@ export default defineComponent({name: 'BasicDialog'})
 		v-if="is.open"
 		:class="[
 			{'backdrop-grayscale': blur},
-			`w-full h-full bg-neutral-600/60 absolute object-center inset-0`
+			`w-full h-full bg-neutral-600/60 absolute object-center inset-0 z-50`
 		]"
 		@mousedown.self="hideSelf"
 	>
@@ -83,9 +83,11 @@ export default defineComponent({name: 'BasicDialog'})
 				<span class="header-text mr-auto">{{ title }}</span>
 			</slot>
 			<slot name="close">
-				<span class="ml-auto icon-button hover:animate-hop-once" @click="hide">
-					<VIcon name="io-close-outline" label="Close" scale="1.3"></VIcon>
-				</span>
+				<div class="ml-auto">
+					<div class="icon-button hover:animate-hop-once" @click="hide">
+						<VIcon name="io-close-outline" label="Close" scale="1.3"></VIcon>
+					</div>
+				</div>
 			</slot>
 		</div>
 		<slot></slot>

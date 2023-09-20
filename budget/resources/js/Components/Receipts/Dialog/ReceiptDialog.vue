@@ -220,7 +220,7 @@ export default defineComponent({
 <template>
 	<BasicDialog
 		ref="dialog"
-		class="flex flex-col min-w-full min-h-full md:min-w-[50vw] md:min-h-[30vh] z-50 backdrop-blur-[1px]"
+		class="flex flex-col min-w-full min-h-full md:min-w-[50vw] md:min-h-[30vh] backdrop-blur-[1px]"
 		:persistent="is.editing"
 		blur
 		:title="`${is.editing ? 'Create Receipt' : ''}`"
@@ -278,8 +278,9 @@ export default defineComponent({
 	<div v-if="error.show" class="text-red-400 italic">
 		{{ error.message }}
 	</div>
+
 	<!-- Receipt Footer -->
-	<div class="pt-4 border-t border-solid border-neutral-500 flex flex-row">
+	<div class="mt-auto pt-2 border-t border-solid border-neutral-500 flex flex-row">
 		<template v-if="is.editing">
 			<div class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
 		</template>

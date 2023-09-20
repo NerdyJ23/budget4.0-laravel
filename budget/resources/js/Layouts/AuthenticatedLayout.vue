@@ -36,7 +36,7 @@ addIcons( BiArrowRightShort );
 			<div>
 				<slot name="sidebar">
 					<SideBar ref="sidebar"
-						:class="`transition-all ease-in-out flex flex-col absolute lg:sticky top-0 h-screen max-h-screen min-h-screen lg:w-48 ${show.sidebar ? 'w-48' : 'w-0'} bg-white border-r border-slate-800 z-50 md:z-0`"
+						:class="`transition-all ease-in-out flex flex-col absolute lg:sticky top-0 h-screen max-h-screen min-h-screen lg:w-48 ${show.sidebar ? 'w-48' : 'w-0'} bg-white border-r border-slate-800`"
 						style="z-index: 50;"
 					>
 						<PlainButtonLink :class="`w-full p-2 ${show.sidebar ? '' : 'invisible lg:visible'}`" :link="route('receipts')" :current="currentPage('receipts')">
