@@ -54,10 +54,11 @@ addIcons( BiArrowRightShort );
 				</slot>
 			</div>
 			<div :class="[
-				`w-full relative max-h-screen overscroll-y-auto overflow-x-hidden`,
+				`w-full overflow-y-hiddenh-screen max-h-screen min-h-screen`,
 				{'grayscale blur-[1px] pointer-events-none': show.sidebar}
 				]"
 				id="content"
+				v-bind="$attrs"
 			>
 				<Breadcrumb v-if="false"/>
 				<slot></slot>

@@ -84,8 +84,8 @@ export default defineComponent({
 <template>
 	<Head title="Receipts" />
 	<AuthenticatedLayout id="main2">
-		<div class="overflow-x-hidden" id="main">
-			<div class="receipt-controls mx-2 sticky top-0 bg-white">
+		<div class="overflow-y-scroll max-h-[90vh]" id="main">
+			<div class="receipt-controls mx-2 sticky top-0 z-10 bg-white">
 				<VueTextField class="w-full self-center" @changed="(value: string) => updateReceiptFilter(value)" name="search-name" placeholder="Search" clearable/>
 				<ReceiptCategoryDropdown
 					:items="ReceiptStore.categories"
@@ -118,19 +118,13 @@ export default defineComponent({
 				</FilterDropdownMenu>
 				<ConfirmButton class="ml-auto self-center min-w-max py-1 text-sm lg:text-base" @click="openCreateReceiptDialog">Create <span class="hidden md:inline">Receipt</span></ConfirmButton>
 			</div>
-			<div class="table-container pt-2">
-				<ReceiptTable key="receiptTable" :receipts="receipts"/>
-			</div>
+			<ReceiptTable class="min-h-[200px]" key="receiptTable" :receipts="receipts"/>
 		</div>
 		<!-- Create new receipt dialog -->
 		<ReceiptDialog ref="dialog" editing></ReceiptDialog>
 	</AuthenticatedLayout>
 </template>
 <style lang="scss">
-.table-container {
-	min-height: 200px;
-	// @apply border border-solid border-neutral-800;
-}
 
 .receipt-controls {
 	@apply flex flex-row;

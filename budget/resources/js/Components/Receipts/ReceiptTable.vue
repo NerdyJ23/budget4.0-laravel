@@ -57,7 +57,7 @@ addIcons(BiFileEarmarkText);
 defineExpose({reload});
 </script>
 <template>
-	<div class="mx-0 lg:mx-2">
+	<div class="mx-0 lg:mx-2 relative min-h-screen" v-bind="$attrs">
 		<div class="table-header rounded-none lg:rounded-t-md">
 			<span class="table-header-text">Date</span>
 			<span class="table-header-text hidden md:inline col-span-2">Reference</span>
