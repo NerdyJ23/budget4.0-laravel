@@ -91,7 +91,11 @@ defineExpose({ show });
 </script>
 <script lang="ts">export default defineComponent({name: "ReceiptDocumentDialog"});</script>
 <template>
-<BasicDialog ref="dialog" :title="`${is.editing ? 'Attach' : ''} Documents`.trim()" :persistent="is.editing">
+<BasicDialog ref="dialog"
+	:title="`${is.editing ? 'Attach' : ''} Documents`.trim()"
+	:persistent="is.editing"
+	class="min-h-full min-w-full md:min-w-[50vw] md:min-h-[30vh]"
+>
 	<div class="flex flex-col h-full"  style="min-width: 30vw">
 		<div v-if="is.editing" key="drag-drop-area"
 			@dragenter="$event.preventDefault(); fileHover = true;"
