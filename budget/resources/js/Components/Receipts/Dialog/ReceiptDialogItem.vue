@@ -40,20 +40,21 @@ defineComponent({
 })
 </script>
 <template>
-	<div class="relative grid grid-cols-5 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-amber-400/20">
+	<div class="relative grid grid-cols-2 md:grid-cols-6 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-amber-400/20">
 		<template v-if="editing">
-			<VueTextField v-model="item.name" :rules="validName" class="self-center" placeholder="Item Name" :name="`item_name-${id}`" />
-			<VueTextField v-model="item.count" class="self-center mx-auto w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
-			<div class="inline-flex flex-row w-[100px] self-center justify-self-center">
-				<span class="self-center text-xl">$</span>
-				<VueTextField v-model="item.cost" :name="`item_cost-${id}`" @blur="item.cost = defaultNumber(item.cost)"/>
+			<VueTextField v-model="item.name" :rules="validName" class="self-center col-span-4 md:col-span-1" placeholder="Item Name" :name="`item_name-${id}`" />
+			<VueTextField v-model="item.count" type="number" class="self-center md:px-0 min-w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
+			<div class="inline-flex flex-row self-center md:justify-self-center">
+				<span class="self-center md:text-xl">$</span>
+				<VueTextField v-model="item.cost" :name="`item_cost-${id}`" type="number" @blur="item.cost = defaultNumber(item.cost)"/>
 			</div>
-			<span class="text-lg self-center align-self-center">$ {{ total }}</span>
-			<div class="self-center inline-flex flex-row">
+			<span class="hidden md:inline md:text-lg self-center align-self-center">$ {{ total }}</span>
+			<div class="self-center inline-flex flex-row col-span-2 md:col-span-2">
 				<ReceiptCategoryDropdown
 					v-model="item.category"
 					@changed="(value: string) => item.category = value"
 					:rules="validCategory"
+					class="self-center"
 					:items="ReceiptStore.categories"
 					:key="`item_category-${id}`"
 				/>
@@ -68,7 +69,7 @@ defineComponent({
 			<span class="w-full text-sm text-center">{{ item.count }}</span>
 			<span class="w-full text-sm text-center">${{ item.cost.toFixed(2) }}</span>
 			<span class="w-full text-sm">${{ total.toFixed(2) }}</span>
-			<span class="w-full text-sm">{{ item.category }}</span>
+			<span class="w-full text-sm col-span-2">{{ item.category }}</span>
 		</template>
 	</div>
 </template>

@@ -86,7 +86,7 @@ addIcons(BiArrowDownShort, BiArrowUpShort);
 			<template v-for="header in headers">
 				<span
 					@click="changeSort(header)"
-					:class="`font-semibold text-md capitalize ${header.options?.sortKey ? 'cursor-pointer select-none' : ''}`"
+					:class="`font-semibold text-sm md:text-md capitalize ${header.options?.sortKey ? 'cursor-pointer select-none' : ''}`"
 				>
 					<template v-if="header.options && header.options.sortKey === sort.key">
 						<VIcon v-if="sort.direction === 'desc'" name="bi-arrow-down-short" />
@@ -96,7 +96,7 @@ addIcons(BiArrowDownShort, BiArrowUpShort);
 				</span>
 			</template>
 		</div>
-		<div v-if="itemList.length != 0" :class="`grid grid-cols-${headers.length} gap-x-2 gap-y-1 text-sm`">
+		<div v-if="itemList.length != 0" :class="`grid grid-cols-${headers.length} gap-x-2 gap-y-1 text-sm break-all`">
 			<template v-for="item in itemList" :key="item.key">
 				<template v-for="(value, key, index) in item.item">
 					<span :class="`capitalize pl-2 ${index != 0 ? 'text-center' : ''}`">{{ formatItemValue(headers[index], value) }}</span>

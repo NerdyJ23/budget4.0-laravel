@@ -182,7 +182,14 @@ const show = () => {
 const hide = () => {
 	dialog.value?.hide();
 }
-
+const cancel = () => {
+	if (receipt.id) {
+		// nextTick(() => is.editing = false);
+		dialog.value?.hide();
+	} else {
+		dialog.value?.hide();
+	}
+}
 //Receipt documents
 const showReceiptDocumentDialog = () => {
 	receiptDocumentDialogShowing.value = true;
@@ -202,6 +209,17 @@ const cost = computed((): number => {
 	return receipt.cost ?? 0;
 });
 
+const title = computed((): string => {
+	let title = 'Receipt';
+	if (is.editing) {
+		if (receipt.id) {
+			title = 'Edit Recceipt';
+		} else {
+			title = 'Create Receipt';
+		}
+	}
+	return title;
+})
 addIcons(BiPencilSquare);
 defineExpose({dialog, reset, show, hide, setReceipt});
 defineEmits(['destroy']);
@@ -220,17 +238,18 @@ export default defineComponent({
 <template>
 	<BasicDialog
 		ref="dialog"
-		class="flex flex-col min-w-full min-h-full md:min-w-[50vw] md:min-h-[30vh] backdrop-blur-[1px]"
+		class="flex flex-col min-w-full min-h-full max-h-screen md:min-w-[50vw] md:min-h-[30vh] backdrop-blur-[1px] rounded-none md:rounded-lg"
 		:persistent="is.editing"
 		blur
-		:title="`${is.editing ? 'Create Receipt' : ''}`"
+		:title="title"
 		@destroy="$emit('destroy')"
 	>
 	<!-- Receipt Items -->
-	<div>
+	<div :class="`${is.editing ? '' : 'overflow-auto'} `">
 		<VForm ref="receiptForm">
+			<!-- Header Information -->
 			<template v-if="is.editing">
-				<div class="grid grid-cols-4 gap-x-4 gap-y-1 relative">
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1 relative">
 					<VueTextField v-model="receipt.reference" placeholder="Receipt Number" name="receiptnumber" />
 					<VueTextField v-model="receipt.store" placeholder="Store Name" name="store" />
 					<VueTextField v-model="receipt.location" placeholder="Location" name="location" />
@@ -239,13 +258,15 @@ export default defineComponent({
 			</template>
 			<template v-else>
 				<div class="flex flex-row">
-					<div class="grid grid-cols-4 gap-x-4 gap-y-1 relative flex-grow">
+					<div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1 relative flex-grow">
 						<span class="font-semibold text-md">Receipt <span class="hidden md:inline">Number</span></span>
 						<span class="font-semibold text-md">Store</span>
+						<span class="inline md:hidden text-ellipsis">{{ receipt.reference ?? '-' }}</span>
+						<span class="inline md:hidden">{{ receipt.store ?? '-' }}</span>
 						<span class="font-semibold text-md">Location</span>
 						<span class="font-semibold text-md">Date</span>
-						<span>{{ receipt.reference ?? '-' }}</span>
-						<span>{{ receipt.store ?? '-' }}</span>
+						<span class="hidden md:inline">{{ receipt.reference ?? '-' }}</span>
+						<span class="hidden md:inline">{{ receipt.store ?? '-' }}</span>
 						<span>{{ receipt.location ?? '-' }}</span>
 						<span>{{ receipt.date }}</span>
 					</div>
@@ -255,20 +276,21 @@ export default defineComponent({
 					</div>
 				</div>
 			</template>
-			<div class="table mt-4 pt-1 w-full">
-				<!-- Stores -->
+			<!-- Item Table -->
+			<div class="table mt-4 pt-1 w-full max-w-full">
 				<SortableTable v-if="!is.editing"
 					:headers="headers"
 					:items="stats()"
 					:count="9999"
+					class="overflow-x-hidden"
 				/>
 				<div v-else class="overflow-y-auto overflow-x-hidden overscroll max-h-[70vh] pb-8 min-h-[40vh]">
-					<div class="table-head grid grid-cols-5 force-front gap-2 mb-2 px-2 sticky top-0">
+					<div class="table-head grid grid-cols-6 force-front gap-2 mb-2 p-1 md:px-2 sticky top-0 text-sm md:text-default">
 						<span>Name</span>
 						<span class="text-center">Count</span>
 						<span class="text-center">Cost</span>
 						<span>Total</span>
-						<span class="break-all">Category</span>
+						<span class="break-all col-span-2">Category</span>
 					</div>
 					<ReceiptDialogItem :editing="is.editing" v-for="(item, index) in receipt.items" :item="item" @delete="deleteItem(index)" :key="`${item.id}-${index}`"></ReceiptDialogItem>
 				</div>
@@ -280,17 +302,19 @@ export default defineComponent({
 	</div>
 
 	<!-- Receipt Footer -->
-	<div class="mt-auto pt-2 border-t border-solid border-neutral-500 flex flex-row">
+	<div class="mt-auto pt-2 border-t border-solid border-neutral-500 md:flex md:flex-row grid grid-cols-2 gap-y-2">
 		<template v-if="is.editing">
-			<div class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="addNewReceiptItem">Add Item</div>
+			<div class="py-1 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80 text-center" @click="addNewReceiptItem">Add Item</div>
 		</template>
-		<div v-if="receipt.documents.length || is.editing" class="py-1 ml-2 select-none cursor-pointer self-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">Documents ({{ receipt.documents?.length ?? 0 }})</div>
+		<div v-if="receipt.documents.length || is.editing" class="py-1 ml-2 select-none cursor-pointer self-center text-center px-2 rounded-sm bg-neutral-300 hover:bg-neutral-500/80" @click="showReceiptDocumentDialog">
+			Documents ({{ receipt.documents?.length ?? 0 }})
+		</div>
 		<div v-else class="py-1 ml-2">&nbsp</div>
-		<span class="absolute left-0 right-0 mx-auto text-center font-semibold text-lg self-center pointer-events-none">Total: ${{ cost.toFixed(2) }}</span>
+		<span :class="[{'absolute': !is.editing}, `left-0 right-0 mx-auto text-center font-semibold text-lg self-center pointer-events-none`]">Total: ${{ cost.toFixed(2) }}</span>
 		<div class="ml-auto inline-flex flex-row">
 			<template v-if="is.editing">
-				<ConfirmButton class="py-1 text-md self-center" @click="saveReceipt"/>
-				<CancelButton @click="($refs.dialog as typeof BasicDialog).hide()" class="py-1 text-md self-center ml-2" />
+				<ConfirmButton class="py-1 text-md self-center" @click="saveReceipt" />
+				<CancelButton @click="cancel" class="py-1 text-md self-center ml-2" />
 			</template>
 		</div>
 	</div>

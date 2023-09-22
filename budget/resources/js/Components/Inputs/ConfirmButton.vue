@@ -1,8 +1,8 @@
 <template>
 <div
 	v-bind="$attrs"
-	:class="`hover:cursor-pointer px-1 md:px-2 md:rounded-sm select-none
-	md:bg-lime-600/80 hover:bg-lime-600 border border-lime-600 rounded-full
+	:class="`hover:cursor-pointer px-1 md:px-2 md:rounded-sm md:border-none select-none
+	md:bg-lime-600/80 hover:bg-lime-600/40 border border-lime-600 rounded-full
 	`"
 >
 	<slot>
