@@ -61,8 +61,7 @@ export default defineComponent({name: 'BasicDialog'})
 </script>
 
 <template>
-	<div
-		ref="backdrop"
+	<div ref="backdrop"
 		v-if="is.open"
 		:class="[
 			{'backdrop-grayscale': blur},

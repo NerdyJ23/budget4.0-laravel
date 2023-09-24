@@ -82,7 +82,7 @@ addIcons(BiArrowDownShort, BiArrowUpShort);
 <template>
 	<div v-bind="$attrs">
 		<span class="font-semibold text-lg" v-if="title">{{ sort.direction === 'desc' ? 'Top' : 'Bottom' }} {{ props.count }} {{ props.title }}</span>
-		<div :class="`grid grid-cols-${headers.length} gap-x-2 gap-y-1 bg-slate-400 text-center`">
+		<div :class="`grid md:grid-cols-${headers.length} gap-x-2 gap-y-1 bg-slate-400 text-center`">
 			<template v-for="header in headers">
 				<span
 					@click="changeSort(header)"
@@ -96,7 +96,7 @@ addIcons(BiArrowDownShort, BiArrowUpShort);
 				</span>
 			</template>
 		</div>
-		<div v-if="itemList.length != 0" :class="`grid grid-cols-${headers.length} gap-x-2 gap-y-1 text-sm break-all`">
+		<div v-if="itemList.length != 0" :class="`grid md:grid-cols-${headers.length} gap-x-2 gap-y-1 text-sm break-all`">
 			<template v-for="item in itemList" :key="item.key">
 				<template v-for="(value, key, index) in item.item">
 					<span :class="`capitalize pl-2 ${index != 0 ? 'text-center' : ''}`">{{ formatItemValue(headers[index], value) }}</span>
