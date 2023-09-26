@@ -10,7 +10,8 @@ export default {
         './resources/js/**/*.vue',
     ],
 	safelist: [{
-		pattern: /grid-cols-./
+		pattern: /grid-cols-./,
+		variants: ['xs', 'sm', 'md', 'lg', 'xl', '2xl']
 	}],
     theme: {
         extend: {
