@@ -15,6 +15,21 @@ const props = withDefaults(defineProps<{
 	count: 5
 });
 
+const gridCols = [
+	'grid-cols-1',
+	'grid-cols-2',
+	'grid-cols-3',
+	'grid-cols-4',
+	'grid-cols-5',
+	'grid-cols-6',
+	'grid-cols-7',
+	'grid-cols-8',
+	'grid-cols-9',
+	'grid-cols-10',
+	'grid-cols-11',
+	'grid-cols-12',
+]; //Need to use full class names due to Tailwind not supporting dynamic class generation even with a safelist
+
 let items: Array<TableItem> = reactive(props.items);
 const sort: TableSort = reactive({
 	key: props.sort?.key ?? null,
@@ -82,7 +97,7 @@ addIcons(BiArrowDownShort, BiArrowUpShort);
 <template>
 	<div v-bind="$attrs">
 		<span class="font-semibold text-lg" v-if="title">{{ sort.direction === 'desc' ? 'Top' : 'Bottom' }} {{ props.count }} {{ props.title }}</span>
-		<div :class="`grid md:grid-cols-${headers.length} gap-x-2 gap-y-1 bg-slate-400 text-center`">
+		<div :class="`grid ${gridCols[headers.length - 1]} gap-x-2 gap-y-1 bg-slate-400 text-center`">
 			<template v-for="header in headers">
 				<span
 					@click="changeSort(header)"
@@ -96,7 +111,7 @@ addIcons(BiArrowDownShort, BiArrowUpShort);
 				</span>
 			</template>
 		</div>
-		<div v-if="itemList.length != 0" :class="`grid md:grid-cols-${headers.length} gap-x-2 gap-y-1 text-sm break-all`">
+		<div v-if="itemList.length != 0" :class="`grid ${gridCols[headers.length - 1]} gap-x-2 gap-y-1 text-sm break-all`">
 			<template v-for="item in itemList" :key="item.key">
 				<template v-for="(value, key, index) in item.item">
 					<span :class="`capitalize pl-2 ${index != 0 ? 'text-center' : ''}`">{{ formatItemValue(headers[index], value) }}</span>

@@ -44,21 +44,43 @@ const error = ref({
 	message: ''
 });
 const receiptDocumentDialogShowing = ref(false);
-const headers = [
-	{ name: 'name' },
-	{ name: 'count',  options: { sortKey: 'count' } },
-	{ name: 'cost', options: {
-		sortKey: 'cost',
-		finance: { decimals: 2 }
-	}},
-	{ name: 'total', options: {
-		sortKey: 'total',
-		finance: { decimals: 2 }
-	}},
-	{ name: 'category' }
-] as TableHeader[];
+const headers = {
+	mobile: [
+		{ name: 'name' },
+		{ name: 'total', options: {
+			sortKey: 'total',
+			finance: { decimals: 2 }
+		}},
+		{ name: 'category' }
+	] as TableHeader[],
+	default: [
+		{ name: 'name' },
+		{ name: 'count',  options: { sortKey: 'count' } },
+		{ name: 'cost', options: {
+			sortKey: 'cost',
+			finance: { decimals: 2 }
+		}},
+		{ name: 'total', options: {
+			sortKey: 'total',
+			finance: { decimals: 2 }
+		}},
+		{ name: 'category' }
+	] as TableHeader[]
+};
 
-const stats = (): TableItem[] => {
+const stats = (mobile: boolean = false): TableItem[] => {
+	if (mobile) {
+		return receipt.items.map(item => {
+			return {
+				key: item.name,
+				item: {
+					name: item.name,
+					total: item.cost * item.count,
+					category: (item.category as ReceiptItemCategory).name
+				}
+			} as TableItem
+		}) as Array<TableItem>;
+	}
 	return receipt.items.map(item => {
 		return {
 			key: item.name,
@@ -278,12 +300,27 @@ export default defineComponent({
 			</template>
 			<!-- Item Table -->
 			<div class="table mt-4 pt-1 w-full max-w-full">
-				<SortableTable v-if="!is.editing"
-					:headers="headers"
-					:items="stats()"
-					:count="9999"
-					class="overflow-x-hidden"
-				/>
+				<template v-if="!is.editing">
+					<SortableTable
+						:headers="headers.default"
+						:items="stats()"
+						:count="9999"
+						class="overflow-x-hidden hidden sm:inline"
+					/>
+					<SortableTable
+						:headers="headers.mobile"
+						:items="stats(true)"
+						:count="9999"
+						class="overflow-x-hidden inline sm:hidden"
+					/>
+					<div class="flex flex-col hidden">
+						<div v-for="item in receipt.items" class="grid grid-cols-3 odd:bg-slate-200 even:bg-white">
+							<span>{{ item.name }}</span>
+							<span>${{ (item.cost * item.count).toFixed(2) }}</span>
+							<span>{{ (item.category as ReceiptItemCategory).name }}</span>
+						</div>
+					</div>
+				</template>
 				<div v-else class="overflow-y-auto overflow-x-hidden overscroll max-h-[70vh] pb-8 min-h-[40vh]">
 					<div class="table-head grid grid-cols-6 force-front gap-2 mb-2 p-1 md:px-2 sticky top-0 text-sm md:text-default">
 						<span>Name</span>

@@ -6,6 +6,7 @@ import { useReceiptStore } from '@/store/receiptPiniaStore';
 
 import VueTextField from '@/Components/Inputs/VueTextField.vue';
 import ReceiptCategoryDropdown from '@/Components/Receipts/ReceiptCategoryDropdown.vue';
+import CancelButton from '@/Components/Inputs/CancelButton.vue';
 
 import { addIcons } from "oh-vue-icons";
 import { MdDeleteforeverOutlined, HiSolidPencilAlt } from "oh-vue-icons/icons";
@@ -40,7 +41,7 @@ defineComponent({
 })
 </script>
 <template>
-	<div class="relative grid grid-cols-2 md:grid-cols-6 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-amber-400/20">
+	<div class="relative grid grid-cols-4 md:grid-cols-6 gap-2 px-2 py-1 even:bg-slate-100 odd:bg-slate-200 hover:bg-amber-400/20">
 		<template v-if="editing">
 			<VueTextField v-model="item.name" :rules="validName" class="self-center col-span-4 md:col-span-1" placeholder="Item Name" :name="`item_name-${id}`" />
 			<VueTextField v-model="item.count" type="number" class="self-center md:px-0 min-w-[75px]" :name="`item_count-${id}`" @blur="item.count = defaultNumber(item.count)"/>
@@ -58,10 +59,15 @@ defineComponent({
 					:items="ReceiptStore.categories"
 					:key="`item_category-${id}`"
 				/>
-				<div class="icon-button ml-2 p-1">
+
+				<div class="hidden md:inline icon-button ml-2 p-1">
 					<VIcon v-if="editing" class="fill-red-600" name="md-deleteforever-outlined" scale="1.5" @click="$emit('delete')"></VIcon>
 					<VIcon v-else class=" fill-blue-400" name="hi-solid-pencil-alt" scale="1.5"></VIcon>
 				</div>
+			</div>
+			<!-- Mobile delete button -->
+			<div class="inline md:hidden col-span-4 text-center">
+				<CancelButton @click="$emit('delete')" class="rounded-md bg-red-500/80">Remove Item</CancelButton>
 			</div>
 		</template>
 		<template v-else>

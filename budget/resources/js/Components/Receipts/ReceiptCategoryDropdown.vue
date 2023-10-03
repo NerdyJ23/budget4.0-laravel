@@ -94,7 +94,7 @@ export default defineComponent({
 			:key="`dropdown-${id}`"
 			/>
 		<div v-if="is.show" class="relative" ref="container" :style="width">
-			<span class="autocomplete-item uppercase"
+			<span class="autocomplete-item uppercase text-sm md:text-default"
 				v-if="filterValue.trim().length >= 2"
 				v-for="item in filteredItems"
 				@mousedown="filterValue = item.name"
@@ -108,6 +108,6 @@ export default defineComponent({
 <style lang="scss">
 .autocomplete-item {
 	z-index: 999;
-	@apply hover:bg-zinc-200 absolute overflow-hidden text-ellipsis cursor-pointer bg-zinc-100 border-x border-b border-solid border-slate-300 px-4 py-2 w-full;
+	@apply hover:bg-zinc-200 absolute overflow-hidden text-ellipsis cursor-pointer bg-zinc-100 border-x border-b border-solid border-slate-300 px-2 py-1 md:px-4 md:py-2 w-full;
 }
 </style>
