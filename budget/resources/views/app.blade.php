@@ -16,6 +16,11 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
+		@if(config('app.env', 'local'))
+		<div class="absolute left-0 px-6 py-2 bg-red-500 text-center">
+			DEV
+		</div>
+		@endif
         @inertia
     </body>
 </html>
